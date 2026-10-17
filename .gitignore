@@ -80,3 +80,12 @@ mlruns/
 *.pt
 *.ckpt
 *.safetensors
+
+# HF / local mirrors of private scrapes
+*.docx
+data/ege-rus-tip2/
+!results/.gitkeep
+
+HF_TOKEN
+GITHUB_TOKEN
+GH_TOKEN
