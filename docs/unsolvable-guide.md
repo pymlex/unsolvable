@@ -28,14 +28,7 @@ Item $x$ задаёт контекст $c$, опции $O$ и ключ $y^\star$
 
 Пусть $\mathcal{C}(x)$ — окрестность печатно корректных правок $x$, а $B$ — battery. Ищем
 
-$$
-x^{\mathrm{adv}} \in \arg\max_{x' \in \mathcal{C}(x)}
-\sum_{m \in B}
-\left(
-\max_{a \neq y^\star} s_m(a \mid x')
-- s_m(y^\star \mid x')
-\right),
-$$
+$$x^{\mathrm{adv}} \in \arg\max_{x' \in \mathcal{C}(x)} \sum_{m \in B} \left( \max_{a \neq y^\star} s_m(a \mid x') - s_m(y^\star \mid x') \right),$$
 
 где $s_m$ — score ответа после промпта, на практике заменяемый индикатором ошибки $\mathbf{1}[\hat{y}_m(x') \neq y^\star]$ при greedy-декодировании. Так максимизируют зазор между неверными answer-строками и $y^\star$ под print constraint.
 
@@ -73,9 +66,7 @@ Zheng et al., ICLR 2024 — selection bias и PriDe. Pezeshkpour и Hruschka —
 
 Перестановки опций не публикуют как новый ключ бланка. Это зонд устойчивости ошибки при $\pi(O)$. Item считают model-hard по смыслу, только если ошибка держится на нескольких перестановках.
 
-$$
-\mathrm{Consist}(x) = \frac{1}{R} \sum_{r=1}^{R} \mathbf{1}\left[\hat{y}\left(\pi_r(O)\right) = y^\star\right].
-$$
+$$\mathrm{Consist}(x) = \frac{1}{R} \sum_{r=1}^{R} \mathbf{1}\left[\hat{y}\left(\pi_r(O)\right) = y^\star\right].$$
 
 Низкая Consist к ключу при temp 0 на battery указывает на смысловую неустойчивость модели, а не только на order bias.
 
@@ -83,9 +74,7 @@ $$
 
 Фиксируют $c$ и $y^\star$. Переписывают неверные опции так, чтобы они оставались словарно и грамматически валидными, но сильнее тянули LM prior к частотному или соседнему sense. Бессмысленные строки, опечатки и Unicode-подмены запрещены.
 
-$$
-\max_{d} \sum_{m \in B} \mathbf{1}\left[\hat{y}_m(c, O[d]) \neq y^\star\right]
-$$
+$$\max_{d} \sum_{m \in B} \mathbf{1}\left[\hat{y}_m(c, O[d]) \neq y^\star\right]$$
 
 при печатной корректности $d$. Transfer проверяют на held-out модели вне battery.
 
