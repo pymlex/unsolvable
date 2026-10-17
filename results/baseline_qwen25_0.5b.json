@@ -1,6 +1,6 @@
 {
   "summary": {
-    "dataset": "pymlex/ege-rus-tip2-reshu-2026",
+    "dataset": "pymlex/reshuege-ru-2026",
     "split": "train",
     "model": "Qwen/Qwen2.5-0.5B-Instruct",
     "n_items": 116,

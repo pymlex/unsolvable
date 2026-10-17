@@ -4,7 +4,7 @@
 
 Нужны тестовые задания на понимание значения слова в тексте. Человек решает их по смыслу. **SLM**, small language model, малая языковая модель, ошибается из-за поверхностных эвристик.
 
-Рабочий прогон идёт на заданиях ЕГЭ по русскому **типа 2**: текст, пять выделенных слов, пять толкований, ответ — склейка номеров верных вариантов, например `35`. Датасет для нулевой базы: [pymlex/ege-rus-tip2-reshu-2026](https://huggingface.co/datasets/pymlex/ege-rus-tip2-reshu-2026).
+Рабочий прогон идёт на заданиях ЕГЭ по русскому **типа 2**: текст, пять выделенных слов, пять толкований, ответ — склейка номеров верных вариантов, например `35`. Датасет для нулевой базы: [pymlex/reshuege-ru-2026](https://huggingface.co/datasets/pymlex/reshuege-ru-2026).
 
 Две цели нельзя смешивать без контроля. **Construct validity** — соответствие задания заявленному навыку человека. Anti-SLM objective — заставить модель ошибиться. Совпадение этих целей доказывают эмпирически на батареи моделей при неизменном ключе.
 
@@ -148,7 +148,7 @@ M1 даёт пул с контролируемым sense. M2 и M5 правят 
 
 ### 9.4. MVP без людей
 
-1. Зафиксировать zero-edit baseline на полном [датасете tip2](https://huggingface.co/datasets/pymlex/ege-rus-tip2-reshu-2026).
+1. Зафиксировать zero-edit baseline на полном [датасете tip2](https://huggingface.co/datasets/pymlex/reshuege-ru-2026).
 2. На items с высоким $M$ применить M2/M4/M5 под печатным constraint.
 3. Прогнать M3 и M6.
 4. Сравнить $M$, CI, Consist, weak-solvable rate, transfer.
@@ -238,10 +238,10 @@ M1 даёт пул с контролируемым sense. M2 и M5 правят 
   year={2026}
 }
 
-@misc{ege-rus-tip2-reshu-2026,
-  title={{EGE} Russian Type 2 items from Reshu {EGE} (research scrape)},
+@misc{reshuege-ru-2026,
+  title={reshuege-ru-2026: {EGE} Russian Type 2 items from Reshu {EGE}},
   author={{pymlex}},
-  howpublished={https://huggingface.co/datasets/pymlex/ege-rus-tip2-reshu-2026},
+  howpublished={https://huggingface.co/datasets/pymlex/reshuege-ru-2026},
   year={2026}
 }
 ```

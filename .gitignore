@@ -83,6 +83,7 @@ mlruns/
 
 # HF / local mirrors of private scrapes
 *.docx
+data/reshuege-ru-2026/
 data/ege-rus-tip2/
 !results/.gitkeep
 

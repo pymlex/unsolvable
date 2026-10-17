@@ -8,9 +8,9 @@ Evaluation target: Russian Unified State Exam (ЕГЭ) Russian language **Type 2
 
 Public Hugging Face dataset:
 
-- [pymlex/ege-rus-tip2-reshu-2026](https://huggingface.co/datasets/pymlex/ege-rus-tip2-reshu-2026) — 116 items, source `reshu-ege-research`.
+- [pymlex/reshuege-ru-2026](https://huggingface.co/datasets/pymlex/reshuege-ru-2026) — 116 items, source `reshu-ege-research`.
 
-Fields: `id`, `task_type`, `instruction`, `passage`, `options` (5), `answer`, `answer_list`, `explanation`, `source`.
+Fields: `id`, `task_type`, `instruction` (identical on every row), `passage` (lexical targets as `**word**`), `highlighted_words`, `options` (5, clean), `answer`, `answer_list`, `explanation`, `source`.
 
 ## Guide
 
@@ -25,7 +25,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 export HF_TOKEN=...   # if the hub requires auth for the model
 python -m eval.baseline \
-  --dataset pymlex/ege-rus-tip2-reshu-2026 \
+  --dataset pymlex/reshuege-ru-2026 \
   --model Qwen/Qwen2.5-0.5B-Instruct \
   --out results/baseline_qwen25_0.5b.json
 ```
@@ -46,8 +46,10 @@ Zero-edit, temperature 0, full set ($N=116$), model `Qwen/Qwen2.5-0.5B-Instruct`
 
 ## Rebuild dataset from DOCX
 
+Bold lexical targets (`w:b`, including hyperlink runs) are preserved as `**word**` in `passage` and listed in `highlighted_words`. Instruction is fixed for every row.
+
 ```bash
-python scripts/parse_tip2_docx.py --docx tip2.docx --out-dir data/ege-rus-tip2
+python scripts/parse_tip2_docx.py --docx tip2.docx --out-dir data/reshuege-ru-2026
 ```
 
 ## Licence
@@ -62,10 +64,10 @@ GPL-3.0. See [LICENSE](LICENSE).
   year={2026}
 }
 
-@misc{ege-rus-tip2-reshu-2026,
-  title={{EGE} Russian Type 2 items from Reshu {EGE} (research scrape)},
+@misc{reshuege-ru-2026,
+  title={reshuege-ru-2026: {EGE} Russian Type 2 items from Reshu {EGE}},
   author={{pymlex}},
-  howpublished={https://huggingface.co/datasets/pymlex/ege-rus-tip2-reshu-2026},
+  howpublished={https://huggingface.co/datasets/pymlex/reshuege-ru-2026},
   year={2026}
 }
 ```

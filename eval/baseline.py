@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="EGE tip-2 zero-edit SLM baseline")
     p.add_argument(
         "--dataset",
-        default="pymlex/ege-rus-tip2-reshu-2026",
+        default="pymlex/reshuege-ru-2026",
         help="HF dataset id or local jsonl path",
     )
     p.add_argument("--split", default="train")
