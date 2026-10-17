@@ -33,7 +33,7 @@ bash scripts/push_results_github.sh "Publish tip-2 benchmark results"
 
 ## Scale estimate
 
-Detector-tricking used 8891 train abstracts and produced 6396 DPO pairs. With 116 gold tip-2 items only, plan **~2k–4k** synthetic source items for a first GRPO run (\(G=4\)–\(8\)), and **~6k–9k** to approach detector pairwise DPO scale at \(K=2\).
+Detector-tricking used 8891 train abstracts and produced 6396 DPO pairs. Gold tip-2 has 116 items. Locked synthetic target for GRPO: **2000** items in split `train-deepseek-v4-flash-0731` (default `SYNTHESIS_N_ITEMS=2000`).
 
 ## Docs
 

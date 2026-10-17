@@ -29,7 +29,7 @@ $$s_m(y^\star\mid x)=\sum_t \log p_m(y^\star_t\mid x,y^\star_{<t})$$
 
 ## Scale
 
-Detector-tricking reference: 8891 train abstracts yielded 6396 DPO pairs. Here gold tip-2 has only 116 items. First GRPO pass needs about **2k–4k** synthetic source items at group size \(G=4\)–\(8\). Matching detector pairwise DPO scale at \(K=2\) needs about **6k–9k** synthetic source items.
+Detector-tricking reference: 8891 train abstracts yielded 6396 DPO pairs. Here gold tip-2 has only 116 items. First GRPO pass needs about **2000** synthetic source items at group size \(G=4\)–\(8\). Matching detector pairwise DPO scale at \(K=2\) needs about **6k–9k** synthetic source items.
 
 ## Synthetic split
 
