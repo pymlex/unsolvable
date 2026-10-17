@@ -1,6 +1,6 @@
-# unsolvable
+# Фреймворк генерации состязательных заданий, устойчивых к решению SLM
 
-Framework for generating word-in-context multiple-choice items that resist small neural solvers while remaining valid for human examinees. Evaluation uses Russian Unified State Exam items of this type.
+A Framework for Generating Adversarial Items Robust to {SLM} Solvers. Evaluation uses Russian Unified State Exam word-in-context items.
 
 ## Guide
 
@@ -12,8 +12,8 @@ GPL-3.0. See [LICENSE](LICENSE).
 
 ```bibtex
 @misc{unsolvable-guide-2026,
-  title={Unified Guide for Neural-Solver-Resistant Word-in-Context {MCQ} with {EGE} Evaluation},
-  author={{Project unsolvable}},
+  title={A Framework for Generating Adversarial Items Robust to {SLM} Solvers},
+  author={{Фреймворк генерации состязательных заданий, устойчивых к решению SLM}},
   howpublished={https://github.com/pymlex/unsolvable},
   year={2026}
 }
