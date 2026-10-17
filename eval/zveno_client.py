@@ -18,8 +18,8 @@ def chat_completion(
     *,
     model: str | None = None,
     temperature: float = 0.0,
-    max_tokens: int = 256,
-    timeout_sec: float = 120.0,
+    max_tokens: int | None = None,
+    timeout_sec: float = 180.0,
 ) -> dict[str, Any]:
     """Call Zveno ``/chat/completions`` and return the parsed JSON body."""
     api_key = require_env("ZVENOAI_API_KEY")
@@ -29,8 +29,9 @@ def chat_completion(
         "model": model_id,
         "messages": messages,
         "temperature": temperature,
-        "max_tokens": max_tokens,
     }
+    if max_tokens is not None:
+        payload["max_tokens"] = max_tokens
     data = json.dumps(payload).encode("utf-8")
     request = urllib.request.Request(
         url,
