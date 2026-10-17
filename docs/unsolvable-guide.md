@@ -19,7 +19,7 @@
 Пусть item задан как тройка контекст $c$, целевое слово $w$ и набор опций $O$ из $K$ толкований, а $y^\star$ — индекс верного ответа. Малая AR-модель оценивает
 
 $$
-\hat{y} = \arg\max_k\, p_\theta\!\left(a_k \mid \mathrm{prompt}(c, w, O)\right)
+\hat{y} = \arg\max_k\, p_\theta\left(a_k \mid \mathrm{prompt}(c, w, O)\right)
 $$
 
 где $a_k$ — токен метки опции.
@@ -33,7 +33,7 @@ $$
 Для человеческой стороны нужна **psychometrics**, методы измерения свойств заданий по ответам людей, и в частности **IRT**, item response theory. В модели Rasch вероятность верного ответа человека $i$ на задание $j$ равна
 
 $$
-P\!\left(X_{ij} = 1 \mid \theta_i, b_j\right) = \frac{1}{1 + \exp\!\left(-(\theta_i - b_j)\right)}
+P\left(X_{ij} = 1 \mid \theta_i, b_j\right) = \frac{1}{1 + \exp\left(-(\theta_i - b_j)\right)}
 $$
 
 где $\theta_i$ — способность, $b_j$ — трудность задания.
@@ -99,7 +99,7 @@ Tomikawa и коллеги связывают генерацию MCQ с целе
 Эксперт задаёт sense-critical span $S^\star$. Система измеряет важность фрагмента $t$ как разницу вероятности верного ответа с полным контекстом $c$ и с контекстом без $t$:
 
 $$
-I_m(t) = \left| p_m\!\left(y^\star \mid c\right) - p_m\!\left(y^\star \mid c \setminus t\right) \right|
+I_m(t) = \left| p_m\left(y^\star \mid c\right) - p_m\left(y^\star \mid c \setminus t\right) \right|
 $$
 
 и переписывает контекст, если модель чувствительна к collocates вне $S^\star$, а человек опирается на $S^\star$. LOO как анализ известен. Здесь он становится редакционным циклом генерации с человеческим якорем. Так бьют context underuse без бессмысленных искажений текста.
@@ -138,7 +138,7 @@ $$
 Кандидат принимается только если батарея моделей ошибается на не менее чем $m$ из $R$ случайных перестановок $O$, либо если после PriDe-подобной коррекции prior ошибка сохраняется. Формально
 
 $$
-\mathrm{Consist}(x) = \frac{1}{R} \sum_r \mathbf{1}\!\left[\hat{y}\!\left(\pi_r(O)\right) = y^\star\right]
+\mathrm{Consist}(x) = \frac{1}{R} \sum_r \mathbf{1}\left[\hat{y}\left(\pi_r(O)\right) = y^\star\right]
 $$
 
 Item model-hard требует низкой Consist относительно верного ответа, то есть модель не находит $y^\star$ стабильно. Приёмка отсекает ложную трудность от ID bias. Риск в том, что авторы могут чинить порядок опций под экзамен и создать fairness-дыру между бланками. Измерение: RStd recall по позициям как у Zheng et al., плюс доля items, где $M$ падает только при фиксированном порядке.
@@ -152,7 +152,7 @@ Item model-hard требует низкой Consist относительно в�
 Фиксируют $c$, $w$, $y^\star$. Ищут foils $d$ дискретным поиском: синонимические и sense-близкие замены в пространстве толкований, градиентные подсказки по малой white-box модели как в GradQuiz или HotFlip-стиле по токенам опций, black-box запросы к battery. Цель
 
 $$
-\max_d \sum_m \mathbf{1}\!\left[\hat{y}_m = d\right] \quad \text{при} \quad \mathrm{HumanAccept}(d) = 1
+\max_d \sum_m \mathbf{1}\left[\hat{y}_m = d\right] \quad \text{при} \quad \mathrm{HumanAccept}(d) = 1
 $$
 
 Ограничения: грамматичность, семантическая близость к правдоподобной ошибке ученика, запрет на опечатки и Unicode-трюки. Создаёт аттракторы в пространстве опций, куда стекает LM prior. Слишком привлекательный foil повышает человеческую ошибку и ломает IRT-дискриминацию. Unicode и character noise недопустимы для экзаменационного конструкта. Измерение: attack success rate ASR на battery, human error rate на тех же foils, transfer ASR на held-out модели.
