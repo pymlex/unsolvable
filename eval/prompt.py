@@ -3,6 +3,12 @@
 from __future__ import annotations
 
 
+FIXED_INSTRUCTION = (
+    "В тексте выделено пять слов. Укажите варианты ответов, в которых "
+    "лексическое значение выделенного слова соответствует его значению "
+    "в данном тексте. Запишите номера ответов."
+)
+
 SYSTEM_RU = (
     "Ты решаешь задание ЕГЭ по русскому языку типа 2. "
     "В тексте выделены слова. Нужно указать номера вариантов, "
@@ -15,13 +21,8 @@ SYSTEM_RU = (
 def build_user_prompt(row: dict) -> str:
     options = row["options"]
     opt_lines = "\n".join(f"{i}) {opt}" for i, opt in enumerate(options, start=1))
-    instruction = row.get("instruction") or (
-        "В тексте выделено пять слов. Укажите варианты ответов, в которых "
-        "лексическое значение выделенного слова соответствует его значению "
-        "в данном тексте. Запишите номера ответов."
-    )
     return (
-        f"{instruction}\n\n"
+        f"{FIXED_INSTRUCTION}\n\n"
         f"Текст:\n{row['passage']}\n\n"
         f"Варианты:\n{opt_lines}\n\n"
         "Ответ (только цифры):"

@@ -246,15 +246,12 @@ def parse_item(
         raise ValueError(f"item {item_id}: empty passage")
     return {
         "id": int(item_id),
-        "task_type": 2,
-        "instruction": FIXED_INSTRUCTION,
         "passage": passage,
         "highlighted_words": highlighted,
         "options": list(options),
         "answer": answer,
         "answer_list": answer_list,
         "explanation": "\n".join(explanation_parts).strip(),
-        "source": "reshu-ege-research",
     }
 
 
@@ -289,9 +286,21 @@ def main() -> None:
         hist[k] = hist.get(k, 0) + 1
     info = {
         "n_items": len(rows),
-        "source": "reshu-ege-research",
-        "task_type": 2,
         "dataset_id": "pymlex/reshuege-ru-2026",
+        "fields": [
+            "id",
+            "passage",
+            "highlighted_words",
+            "options",
+            "answer",
+            "answer_list",
+            "explanation",
+        ],
+        "card_note": (
+            "All items are EGE Russian tip 2 from a Решу ЕГЭ 2026 research scrape. "
+            "Fixed instruction and provenance live on the Hugging Face dataset card, "
+            "not as row fields."
+        ),
         "instruction_fixed": FIXED_INSTRUCTION,
         "highlight_markup": "**word** around each bold lexical target in passage",
         "answer_convention": "Concatenated correct option numbers, e.g. '35'.",

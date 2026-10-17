@@ -8,9 +8,13 @@ Evaluation target: Russian Unified State Exam (ЕГЭ) Russian language **Type 2
 
 Public Hugging Face dataset:
 
-- [pymlex/reshuege-ru-2026](https://huggingface.co/datasets/pymlex/reshuege-ru-2026) — 116 items, source `reshu-ege-research`.
+- [pymlex/reshuege-ru-2026](https://huggingface.co/datasets/pymlex/reshuege-ru-2026) — 116 items. All items are EGE Russian tip 2 from a Решу ЕГЭ 2026 research scrape. Provenance and the fixed stem live on the Hugging Face dataset card, not as row fields.
 
-Fields: `id`, `task_type`, `instruction` (identical on every row), `passage` (lexical targets as `**word**`), `highlighted_words`, `options` (5, clean), `answer`, `answer_list`, `explanation`, `source`.
+Row fields: `id`, `passage` (lexical targets as `**word**`), `highlighted_words`, `options` (5, clean), `answer`, `answer_list`, `explanation`.
+
+Eval uses `FIXED_INSTRUCTION` in `eval/prompt.py`:
+
+> В тексте выделено пять слов. Укажите варианты ответов, в которых лексическое значение выделенного слова соответствует его значению в данном тексте. Запишите номера ответов.
 
 ## Guide
 
