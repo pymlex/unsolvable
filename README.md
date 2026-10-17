@@ -1,6 +1,6 @@
 # unsolvable
 
-Research notes for building Russian EGE-style multiple-choice items on word meaning in context that remain valid for humans while small autoregressive language models fail on surface heuristics.
+Research notes for a framework that generates word-in-context multiple-choice items resistant to small neural solvers while staying valid for humans. Evaluation runs on Russian Unified State Exam items of this type.
 
 ## Main document
 
@@ -25,7 +25,7 @@ GPL-3.0. See [LICENSE](LICENSE).
 
 ```bibtex
 @misc{unsolvable-guide-2026,
-  title={Unified Guide for Russian {EGE}-style Neural-Solver-Resistant Word-in-Context {MCQ}},
+  title={Unified Guide for Neural-Solver-Resistant Word-in-Context {MCQ} with {EGE} Evaluation},
   author={{Project unsolvable}},
   howpublished={https://github.com/pymlex/unsolvable},
   year={2026}
