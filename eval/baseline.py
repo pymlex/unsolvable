@@ -90,7 +90,7 @@ def load_model(model_id: str, device: str | None):
     dtype = torch.float16 if device == "cuda" else torch.float32
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
-        torch_dtype=dtype,
+        dtype=dtype,
         trust_remote_code=True,
     )
     model.to(device)
@@ -171,7 +171,6 @@ def main() -> None:
         "bootstrap_95_ci": [boot_lo, boot_hi],
         "device": device,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
-        "hf_token_env": "HF_TOKEN" if os.environ.get("HF_TOKEN") else None,
     }
 
     out_path = Path(args.out)

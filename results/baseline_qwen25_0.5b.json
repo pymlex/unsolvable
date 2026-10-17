@@ -1,0 +1,837 @@
+{
+  "summary": {
+    "dataset": "pymlex/ege-rus-tip2-reshu-2026",
+    "split": "train",
+    "model": "Qwen/Qwen2.5-0.5B-Instruct",
+    "n_items": 116,
+    "temperature": 0,
+    "do_sample": false,
+    "protocol": "zero-edit-full-set",
+    "accuracy": 0.06896551724137931,
+    "n_correct": 8,
+    "wilson_95_ci": [
+      0.035357490650736526,
+      0.1302067390903313
+    ],
+    "bootstrap_95_ci": [
+      0.02586206896551724,
+      0.1206896551724138
+    ],
+    "device": "cpu",
+    "created_at_utc": "2026-10-17T20:36:11.144714+00:00"
+  },
+  "items": [
+    {
+      "id": 46255,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 46284,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 48122,
+      "gold": "134",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 48150,
+      "gold": "23",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 49127,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 49154,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 49955,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 49984,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50204,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50264,
+      "gold": "125",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50291,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50318,
+      "gold": "13",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 51823,
+      "gold": "123",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 51850,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 52518,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 52545,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 52950,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 52977,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 53296,
+      "gold": "45",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 53323,
+      "gold": "15",
+      "pred": "14",
+      "raw": "14",
+      "correct": false
+    },
+    {
+      "id": 54169,
+      "gold": "14",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 54210,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true
+    },
+    {
+      "id": 56079,
+      "gold": "14",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 56496,
+      "gold": "124",
+      "pred": "1",
+      "raw": "19",
+      "correct": false
+    },
+    {
+      "id": 56523,
+      "gold": "245",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 57067,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 57100,
+      "gold": "124",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 57504,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 57532,
+      "gold": "235",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 58081,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 59238,
+      "gold": "45",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 59265,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 59866,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 59897,
+      "gold": "15",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 60208,
+      "gold": "35",
+      "pred": "1",
+      "raw": "18",
+      "correct": false
+    },
+    {
+      "id": 60235,
+      "gold": "24",
+      "pred": "1",
+      "raw": "18",
+      "correct": false
+    },
+    {
+      "id": 60919,
+      "gold": "123",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 60946,
+      "gold": "145",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 61487,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 61515,
+      "gold": "45",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 67112,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 67139,
+      "gold": "345",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45109,
+      "gold": "14",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45110,
+      "gold": "15",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45111,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45112,
+      "gold": "13",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45113,
+      "gold": "345",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45114,
+      "gold": "13",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45115,
+      "gold": "124",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45116,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true
+    },
+    {
+      "id": 45117,
+      "gold": "125",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45118,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45119,
+      "gold": "15",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45120,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45121,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true
+    },
+    {
+      "id": 45122,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45123,
+      "gold": "23",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45124,
+      "gold": "235",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45125,
+      "gold": "345",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45126,
+      "gold": "145",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45127,
+      "gold": "45",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45128,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true
+    },
+    {
+      "id": 45129,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true
+    },
+    {
+      "id": 45130,
+      "gold": "13",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45131,
+      "gold": "23",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45132,
+      "gold": "1235",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45133,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45134,
+      "gold": "135",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45135,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45136,
+      "gold": "23",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45137,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45138,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45139,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45140,
+      "gold": "235",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45141,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45142,
+      "gold": "13",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45143,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true
+    },
+    {
+      "id": 45144,
+      "gold": "124",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45145,
+      "gold": "12",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45146,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45147,
+      "gold": "125",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45148,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true
+    },
+    {
+      "id": 45149,
+      "gold": "15",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45150,
+      "gold": "134",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45151,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45152,
+      "gold": "13",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45153,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45154,
+      "gold": "14",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45155,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true
+    },
+    {
+      "id": 45156,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45157,
+      "gold": "145",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45158,
+      "gold": "23",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45159,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50635,
+      "gold": "123",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50644,
+      "gold": "235",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50647,
+      "gold": "123",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50651,
+      "gold": "1234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50657,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50659,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50660,
+      "gold": "13",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50670,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50672,
+      "gold": "125",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50677,
+      "gold": "23",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50679,
+      "gold": "23",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 60975,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 45057,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50439,
+      "gold": "345",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50639,
+      "gold": "134",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 50665,
+      "gold": "235",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 54087,
+      "gold": "135",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 58356,
+      "gold": "45",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 59296,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 59495,
+      "gold": "14",
+      "pred": "1",
+      "raw": "17",
+      "correct": false
+    },
+    {
+      "id": 59667,
+      "gold": "45",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 65168,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    },
+    {
+      "id": 66795,
+      "gold": "235",
+      "pred": "24",
+      "raw": "24",
+      "correct": false
+    }
+  ]
+}
