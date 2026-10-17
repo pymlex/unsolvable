@@ -74,3 +74,28 @@ def bootstrap_ci(
     lo = float(np.quantile(means, alpha / 2))
     hi = float(np.quantile(means, 1 - alpha / 2))
     return p, lo, hi
+
+
+def write_benchmark_table(
+    path,
+    model: str,
+    n: int,
+    acc: float,
+    wilson: tuple[float, float],
+    bootstrap: tuple[float, float],
+) -> None:
+    """Write a one-row Markdown accuracy table."""
+    path = path if hasattr(path, "write_text") else path
+    from pathlib import Path
+
+    out = Path(path)
+    out.write_text(
+        (
+            f"| model | n | accuracy | Wilson 95% CI | bootstrap 95% CI |\n"
+            f"|---|---:|---:|---|---|\n"
+            f"| {model} | {n} | {acc:.4f} | "
+            f"[{wilson[0]:.4f}, {wilson[1]:.4f}] | "
+            f"[{bootstrap[0]:.4f}, {bootstrap[1]:.4f}] |\n"
+        ),
+        encoding="utf-8",
+    )

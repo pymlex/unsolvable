@@ -1,0 +1,10 @@
+{
+  "split": "train-deepseek-v4-flash-0731",
+  "n_items": 2,
+  "model": "deepseek/deepseek-v4-flash-0731",
+  "dictionary": "ru.wiktionary.org MediaWiki API",
+  "udarenieru_note": "udarenieru.ru has no stable public JSON sense API in this environment. Use Wiktionary via fetch_senses_wiktionary, or plug a paid dictionary later.",
+  "created_at_utc": "2026-10-17T23:38:08.104088+00:00",
+  "hf_push": "python scripts/push_synthesis_hf.py --local results/synthesis/train-deepseek-v4-flash-0731/train.jsonl --repo pymlex/reshuege-ru-2026 --config-name train-deepseek-v4-flash-0731",
+  "scale_note": "Detector project: 8891 train abstracts -> 6396 DPO pairs. With 116 gold tip-2 items, first GRPO needs about 2k-4k synthetic source items (G=4-8). Pairwise DPO at K=2 needs about 6k-9k to approach the detector pair scale."
+}

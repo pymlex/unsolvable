@@ -69,10 +69,12 @@ Thumbs.db
 .tmp/
 tmp/
 .cache/
+hf_cache/
 data/raw/
 data/private/
 models/
 checkpoints/
+results/checkpoints/
 wandb/
 mlruns/
 .huggingface/

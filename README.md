@@ -2,59 +2,43 @@
 
 A Framework for Generating Adversarial Items Robust to SLM Solvers.
 
-Evaluation target: Russian Unified State Exam (ЕГЭ) Russian language **Type 2** items (word sense in context; multi-select among five sense glosses; answer is concatenated option digits, e.g. `35`).
+Evaluation target: Russian Unified State Exam Russian language Type 2 items. Dataset: [pymlex/reshuege-ru-2026](https://huggingface.co/datasets/pymlex/reshuege-ru-2026) (116 gold items). In code and docs the stem field is **text** (HF column may still be named `passage`). Highlights use `**...**`. Option labels use `1.` not `1)`.
 
-## Dataset
-
-Public Hugging Face dataset:
-
-- [pymlex/reshuege-ru-2026](https://huggingface.co/datasets/pymlex/reshuege-ru-2026) — 116 items. All items are EGE Russian tip 2 from a Решу ЕГЭ 2026 research scrape. Provenance and the fixed stem live on the Hugging Face dataset card, not as row fields.
-
-Row fields: `id`, `passage` (lexical targets as `**word**`), `highlighted_words`, `options` (5, clean), `answer`, `answer_list`, `explanation`.
-
-Eval uses `FIXED_INSTRUCTION` in `eval/prompt.py`:
-
-> В тексте выделено пять слов. Укажите варианты ответов, в которых лексическое значение выделенного слова соответствует его значению в данном тексте. Запишите номера ответов.
-
-## Guide
-
-**[docs/unsolvable-guide.md](docs/unsolvable-guide.md)** — methods under the printed-exam constraint (no human pilot loop; grammatical edits only).
-
-## Zero-edit baseline (temperature 0)
-
-Measures SLM exact-match accuracy on **all** items with **no adversarial edits**. Decoding is greedy (`do_sample=False`). The prompt asks for digits only in the ЕГЭ tip-2 convention. Scores: exact match, Wilson 95% CI, bootstrap 95% CI over items.
+## Install on Ubuntu Jupyter (Clore)
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-export HF_TOKEN=...   # if the hub requires auth for the model
-python -m eval.baseline \
-  --dataset pymlex/reshuege-ru-2026 \
-  --model Qwen/Qwen2.5-0.5B-Instruct \
-  --out results/baseline_qwen25_0.5b.json
+bash scripts/install_ubuntu_jupyter.sh
+cp .env.example .env   # if not already created
+# fill HF_TOKEN, ZVENOAI_API_KEY, GITHUB_TOKEN
 ```
 
-Optional local JSONL mirror:
+Default local SLM: `Qwen/Qwen3.5-2B` (`SLM_MODEL_ID`). Judge and strong solver: `deepseek/deepseek-v4-flash-0731` via Zveno (`ZVENOAI_API_KEY`).
+
+## Run
 
 ```bash
-python -m eval.baseline --dataset path/to/train.jsonl --model Qwen/Qwen2.5-0.5B-Instruct
+python main.py --step benchmark-slm
+python main.py --step benchmark-deepseek
+python main.py --step probe-margin --limit 8
+python main.py --step build-groups --limit 4
+python main.py --step grpo-train --dry-run
+python main.py --step synthesis --n-synth 4
 ```
 
-### Baseline results
-
-Zero-edit, temperature 0, full set ($N=116$), model `Qwen/Qwen2.5-0.5B-Instruct` on CPU. Artifacts: `results/baseline_qwen25_0.5b.json`.
-
-| model | n | accuracy | Wilson 95% CI | bootstrap 95% CI |
-|---|---:|---:|---|---|
-| Qwen/Qwen2.5-0.5B-Instruct | 116 | 0.0690 | [0.0354, 0.1302] | [0.0259, 0.1207] |
-
-## Rebuild dataset from DOCX
-
-Bold lexical targets (`w:b`, including hyperlink runs) are preserved as `**word**` in `passage` and listed in `highlighted_words`. Instruction is fixed for every row.
+Results land under `results/`. Push controlled paths:
 
 ```bash
-python scripts/parse_tip2_docx.py --docx tip2.docx --out-dir data/reshuege-ru-2026
+bash scripts/push_results_github.sh "Publish tip-2 benchmark results"
 ```
+
+## Scale estimate
+
+Detector-tricking used 8891 train abstracts and produced 6396 DPO pairs. With 116 gold tip-2 items only, plan **~2k–4k** synthetic source items for a first GRPO run (\(G=4\)–\(8\)), and **~6k–9k** to approach detector pairwise DPO scale at \(K=2\).
+
+## Docs
+
+- [docs/pipeline.md](docs/pipeline.md) — benchmark, same-SLM loop, GRPO groups, synthetic split
+- [docs/unsolvable-guide.md](docs/unsolvable-guide.md) — methods under the print constraint
 
 ## Licence
 

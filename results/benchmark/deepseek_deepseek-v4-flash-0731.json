@@ -1,0 +1,138 @@
+{
+  "summary": {
+    "dataset": "pymlex/reshuege-ru-2026",
+    "split": "train",
+    "model": "deepseek/deepseek-v4-flash-0731",
+    "n_items": 5,
+    "temperature": 0,
+    "do_sample": false,
+    "protocol": "zero-edit-full-set",
+    "accuracy": 0.8,
+    "n_correct": 4,
+    "wilson_95_ci": [
+      0.3755346297625253,
+      0.9637758913675698
+    ],
+    "bootstrap_95_ci": [
+      0.4,
+      1.0
+    ],
+    "device": "zveno-api",
+    "latency_sec_mean": 4.5996240968000395,
+    "prompt_tokens_total": 4420,
+    "completion_tokens_total": 2485,
+    "created_at_utc": "2026-10-17T23:34:34.709780+00:00"
+  },
+  "items": [
+    {
+      "id": 46255,
+      "gold": "35",
+      "pred": "25",
+      "raw": "25",
+      "correct": false,
+      "latency_sec": 7.7117045820000385,
+      "usage": {
+        "prompt_tokens": 1006,
+        "completion_tokens": 447,
+        "total_tokens": 1453,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 1005,
+          "cache_write_tokens": 0
+        }
+      }
+    },
+    {
+      "id": 46284,
+      "gold": "25",
+      "pred": "25",
+      "raw": "25",
+      "correct": true,
+      "latency_sec": 2.548153604000049,
+      "usage": {
+        "prompt_tokens": 920,
+        "completion_tokens": 367,
+        "total_tokens": 1287,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 768,
+          "cache_write_tokens": 0
+        }
+      }
+    },
+    {
+      "id": 48122,
+      "gold": "134",
+      "pred": "134",
+      "raw": "134",
+      "correct": true,
+      "latency_sec": 6.716237314000068,
+      "usage": {
+        "prompt_tokens": 888,
+        "completion_tokens": 507,
+        "total_tokens": 1395,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 512,
+          "cache_write_tokens": 0
+        }
+      }
+    },
+    {
+      "id": 48150,
+      "gold": "23",
+      "pred": "23",
+      "raw": "23",
+      "correct": true,
+      "latency_sec": 2.8194752160000007,
+      "usage": {
+        "prompt_tokens": 780,
+        "completion_tokens": 793,
+        "total_tokens": 1573,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    },
+    {
+      "id": 49127,
+      "gold": "25",
+      "pred": "25",
+      "raw": "25",
+      "correct": true,
+      "latency_sec": 3.20254976800004,
+      "usage": {
+        "prompt_tokens": 826,
+        "completion_tokens": 371,
+        "total_tokens": 1197,
+        "completion_tokens_details": {
+          "audio_tokens": 0,
+          "image_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        }
+      }
+    }
+  ]
+}
