@@ -48,12 +48,12 @@ class GrpoGroup(BaseModel):
 
 
 class SyntheticItem(BaseModel):
-    id: str
-    text: str
+    """Gold tip-2 row shape from pymlex/reshuege-ru-2026."""
+
+    id: int
+    passage: str
+    highlighted_words: list[str] = Field(default_factory=list)
     options: list[str]
     answer: str
     answer_list: list[int] = Field(default_factory=list)
     explanation: str = ""
-    lemmas: list[str] = Field(default_factory=list)
-    senses: list[str] = Field(default_factory=list)
-    source_model: str = ""

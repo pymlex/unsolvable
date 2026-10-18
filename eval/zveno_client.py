@@ -20,18 +20,26 @@ def chat_completion(
     temperature: float = 0.0,
     max_tokens: int | None = None,
     timeout_sec: float = 180.0,
+    extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Call Zveno ``/chat/completions`` and return the parsed JSON body."""
+    """Call Zveno ``/chat/completions`` and return the parsed JSON body.
+
+    Pass ``max_tokens=None`` (default for callers that omit it) to leave the
+    field out of the request body. Optional ``extra`` merges provider knobs
+    such as ``thinking: {"type": "disabled"}``.
+    """
     api_key = require_env("ZVENOAI_API_KEY")
     model_id = model or ZVENO_MODEL_ID
     url = ZVENO_BASE_URL.rstrip("/") + "/chat/completions"
-    payload = {
+    payload: dict[str, Any] = {
         "model": model_id,
         "messages": messages,
         "temperature": temperature,
     }
     if max_tokens is not None:
         payload["max_tokens"] = max_tokens
+    if extra:
+        payload.update(extra)
     data = json.dumps(payload).encode("utf-8")
     request = urllib.request.Request(
         url,
