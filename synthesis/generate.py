@@ -53,13 +53,25 @@ STATUS_PATH = Path(
 PROGRESS_EVERY = int(os.environ.get("SYNTH_PROGRESS_EVERY", "25"))
 MAX_ATTEMPTS_PER_ITEM = int(os.environ.get("SYNTH_MAX_ATTEMPTS", "5"))
 API_RETRIES = int(os.environ.get("SYNTH_API_RETRIES", "5"))
-SYNTH_WORKERS = int(os.environ.get("SYNTH_WORKERS", "6"))
+SYNTH_WORKERS = int(os.environ.get("SYNTH_WORKERS", "3"))
 SYNTH_ID_BASE = int(os.environ.get("SYNTH_ID_BASE", "800000"))
 MIN_SENSES_PER_LEMMA = int(os.environ.get("SYNTH_MIN_SENSES", "2"))
 
 
+def _is_transient_http(exc: BaseException) -> bool:
+    text = f"{type(exc).__name__}: {exc}".lower()
+    if isinstance(exc, urllib.error.HTTPError) and exc.code in {
+        403, 408, 425, 429, 500, 502, 503, 504,
+    }:
+        return True
+    if isinstance(exc, (urllib.error.URLError, TimeoutError, OSError, RuntimeError)):
+        markers = ("403", "429", "408", "502", "503", "504", "timed out", "timeout", "http failed", "fetch failed")
+        return any(m in text for m in markers)
+    return False
+
+
 def _normalize_gloss(text: str) -> str:
-    text = text.lower().strip()
+    text = text.lower().strip().replace("ё", "е")
     text = re.sub(r"\s+", " ", text)
     text = text.strip(" .;:")
     return text
@@ -282,6 +294,7 @@ def _chat_with_retries(messages: list[dict[str, str]], model_id: str) -> dict:
                 messages,
                 model=model_id,
                 temperature=0.3,
+                timeout_sec=90.0,
                 extra={"thinking": {"type": "disabled"}},
             )
         except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError) as exc:
@@ -310,7 +323,7 @@ def _write_status(
     eta_str = f"{eta_min:.1f} min" if eta_min is not None else "n/a"
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     body = (
-        f"# Synth 1000 status\n\n"
+        f"# Synth 500 status\n\n"
         f"- updated: {now}\n"
         f"- phase: {phase}\n"
         f"- n_done: **{n_done} / {n_target}**\n"
@@ -318,11 +331,12 @@ def _write_status(
         f"- rate: {rate:.2f} items/min\n"
         f"- ETA: {eta_str}\n"
         f"- last_error: {last_error or 'none'}\n"
+        f"- workers: {SYNTH_WORKERS}\n"
         f"- output: `{jsonl_path}`\n"
         f"- split: `{SYNTHESIS_SPLIT_NAME}`\n"
         f"- model: `{ZVENO_MODEL_ID}`\n"
-        f"- protocol: 5 lemmas → ALL udarenieru senses → gold few-shot → "
-        f"EGE tip-2 JSON (passage/options/answer 2–3)\n"
+        f"- protocol: thematic navec + ALL udarenieru senses + gold few-shot; "
+        f"HTTP 403/429 retried with backoff\n"
     )
     STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)
     STATUS_PATH.write_text(body, encoding="utf-8")
@@ -432,6 +446,7 @@ def generate_synthetic_split(
                     return
             attempt_err = ""
             item = None
+            had_permanent = False
             for attempt in range(1, MAX_ATTEMPTS_PER_ITEM + 1):
                 with lock:
                     if state["n_done"] >= n_items:
@@ -466,12 +481,17 @@ def generate_synthetic_split(
                     break
                 except Exception as exc:
                     attempt_err = f"{type(exc).__name__}: {exc}"
+                    transient = _is_transient_http(exc)
                     with lock:
-                        state["n_invalid"] += 1
                         state["last_error"] = attempt_err
-                    time.sleep(min(attempt, 5))
+                        if not transient:
+                            state["n_invalid"] += 1
+                            had_permanent = True
+                    time.sleep(min(2 ** attempt if transient else attempt, 45 if transient else 5))
             if item is None:
                 with lock:
+                    if not had_permanent:
+                        state["n_invalid"] += 1
                     state["last_error"] = attempt_err or "failed all attempts"
                     _write_status(
                         n_done=state["n_done"],

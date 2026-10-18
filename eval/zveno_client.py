@@ -51,11 +51,25 @@ def chat_completion(
         method="POST",
     )
     started = time.perf_counter()
-    with urllib.request.urlopen(request, timeout=timeout_sec) as response:
-        body = json.loads(response.read().decode("utf-8"))
-    latency = time.perf_counter() - started
-    body["_latency_sec"] = latency
-    return body
+    retries = int(os.environ.get("ZVENO_HTTP_RETRIES", "6"))
+    last_err: Exception | None = None
+    for attempt in range(1, retries + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_sec) as response:
+                body = json.loads(response.read().decode("utf-8"))
+            latency = time.perf_counter() - started
+            body["_latency_sec"] = latency
+            body["_http_attempts"] = attempt
+            return body
+        except urllib.error.HTTPError as exc:
+            last_err = exc
+            if exc.code not in {403, 408, 425, 429, 500, 502, 503, 504}:
+                raise
+            time.sleep(min(2 ** attempt, 90))
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            last_err = exc
+            time.sleep(min(2 ** attempt, 60))
+    raise RuntimeError(f"Zveno HTTP failed after {retries} retries: {last_err}")
 
 
 def completion_text(body: dict[str, Any]) -> str:

@@ -8,6 +8,8 @@ There is no public JSON API; senses are scraped from
 from __future__ import annotations
 
 import re
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from html import unescape
@@ -29,8 +31,20 @@ def fetch_udarenieru_html(lemma: str, timeout_sec: float = 30.0) -> str:
     query = urllib.parse.urlencode({"word": "on", "mas_word": lemma})
     url = f"{UDARENIE_RU_BASE}?{query}"
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request, timeout=timeout_sec) as response:
-        return response.read().decode("utf-8", errors="replace")
+    last_err: Exception | None = None
+    for attempt in range(1, 6):
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_sec) as response:
+                return response.read().decode("utf-8", errors="replace")
+        except urllib.error.HTTPError as exc:
+            last_err = exc
+            if exc.code not in {403, 408, 425, 429, 500, 502, 503, 504}:
+                raise
+            time.sleep(min(2 ** attempt, 60))
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            last_err = exc
+            time.sleep(min(2 ** attempt, 45))
+    raise RuntimeError(f"udarenieru fetch failed for {lemma!r} after retries: {last_err}")
 
 
 def _strip_tags(chunk: str) -> str:
