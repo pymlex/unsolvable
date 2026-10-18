@@ -5,6 +5,33 @@ from __future__ import annotations
 from eval.prompt import build_messages
 
 
+def apply_chat_template_no_think(tokenizer, messages: list[dict[str, str]]) -> str:
+    """Render chat prompt with Qwen thinking disabled when the template supports it."""
+    if not (hasattr(tokenizer, "apply_chat_template") and tokenizer.chat_template):
+        return messages[0]["content"] + "\n\n" + messages[1]["content"]
+
+    kwargs = {
+        "tokenize": False,
+        "add_generation_prompt": True,
+        "enable_thinking": False,
+    }
+    try:
+        return tokenizer.apply_chat_template(messages, **kwargs)
+    except TypeError:
+        kwargs.pop("enable_thinking", None)
+        try:
+            return tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                chat_template_kwargs={"enable_thinking": False},
+            )
+        except TypeError:
+            return tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True
+            )
+
+
 def load_slm(model_id: str, device: str | None = None):
     """Load a causal LM and tokenizer for tip-2 solving or paraphrase."""
     import torch
@@ -48,19 +75,7 @@ def generate_chat(
     """Generate a completion from chat messages."""
     import torch
 
-    if hasattr(tokenizer, "apply_chat_template") and tokenizer.chat_template:
-        import inspect
-
-        kwargs = {
-            "tokenize": False,
-            "add_generation_prompt": True,
-        }
-        params = inspect.signature(tokenizer.apply_chat_template).parameters
-        if "enable_thinking" in params:
-            kwargs["enable_thinking"] = False
-        prompt = tokenizer.apply_chat_template(messages, **kwargs)
-    else:
-        prompt = messages[0]["content"] + "\n\n" + messages[1]["content"]
+    prompt = apply_chat_template_no_think(tokenizer, messages)
 
     inputs = tokenizer(prompt, return_tensors="pt")
     inputs = {k: v.to(model.device if hasattr(model, "device") else device) for k, v in inputs.items()}
@@ -100,19 +115,7 @@ def generate_tip2_answer(
 
 
 def _row_prompt(tokenizer, row: dict) -> str:
-    messages = build_messages(row)
-    if hasattr(tokenizer, "apply_chat_template") and tokenizer.chat_template:
-        import inspect
-
-        kwargs = {
-            "tokenize": False,
-            "add_generation_prompt": True,
-        }
-        params = inspect.signature(tokenizer.apply_chat_template).parameters
-        if "enable_thinking" in params:
-            kwargs["enable_thinking"] = False
-        return tokenizer.apply_chat_template(messages, **kwargs)
-    return messages[0]["content"] + "\n\n" + messages[1]["content"]
+    return apply_chat_template_no_think(tokenizer, build_messages(row))
 
 
 def generate_tip2_answers_batch(

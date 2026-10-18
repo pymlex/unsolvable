@@ -10,16 +10,19 @@ from scipy import stats
 
 
 ANSWER_DIGITS_RE = re.compile(r"[0-9]+")
+THINK_BLOCK_RE = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
+THINK_OPEN_RE = re.compile(r"<think>.*", re.DOTALL | re.IGNORECASE)
+TIP2_LINE_RE = re.compile(r"^[1-5]{1,5}$")
 
 
-def normalize_answer(text: str) -> str:
-    """Extract the first contiguous digit run; empty if none."""
-    if text is None:
-        return ""
-    m = ANSWER_DIGITS_RE.search(str(text))
-    if not m:
-        return ""
-    digits = m.group(0)
+def strip_thinking(text: str) -> str:
+    """Remove Qwen-style think blocks before answer parsing."""
+    text = THINK_BLOCK_RE.sub("", str(text))
+    text = THINK_OPEN_RE.sub("", text)
+    return text.strip()
+
+
+def _digits_1_to_5(digits: str) -> str:
     seen = set()
     ordered: list[str] = []
     for ch in digits:
@@ -27,6 +30,30 @@ def normalize_answer(text: str) -> str:
             seen.add(ch)
             ordered.append(ch)
     return "".join(sorted(ordered))
+
+
+def normalize_answer(text: str) -> str:
+    """Extract a tip-2 digit answer; ignore prose / truncated CoT digits."""
+    if text is None:
+        return ""
+    text = strip_thinking(str(text))
+    if not text:
+        return ""
+    if TIP2_LINE_RE.fullmatch(text):
+        return _digits_1_to_5(text)
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    for ln in reversed(lines):
+        if TIP2_LINE_RE.fullmatch(ln):
+            return _digits_1_to_5(ln)
+    m = re.search(r"(?i)(?:ответ|answer)\s*[:：]?\s*([1-5]{1,5})\s*$", text)
+    if m:
+        return _digits_1_to_5(m.group(1))
+    if len(text) > 40 and sum(ch.isdigit() for ch in text) <= 2:
+        return ""
+    m = ANSWER_DIGITS_RE.search(text)
+    if not m:
+        return ""
+    return _digits_1_to_5(m.group(0))
 
 
 def gold_normalize(answer: str) -> str:

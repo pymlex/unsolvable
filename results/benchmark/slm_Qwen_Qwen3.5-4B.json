@@ -19,7 +19,11 @@
     ],
     "device": "cuda",
     "latency_sec_mean": 4.495696898732886,
-    "created_at_utc": "2026-10-18T16:37:25.280210+00:00"
+    "created_at_utc": "2026-10-18T16:37:25.280210+00:00",
+    "mean_jaccard": 0.18821839080459768,
+    "n_invalid": 116,
+    "n_empty_reparsed": 116,
+    "diagnosis": "4B emitted English CoT under max_new_tokens=32; old parser took digit from \"type 2\". Re-run with thinking disabled."
   },
   "items": [
     {
@@ -28,7 +32,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 6.976886399999785
+      "latency_sec": 6.976886399999785,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 46284,
@@ -36,7 +43,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.5493889470017166
+      "latency_sec": 3.5493889470017166,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 48122,
@@ -44,7 +54,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.514451936000114
+      "latency_sec": 3.514451936000114,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 48150,
@@ -52,7 +65,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the provided definitions",
       "correct": false,
-      "latency_sec": 3.454465203001746
+      "latency_sec": 3.454465203001746,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 49127,
@@ -60,7 +76,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4622747199973674
+      "latency_sec": 3.4622747199973674,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 49154,
@@ -68,7 +87,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 7.846449460997974
+      "latency_sec": 7.846449460997974,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 49955,
@@ -76,7 +98,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 5.478584356998908
+      "latency_sec": 5.478584356998908,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 49984,
@@ -84,7 +109,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.671450787998765
+      "latency_sec": 3.671450787998765,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50204,
@@ -92,7 +120,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4937188410003728
+      "latency_sec": 3.4937188410003728,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50264,
@@ -100,7 +131,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4932580780005082
+      "latency_sec": 3.4932580780005082,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50291,
@@ -108,7 +142,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.552102241999819
+      "latency_sec": 3.552102241999819,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50318,
@@ -116,7 +153,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.5506566850017407
+      "latency_sec": 3.5506566850017407,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 51823,
@@ -124,7 +164,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.5923045920026198
+      "latency_sec": 3.5923045920026198,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 51850,
@@ -132,7 +175,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.544127629000286
+      "latency_sec": 3.544127629000286,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 52518,
@@ -140,7 +186,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.4549578490004933
+      "latency_sec": 3.4549578490004933,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 52545,
@@ -148,7 +197,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 3.474172925998573
+      "latency_sec": 3.474172925998573,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 52950,
@@ -156,7 +208,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 15.861366246001126
+      "latency_sec": 15.861366246001126,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 52977,
@@ -164,7 +219,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.3592800770020403
+      "latency_sec": 3.3592800770020403,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 53296,
@@ -172,7 +230,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.348055739999836
+      "latency_sec": 3.348055739999836,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 53323,
@@ -180,7 +241,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.4018798470024194
+      "latency_sec": 3.4018798470024194,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 54169,
@@ -188,7 +252,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.445128930001374
+      "latency_sec": 3.445128930001374,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 54210,
@@ -196,7 +263,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4609224740015634
+      "latency_sec": 3.4609224740015634,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 56079,
@@ -204,7 +274,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.431845744999009
+      "latency_sec": 3.431845744999009,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 56496,
@@ -212,7 +285,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.3826234839980316
+      "latency_sec": 3.3826234839980316,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 56523,
@@ -220,7 +296,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.318234174999816
+      "latency_sec": 3.318234174999816,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 57067,
@@ -228,7 +307,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and the options",
       "correct": false,
-      "latency_sec": 3.320391864999692
+      "latency_sec": 3.320391864999692,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 57100,
@@ -236,7 +318,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five options",
       "correct": false,
-      "latency_sec": 3.422378850998939
+      "latency_sec": 3.422378850998939,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 57504,
@@ -244,7 +329,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4724823019969335
+      "latency_sec": 3.4724823019969335,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 57532,
@@ -252,7 +340,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 3.516989209998428
+      "latency_sec": 3.516989209998428,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 58081,
@@ -260,7 +351,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.461237486000755
+      "latency_sec": 3.461237486000755,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 59238,
@@ -268,7 +362,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.3602434870008437
+      "latency_sec": 3.3602434870008437,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 59265,
@@ -276,7 +373,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.3712699900024745
+      "latency_sec": 3.3712699900024745,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 59866,
@@ -284,7 +384,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.3372508229986124
+      "latency_sec": 3.3372508229986124,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 59897,
@@ -292,7 +395,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.788847469000757
+      "latency_sec": 3.788847469000757,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 60208,
@@ -300,7 +406,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.453068886003166
+      "latency_sec": 3.453068886003166,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 60235,
@@ -308,7 +417,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.4317611980004585
+      "latency_sec": 3.4317611980004585,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 60919,
@@ -316,7 +428,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.435719496999809
+      "latency_sec": 3.435719496999809,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 60946,
@@ -324,7 +439,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and five highlighted words",
       "correct": false,
-      "latency_sec": 3.3159132760010834
+      "latency_sec": 3.3159132760010834,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 61487,
@@ -332,7 +450,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five options",
       "correct": false,
-      "latency_sec": 3.3854187430006277
+      "latency_sec": 3.3854187430006277,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 61515,
@@ -340,7 +461,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions of",
       "correct": false,
-      "latency_sec": 3.4123413340021216
+      "latency_sec": 3.4123413340021216,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 67112,
@@ -348,7 +472,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.424447269000666
+      "latency_sec": 3.424447269000666,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 67139,
@@ -356,7 +483,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.428141334999964
+      "latency_sec": 3.428141334999964,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45109,
@@ -364,7 +494,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five definitions",
       "correct": false,
-      "latency_sec": 3.4680893250006193
+      "latency_sec": 3.4680893250006193,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45110,
@@ -372,7 +505,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 3.3388747239987424
+      "latency_sec": 3.3388747239987424,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45111,
@@ -380,7 +516,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.3014430510011152
+      "latency_sec": 3.3014430510011152,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45112,
@@ -388,7 +527,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and the five",
       "correct": false,
-      "latency_sec": 3.3425575660003233
+      "latency_sec": 3.3425575660003233,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45113,
@@ -396,7 +538,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 7.8472090830000525
+      "latency_sec": 7.8472090830000525,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45114,
@@ -404,7 +549,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions of",
       "correct": false,
-      "latency_sec": 5.3835978059978515
+      "latency_sec": 5.3835978059978515,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45115,
@@ -412,7 +560,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.375762002000556
+      "latency_sec": 3.375762002000556,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45116,
@@ -420,7 +571,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.3470979899975646
+      "latency_sec": 3.3470979899975646,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45117,
@@ -428,7 +582,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 3.2887172999980976
+      "latency_sec": 3.2887172999980976,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45118,
@@ -436,7 +593,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 6.573964998999145
+      "latency_sec": 6.573964998999145,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45119,
@@ -444,7 +604,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the provided options",
       "correct": false,
-      "latency_sec": 3.5453920979998657
+      "latency_sec": 3.5453920979998657,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45120,
@@ -452,7 +615,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.5062835729986546
+      "latency_sec": 3.5062835729986546,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45121,
@@ -460,7 +626,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.426803864997055
+      "latency_sec": 3.426803864997055,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45122,
@@ -468,7 +637,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.474875156000053
+      "latency_sec": 3.474875156000053,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45123,
@@ -476,7 +648,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five options",
       "correct": false,
-      "latency_sec": 3.4278724789983244
+      "latency_sec": 3.4278724789983244,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45124,
@@ -484,7 +659,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.5269153590015776
+      "latency_sec": 3.5269153590015776,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45125,
@@ -492,7 +670,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.5243614110004273
+      "latency_sec": 3.5243614110004273,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45126,
@@ -500,7 +681,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4986304780031787
+      "latency_sec": 3.4986304780031787,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45127,
@@ -508,7 +692,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.419806268000684
+      "latency_sec": 3.419806268000684,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45128,
@@ -516,7 +703,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five options",
       "correct": false,
-      "latency_sec": 3.4665074549993733
+      "latency_sec": 3.4665074549993733,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45129,
@@ -524,7 +714,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.43589069799782
+      "latency_sec": 3.43589069799782,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45130,
@@ -532,7 +725,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) Type 2 task",
       "correct": false,
-      "latency_sec": 3.5290678790006496
+      "latency_sec": 3.5290678790006496,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45131,
@@ -540,7 +736,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.568482861002849
+      "latency_sec": 3.568482861002849,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45132,
@@ -548,7 +747,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 3.5710927079999237
+      "latency_sec": 3.5710927079999237,
+      "jaccard": 0.25,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45133,
@@ -556,7 +758,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five definitions",
       "correct": false,
-      "latency_sec": 3.5159337909972237
+      "latency_sec": 3.5159337909972237,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45134,
@@ -564,7 +769,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) type 2 task",
       "correct": false,
-      "latency_sec": 3.4489075780002167
+      "latency_sec": 3.4489075780002167,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45135,
@@ -572,7 +780,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.422821924003074
+      "latency_sec": 3.422821924003074,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45136,
@@ -580,7 +791,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) type 2 task",
       "correct": false,
-      "latency_sec": 7.277713004001271
+      "latency_sec": 7.277713004001271,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45137,
@@ -588,7 +802,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the highlighted words",
       "correct": false,
-      "latency_sec": 5.551763539999229
+      "latency_sec": 5.551763539999229,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45138,
@@ -596,7 +813,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 4.019079122001131
+      "latency_sec": 4.019079122001131,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45139,
@@ -604,7 +824,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.3907219549982983
+      "latency_sec": 3.3907219549982983,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45140,
@@ -612,7 +835,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.411428547002288
+      "latency_sec": 3.411428547002288,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45141,
@@ -620,7 +846,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 6.598307553998893
+      "latency_sec": 6.598307553998893,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45142,
@@ -628,7 +857,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) type 2 task",
       "correct": false,
-      "latency_sec": 3.7625272029981716
+      "latency_sec": 3.7625272029981716,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45143,
@@ -636,7 +868,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) Type 2 task",
       "correct": false,
-      "latency_sec": 3.498309051999968
+      "latency_sec": 3.498309051999968,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45144,
@@ -644,7 +879,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) Type 2 task",
       "correct": false,
-      "latency_sec": 3.4471302989986725
+      "latency_sec": 3.4471302989986725,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45145,
@@ -652,7 +890,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five options",
       "correct": false,
-      "latency_sec": 3.4910370520010474
+      "latency_sec": 3.4910370520010474,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45146,
@@ -660,7 +901,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five options",
       "correct": false,
-      "latency_sec": 6.95022096500179
+      "latency_sec": 6.95022096500179,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45147,
@@ -668,7 +912,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 5.47024063400022
+      "latency_sec": 5.47024063400022,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45148,
@@ -676,7 +923,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five options",
       "correct": false,
-      "latency_sec": 4.387338900000032
+      "latency_sec": 4.387338900000032,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45149,
@@ -684,7 +934,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 3.419249162001506
+      "latency_sec": 3.419249162001506,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45150,
@@ -692,7 +945,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.4468885400019644
+      "latency_sec": 3.4468885400019644,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45151,
@@ -700,7 +956,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) type 2 task",
       "correct": false,
-      "latency_sec": 15.676518525000574
+      "latency_sec": 15.676518525000574,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45152,
@@ -708,7 +967,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.443874237000273
+      "latency_sec": 3.443874237000273,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45153,
@@ -716,7 +978,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) type 2 task",
       "correct": false,
-      "latency_sec": 3.502745795998635
+      "latency_sec": 3.502745795998635,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45154,
@@ -724,7 +989,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 6.491375002999121
+      "latency_sec": 6.491375002999121,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45155,
@@ -732,7 +1000,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 12.594349974999204
+      "latency_sec": 12.594349974999204,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45156,
@@ -740,7 +1011,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4337575099998503
+      "latency_sec": 3.4337575099998503,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45157,
@@ -748,7 +1022,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the provided text and five options",
       "correct": false,
-      "latency_sec": 3.4235889999981737
+      "latency_sec": 3.4235889999981737,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45158,
@@ -756,7 +1033,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4441179140012537
+      "latency_sec": 3.4441179140012537,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45159,
@@ -764,7 +1044,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.7158587189987884
+      "latency_sec": 3.7158587189987884,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50635,
@@ -772,7 +1055,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.603839618001075
+      "latency_sec": 3.603839618001075,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50644,
@@ -780,7 +1066,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the provided definitions",
       "correct": false,
-      "latency_sec": 4.227017662000435
+      "latency_sec": 4.227017662000435,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50647,
@@ -788,7 +1077,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions of",
       "correct": false,
-      "latency_sec": 3.4679693170000974
+      "latency_sec": 3.4679693170000974,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50651,
@@ -796,7 +1088,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.4955212409986416
+      "latency_sec": 3.4955212409986416,
+      "jaccard": 0.25,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50657,
@@ -804,7 +1099,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 6.571169373000885
+      "latency_sec": 6.571169373000885,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50659,
@@ -812,7 +1110,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 3.600013207000302
+      "latency_sec": 3.600013207000302,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50660,
@@ -820,7 +1121,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 3.7205845409989706
+      "latency_sec": 3.7205845409989706,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50670,
@@ -828,7 +1132,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.5109156990001793
+      "latency_sec": 3.5109156990001793,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50672,
@@ -836,7 +1143,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.475345291000849
+      "latency_sec": 3.475345291000849,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50677,
@@ -844,7 +1154,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 3.48260750800182
+      "latency_sec": 3.48260750800182,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50679,
@@ -852,7 +1165,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the definitions provided",
       "correct": false,
-      "latency_sec": 8.17788537999877
+      "latency_sec": 8.17788537999877,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 60975,
@@ -860,7 +1176,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 5.417690009002399
+      "latency_sec": 5.417690009002399,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 45057,
@@ -868,7 +1187,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) Type 2 task",
       "correct": false,
-      "latency_sec": 3.4065469080014736
+      "latency_sec": 3.4065469080014736,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50439,
@@ -876,7 +1198,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4520650940030464
+      "latency_sec": 3.4520650940030464,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50639,
@@ -884,7 +1209,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 6.500255487000686
+      "latency_sec": 6.500255487000686,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 50665,
@@ -892,7 +1220,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) type 2 task",
       "correct": false,
-      "latency_sec": 12.62961402899964
+      "latency_sec": 12.62961402899964,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 54087,
@@ -900,7 +1231,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.456170690998988
+      "latency_sec": 3.456170690998988,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 58356,
@@ -908,7 +1242,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the provided definitions",
       "correct": false,
-      "latency_sec": 3.546782172998064
+      "latency_sec": 3.546782172998064,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 59296,
@@ -916,7 +1253,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) Type 2 task",
       "correct": false,
-      "latency_sec": 15.937454229999275
+      "latency_sec": 15.937454229999275,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 59495,
@@ -924,7 +1264,10 @@
       "pred": "1",
       "raw": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Solve an ЕГЭ (Russian Unified State Exam) Type 2 task",
       "correct": false,
-      "latency_sec": 3.459691585001565
+      "latency_sec": 3.459691585001565,
+      "jaccard": 0.5,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 59667,
@@ -932,7 +1275,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and five options.",
       "correct": false,
-      "latency_sec": 3.433020327000122
+      "latency_sec": 3.433020327000122,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 65168,
@@ -940,7 +1286,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five options",
       "correct": false,
-      "latency_sec": 15.556278326999745
+      "latency_sec": 15.556278326999745,
+      "jaccard": 0.0,
+      "pred_reparsed": "",
+      "invalid": true
     },
     {
       "id": 66795,
@@ -948,7 +1297,10 @@
       "pred": "2",
       "raw": "The user wants me to solve an EGE (Russian Unified State Exam) task of type 2.\nI need to analyze the text and the five highlighted",
       "correct": false,
-      "latency_sec": 3.4908105280010204
+      "latency_sec": 3.4908105280010204,
+      "jaccard": 0.3333333333333333,
+      "pred_reparsed": "",
+      "invalid": true
     }
   ]
 }
