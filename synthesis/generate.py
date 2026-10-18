@@ -236,7 +236,7 @@ def _parse_item(
 ) -> SyntheticItem:
     payload = _extract_json_object(raw)
     passage = str(payload.get("passage") or payload.get("text") or "")
-    options = [str(x) for x in list(payload["options"])]
+    options = [re.sub(r"^\s*\d+\.\s*", "", str(x)).strip() for x in list(payload["options"])]
     answer = "".join(ch for ch in str(payload["answer"]) if ch.isdigit())
     highlights = _validate_tip2(passage, options, answer, sense_pool)
     highlighted = payload.get("highlighted_words")
