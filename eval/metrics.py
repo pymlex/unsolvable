@@ -38,6 +38,22 @@ def exact_match(pred: str, gold: str) -> bool:
     return normalize_answer(pred) == gold_normalize(gold) and bool(gold_normalize(gold))
 
 
+def answer_sets(pred: str, gold: str) -> tuple[set[str], set[str]]:
+    """Digit sets for tip-2 answers after normalization."""
+    return set(normalize_answer(pred)), set(gold_normalize(gold))
+
+
+def answer_jaccard(pred: str, gold: str) -> float:
+    """Jaccard on digit sets: |P∩G| / |P∪G|. Empty-empty -> 0."""
+    p, g = answer_sets(pred, gold)
+    if not p and not g:
+        return 0.0
+    union = p | g
+    if not union:
+        return 0.0
+    return len(p & g) / len(union)
+
+
 def binomial_wilson_ci(
     successes: int,
     n: int,
@@ -83,17 +99,29 @@ def write_benchmark_table(
     acc: float,
     wilson: tuple[float, float],
     bootstrap: tuple[float, float],
+    mean_jaccard: float | None = None,
 ) -> None:
     """Write a one-row Markdown accuracy table."""
-    path = path if hasattr(path, "write_text") else path
     from pathlib import Path
 
     out = Path(path)
+    if mean_jaccard is None:
+        out.write_text(
+            (
+                f"| model | n | accuracy | Wilson 95% CI | bootstrap 95% CI |\n"
+                f"|---|---:|---:|---|---|\n"
+                f"| {model} | {n} | {acc:.4f} | "
+                f"[{wilson[0]:.4f}, {wilson[1]:.4f}] | "
+                f"[{bootstrap[0]:.4f}, {bootstrap[1]:.4f}] |\n"
+            ),
+            encoding="utf-8",
+        )
+        return
     out.write_text(
         (
-            f"| model | n | accuracy | Wilson 95% CI | bootstrap 95% CI |\n"
-            f"|---|---:|---:|---|---|\n"
-            f"| {model} | {n} | {acc:.4f} | "
+            f"| model | n | accuracy | mean Jaccard | Wilson 95% CI | bootstrap 95% CI |\n"
+            f"|---|---:|---:|---:|---|---|\n"
+            f"| {model} | {n} | {acc:.4f} | {mean_jaccard:.4f} | "
             f"[{wilson[0]:.4f}, {wilson[1]:.4f}] | "
             f"[{bootstrap[0]:.4f}, {bootstrap[1]:.4f}] |\n"
         ),

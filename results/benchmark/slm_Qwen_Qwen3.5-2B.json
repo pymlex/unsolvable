@@ -1,0 +1,1071 @@
+{
+  "summary": {
+    "dataset": "pymlex/reshuege-ru-2026",
+    "split": "train",
+    "model": "Qwen/Qwen3.5-2B",
+    "n_items": 116,
+    "temperature": 0,
+    "do_sample": false,
+    "protocol": "zero-edit-full-set",
+    "accuracy": 0.1896551724137931,
+    "n_correct": 22,
+    "wilson_95_ci": [
+      0.12871381870803608,
+      0.27049242670553275
+    ],
+    "bootstrap_95_ci": [
+      0.1206896551724138,
+      0.2672413793103448
+    ],
+    "device": "cuda",
+    "latency_sec_mean": 0.6155548512415094,
+    "created_at_utc": "2026-10-18T16:22:59.309778+00:00",
+    "mean_jaccard": 0.48017241379310344
+  },
+  "items": [
+    {
+      "id": 46255,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 1.1327693829989585,
+      "jaccard": 0.0
+    },
+    {
+      "id": 46284,
+      "gold": "25",
+      "pred": "25",
+      "raw": "25",
+      "correct": true,
+      "latency_sec": 0.5056465019988536,
+      "jaccard": 1.0
+    },
+    {
+      "id": 48122,
+      "gold": "134",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.511561144998268,
+      "jaccard": 0.25
+    },
+    {
+      "id": 48150,
+      "gold": "23",
+      "pred": "34",
+      "raw": "34",
+      "correct": false,
+      "latency_sec": 0.4914461480002501,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 49127,
+      "gold": "25",
+      "pred": "135",
+      "raw": "135",
+      "correct": false,
+      "latency_sec": 0.5784577740014356,
+      "jaccard": 0.25
+    },
+    {
+      "id": 49154,
+      "gold": "34",
+      "pred": "34",
+      "raw": "34",
+      "correct": true,
+      "latency_sec": 0.4950833850016352,
+      "jaccard": 1.0
+    },
+    {
+      "id": 49955,
+      "gold": "234",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5332080190019042,
+      "jaccard": 0.25
+    },
+    {
+      "id": 49984,
+      "gold": "35",
+      "pred": "35",
+      "raw": "35",
+      "correct": true,
+      "latency_sec": 0.49735115799921914,
+      "jaccard": 1.0
+    },
+    {
+      "id": 50204,
+      "gold": "35",
+      "pred": "235",
+      "raw": "235",
+      "correct": false,
+      "latency_sec": 0.6098420400012401,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 50264,
+      "gold": "125",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5085147370009508,
+      "jaccard": 0.25
+    },
+    {
+      "id": 50291,
+      "gold": "25",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5024654190019646,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 50318,
+      "gold": "13",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5087670970024192,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 51823,
+      "gold": "123",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5207875199994305,
+      "jaccard": 0.25
+    },
+    {
+      "id": 51850,
+      "gold": "25",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.503794210999331,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 52518,
+      "gold": "35",
+      "pred": "35",
+      "raw": "35",
+      "correct": true,
+      "latency_sec": 0.521074520998809,
+      "jaccard": 1.0
+    },
+    {
+      "id": 52545,
+      "gold": "35",
+      "pred": "34",
+      "raw": "34",
+      "correct": false,
+      "latency_sec": 0.5238087200013979,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 52950,
+      "gold": "35",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 3.8716552429978037,
+      "jaccard": 0.0
+    },
+    {
+      "id": 52977,
+      "gold": "35",
+      "pred": "35",
+      "raw": "35",
+      "correct": true,
+      "latency_sec": 0.8596921210009896,
+      "jaccard": 1.0
+    },
+    {
+      "id": 53296,
+      "gold": "45",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.8394062709994614,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 53323,
+      "gold": "15",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.8992972119995102,
+      "jaccard": 0.0
+    },
+    {
+      "id": 54169,
+      "gold": "14",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.8439147509998293,
+      "jaccard": 0.0
+    },
+    {
+      "id": 54210,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true,
+      "latency_sec": 0.8457138089979708,
+      "jaccard": 1.0
+    },
+    {
+      "id": 56079,
+      "gold": "14",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.8435793900025601,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 56496,
+      "gold": "124",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.85650310499841,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 56523,
+      "gold": "245",
+      "pred": "245",
+      "raw": "245",
+      "correct": true,
+      "latency_sec": 0.9439905789986369,
+      "jaccard": 1.0
+    },
+    {
+      "id": 57067,
+      "gold": "34",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.8263971930027765,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 57100,
+      "gold": "124",
+      "pred": "14",
+      "raw": "14",
+      "correct": false,
+      "latency_sec": 0.8867220610009099,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 57504,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5462416310001572,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 57532,
+      "gold": "235",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5249278500014043,
+      "jaccard": 0.25
+    },
+    {
+      "id": 58081,
+      "gold": "35",
+      "pred": "35",
+      "raw": "35",
+      "correct": true,
+      "latency_sec": 0.5419493989975308,
+      "jaccard": 1.0
+    },
+    {
+      "id": 59238,
+      "gold": "45",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5290647670008184,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 59265,
+      "gold": "234",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5252892800017435,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 59866,
+      "gold": "25",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5436179339994851,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 59897,
+      "gold": "15",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5180991509987507,
+      "jaccard": 0.0
+    },
+    {
+      "id": 60208,
+      "gold": "35",
+      "pred": "235",
+      "raw": "235",
+      "correct": false,
+      "latency_sec": 0.5838076150030247,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 60235,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true,
+      "latency_sec": 0.5132062179982313,
+      "jaccard": 1.0
+    },
+    {
+      "id": 60919,
+      "gold": "123",
+      "pred": "23",
+      "raw": "23",
+      "correct": false,
+      "latency_sec": 0.5341380350000691,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 60946,
+      "gold": "145",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5166633120024926,
+      "jaccard": 0.25
+    },
+    {
+      "id": 61487,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5334415990000707,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 61515,
+      "gold": "45",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5497674910002388,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 67112,
+      "gold": "25",
+      "pred": "235",
+      "raw": "235",
+      "correct": false,
+      "latency_sec": 0.5889825459998974,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 67139,
+      "gold": "345",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.49620488400250906,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45109,
+      "gold": "14",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5323478060017806,
+      "jaccard": 0.0
+    },
+    {
+      "id": 45110,
+      "gold": "15",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5094013460002316,
+      "jaccard": 0.0
+    },
+    {
+      "id": 45111,
+      "gold": "25",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5195259120009723,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45112,
+      "gold": "13",
+      "pred": "23",
+      "raw": "23",
+      "correct": false,
+      "latency_sec": 0.506138414999441,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45113,
+      "gold": "345",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5253143209993141,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45114,
+      "gold": "13",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5246232560020871,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45115,
+      "gold": "124",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5208373090026726,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45116,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true,
+      "latency_sec": 0.5263089410000248,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45117,
+      "gold": "125",
+      "pred": "23",
+      "raw": "23",
+      "correct": false,
+      "latency_sec": 0.5132293360002222,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45118,
+      "gold": "35",
+      "pred": "35",
+      "raw": "35",
+      "correct": true,
+      "latency_sec": 0.5323469270006171,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45119,
+      "gold": "15",
+      "pred": "135",
+      "raw": "135",
+      "correct": false,
+      "latency_sec": 0.6127564070011431,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45120,
+      "gold": "234",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5186361720006971,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45121,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true,
+      "latency_sec": 0.5273560019995784,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45122,
+      "gold": "35",
+      "pred": "35",
+      "raw": "35",
+      "correct": true,
+      "latency_sec": 0.5348447959986515,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45123,
+      "gold": "23",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5318225500013796,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45124,
+      "gold": "235",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5135924279966275,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45125,
+      "gold": "345",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5138457850007399,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45126,
+      "gold": "145",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5114327810006216,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45127,
+      "gold": "45",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.531859387003351,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45128,
+      "gold": "24",
+      "pred": "34",
+      "raw": "34",
+      "correct": false,
+      "latency_sec": 0.5163251730009506,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45129,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true,
+      "latency_sec": 0.5357189780006593,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45130,
+      "gold": "13",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5141574209992541,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45131,
+      "gold": "23",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5314122159979888,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45132,
+      "gold": "1235",
+      "pred": "25",
+      "raw": "25",
+      "correct": false,
+      "latency_sec": 0.5290046070003882,
+      "jaccard": 0.5
+    },
+    {
+      "id": 45133,
+      "gold": "25",
+      "pred": "25",
+      "raw": "25",
+      "correct": true,
+      "latency_sec": 0.5304229210014455,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45134,
+      "gold": "135",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5219869809989177,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45135,
+      "gold": "34",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5243595200008713,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45136,
+      "gold": "23",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.4803869120005402,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45137,
+      "gold": "34",
+      "pred": "345",
+      "raw": "345",
+      "correct": false,
+      "latency_sec": 0.5950761239982967,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45138,
+      "gold": "34",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5062321830009751,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45139,
+      "gold": "234",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5254702080019342,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45140,
+      "gold": "235",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5034874550001405,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45141,
+      "gold": "234",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5116506049998861,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45142,
+      "gold": "13",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5154204210011812,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45143,
+      "gold": "24",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5032057299977168,
+      "jaccard": 0.0
+    },
+    {
+      "id": 45144,
+      "gold": "124",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5031508460015175,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45145,
+      "gold": "12",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5223762690002332,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45146,
+      "gold": "34",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5120392999997421,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45147,
+      "gold": "125",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5075586330021906,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45148,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true,
+      "latency_sec": 0.48381881900058943,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45149,
+      "gold": "15",
+      "pred": "135",
+      "raw": "135",
+      "correct": false,
+      "latency_sec": 0.5758392499992624,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45150,
+      "gold": "134",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5269468890001008,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45151,
+      "gold": "35",
+      "pred": "35",
+      "raw": "35",
+      "correct": true,
+      "latency_sec": 0.5115670089980995,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45152,
+      "gold": "13",
+      "pred": "245",
+      "raw": "245",
+      "correct": false,
+      "latency_sec": 0.5714378060001764,
+      "jaccard": 0.0
+    },
+    {
+      "id": 45153,
+      "gold": "234",
+      "pred": "234",
+      "raw": "234",
+      "correct": true,
+      "latency_sec": 0.5880650649996824,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45154,
+      "gold": "14",
+      "pred": "345",
+      "raw": "345",
+      "correct": false,
+      "latency_sec": 0.5962006240006303,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45155,
+      "gold": "24",
+      "pred": "24",
+      "raw": "24",
+      "correct": true,
+      "latency_sec": 3.5278880129990284,
+      "jaccard": 1.0
+    },
+    {
+      "id": 45156,
+      "gold": "35",
+      "pred": "23",
+      "raw": "23",
+      "correct": false,
+      "latency_sec": 0.5099905290007882,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45157,
+      "gold": "145",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5123494719991868,
+      "jaccard": 0.25
+    },
+    {
+      "id": 45158,
+      "gold": "23",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.4920378659990092,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 45159,
+      "gold": "35",
+      "pred": "35",
+      "raw": "35",
+      "correct": true,
+      "latency_sec": 0.514641276000475,
+      "jaccard": 1.0
+    },
+    {
+      "id": 50635,
+      "gold": "123",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5124078020016896,
+      "jaccard": 0.25
+    },
+    {
+      "id": 50644,
+      "gold": "235",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5163233840030443,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 50647,
+      "gold": "123",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5143923180003185,
+      "jaccard": 0.25
+    },
+    {
+      "id": 50651,
+      "gold": "1234",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5334720999999263,
+      "jaccard": 0.2
+    },
+    {
+      "id": 50657,
+      "gold": "34",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5150755069989827,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 50659,
+      "gold": "34",
+      "pred": "34",
+      "raw": "34",
+      "correct": true,
+      "latency_sec": 0.522901300999365,
+      "jaccard": 1.0
+    },
+    {
+      "id": 50660,
+      "gold": "13",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5398926139969262,
+      "jaccard": 0.0
+    },
+    {
+      "id": 50670,
+      "gold": "234",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5286577089973434,
+      "jaccard": 0.25
+    },
+    {
+      "id": 50672,
+      "gold": "125",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5277647739967506,
+      "jaccard": 0.25
+    },
+    {
+      "id": 50677,
+      "gold": "23",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.5434276150008372,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 50679,
+      "gold": "23",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5342121739995491,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 60975,
+      "gold": "35",
+      "pred": "345",
+      "raw": "345",
+      "correct": false,
+      "latency_sec": 0.6076957210025284,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 45057,
+      "gold": "34",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5113501689993427,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 50439,
+      "gold": "345",
+      "pred": "345",
+      "raw": "345",
+      "correct": true,
+      "latency_sec": 0.5910726469992369,
+      "jaccard": 1.0
+    },
+    {
+      "id": 50639,
+      "gold": "134",
+      "pred": "345",
+      "raw": "345",
+      "correct": false,
+      "latency_sec": 0.5594117820000974,
+      "jaccard": 0.5
+    },
+    {
+      "id": 50665,
+      "gold": "235",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5138371760003793,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 54087,
+      "gold": "135",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.5118701079991297,
+      "jaccard": 0.6666666666666666
+    },
+    {
+      "id": 58356,
+      "gold": "45",
+      "pred": "25",
+      "raw": "25",
+      "correct": false,
+      "latency_sec": 0.5044143439990876,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 59296,
+      "gold": "234",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.4885698029975174,
+      "jaccard": 0.25
+    },
+    {
+      "id": 59495,
+      "gold": "14",
+      "pred": "24",
+      "raw": "24",
+      "correct": false,
+      "latency_sec": 0.4955730539986689,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 59667,
+      "gold": "45",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.4938198639974871,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 65168,
+      "gold": "34",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.512186620002467,
+      "jaccard": 0.3333333333333333
+    },
+    {
+      "id": 66795,
+      "gold": "235",
+      "pred": "35",
+      "raw": "35",
+      "correct": false,
+      "latency_sec": 0.512737934001052,
+      "jaccard": 0.6666666666666666
+    }
+  ]
+}

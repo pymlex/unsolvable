@@ -13,9 +13,10 @@ from tqdm.auto import tqdm
 
 import _bootstrap  # noqa: F401
 
-from constants import DATASET_ID, DATASET_SPLIT, MAX_NEW_TOKENS, SLM_MODEL_ID
+from constants import BATCH_SIZE, DATASET_ID, DATASET_SPLIT, MAX_NEW_TOKENS, SLM_MODEL_ID
 from eval.data import load_rows
 from eval.metrics import (
+    answer_jaccard,
     binomial_wilson_ci,
     bootstrap_ci,
     exact_match,
@@ -23,7 +24,7 @@ from eval.metrics import (
     normalize_answer,
     write_benchmark_table,
 )
-from eval.model_io import generate_tip2_answer, load_slm
+from eval.model_io import generate_tip2_answers_batch, load_slm
 from utils.paths import BENCHMARK_DIR, ensure_result_dirs
 
 
@@ -33,6 +34,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--split", default=DATASET_SPLIT)
     p.add_argument("--model", default=SLM_MODEL_ID)
     p.add_argument("--max-new-tokens", type=int, default=MAX_NEW_TOKENS)
+    p.add_argument("--batch-size", type=int, default=BATCH_SIZE)
     p.add_argument("--limit", type=int, default=0)
     p.add_argument("--device", default=None)
     p.add_argument("--out", default=None)
@@ -46,6 +48,7 @@ def run_benchmark_slm(
     split: str = DATASET_SPLIT,
     model_id: str = SLM_MODEL_ID,
     max_new_tokens: int = MAX_NEW_TOKENS,
+    batch_size: int = BATCH_SIZE,
     limit: int = 0,
     device: str | None = None,
     out: str | None = None,
@@ -58,36 +61,47 @@ def run_benchmark_slm(
         rows = rows[:limit]
 
     model, tokenizer, device_name = load_slm(model_id, device)
+    bs = max(1, int(batch_size))
 
     records = []
     correct_flags: list[bool] = []
     latencies: list[float] = []
-    for row in tqdm(rows, desc="benchmark-slm"):
+    jaccards: list[float] = []
+
+    for start in tqdm(range(0, len(rows), bs), desc="benchmark-slm"):
+        batch = rows[start : start + bs]
         started = time.perf_counter()
-        raw = generate_tip2_answer(
-            model, tokenizer, device_name, row, max_new_tokens=max_new_tokens
+        raws = generate_tip2_answers_batch(
+            model, tokenizer, device_name, batch, max_new_tokens=max_new_tokens
         )
-        latencies.append(time.perf_counter() - started)
-        pred = normalize_answer(raw)
-        gold = gold_normalize(row["answer"])
-        ok = exact_match(raw, row["answer"])
-        correct_flags.append(ok)
-        records.append(
-            {
-                "id": row["id"],
-                "gold": gold,
-                "pred": pred,
-                "raw": raw,
-                "correct": ok,
-                "latency_sec": latencies[-1],
-            }
-        )
+        batch_elapsed = time.perf_counter() - started
+        per_item = batch_elapsed / max(1, len(batch))
+        for row, raw in zip(batch, raws):
+            latencies.append(per_item)
+            pred = normalize_answer(raw)
+            gold = gold_normalize(row["answer"])
+            ok = exact_match(raw, row["answer"])
+            jac = answer_jaccard(pred, gold)
+            correct_flags.append(ok)
+            jaccards.append(jac)
+            records.append(
+                {
+                    "id": row["id"],
+                    "gold": gold,
+                    "pred": pred,
+                    "raw": raw,
+                    "correct": ok,
+                    "jaccard": jac,
+                    "latency_sec": per_item,
+                }
+            )
 
     n = len(correct_flags)
     successes = int(sum(correct_flags))
     acc, wilson_lo, wilson_hi = binomial_wilson_ci(successes, n)
     _, boot_lo, boot_hi = bootstrap_ci(correct_flags, seed=seed)
     latency_mean = float(sum(latencies) / max(1, len(latencies)))
+    mean_j = float(sum(jaccards) / max(1, len(jaccards)))
 
     summary = {
         "dataset": dataset,
@@ -99,9 +113,11 @@ def run_benchmark_slm(
         "protocol": "zero-edit-full-set",
         "accuracy": acc,
         "n_correct": successes,
+        "mean_jaccard": mean_j,
         "wilson_95_ci": [wilson_lo, wilson_hi],
         "bootstrap_95_ci": [boot_lo, boot_hi],
         "device": device_name,
+        "batch_size": bs,
         "latency_sec_mean": latency_mean,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
     }
@@ -118,6 +134,7 @@ def run_benchmark_slm(
         acc,
         (wilson_lo, wilson_hi),
         (boot_lo, boot_hi),
+        mean_jaccard=mean_j,
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return out_path
@@ -130,6 +147,7 @@ def main() -> None:
         split=args.split,
         model_id=args.model,
         max_new_tokens=args.max_new_tokens,
+        batch_size=args.batch_size,
         limit=args.limit,
         device=args.device,
         out=args.out,

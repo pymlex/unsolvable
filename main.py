@@ -27,6 +27,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--step", choices=STEPS, default="benchmark-slm")
     parser.add_argument("--limit", type=int, default=0, help="Optional item cap for smoke runs")
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=None,
+        help="SLM generate batch size (default BATCH_SIZE=8 from env)",
+    )
     parser.add_argument("--dry-run", action="store_true", help="GRPO dry-run only")
     parser.add_argument("--skip-judge", action="store_true")
     parser.add_argument("--n-synth", type=int, default=None)
@@ -41,7 +47,10 @@ def main() -> None:
     if args.step in {"benchmark-slm", "all"}:
         from eval.benchmark_slm import run_benchmark_slm
 
-        run_benchmark_slm(limit=limit)
+        kwargs = {"limit": limit}
+        if args.batch_size is not None:
+            kwargs["batch_size"] = args.batch_size
+        run_benchmark_slm(**kwargs)
 
     if args.step in {"benchmark-deepseek", "all"}:
         from eval.benchmark_deepseek import run_benchmark_deepseek

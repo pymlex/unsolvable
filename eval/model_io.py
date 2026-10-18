@@ -97,3 +97,60 @@ def generate_tip2_answer(
         max_new_tokens=max_new_tokens,
         do_sample=False,
     )
+
+
+def _row_prompt(tokenizer, row: dict) -> str:
+    messages = build_messages(row)
+    if hasattr(tokenizer, "apply_chat_template") and tokenizer.chat_template:
+        import inspect
+
+        kwargs = {
+            "tokenize": False,
+            "add_generation_prompt": True,
+        }
+        params = inspect.signature(tokenizer.apply_chat_template).parameters
+        if "enable_thinking" in params:
+            kwargs["enable_thinking"] = False
+        return tokenizer.apply_chat_template(messages, **kwargs)
+    return messages[0]["content"] + "\n\n" + messages[1]["content"]
+
+
+def generate_tip2_answers_batch(
+    model,
+    tokenizer,
+    device: str,
+    rows: list[dict],
+    max_new_tokens: int = 32,
+) -> list[str]:
+    """Greedy tip-2 solve for a batch of items (left-padded)."""
+    import torch
+
+    if not rows:
+        return []
+    if len(rows) == 1:
+        return [generate_tip2_answer(model, tokenizer, device, rows[0], max_new_tokens)]
+
+    prompts = [_row_prompt(tokenizer, row) for row in rows]
+    pad_side = getattr(tokenizer, "padding_side", "right")
+    tokenizer.padding_side = "left"
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    inputs = tokenizer(prompts, return_tensors="pt", padding=True)
+    target = model.device if hasattr(model, "device") else device
+    inputs = {k: v.to(target) for k, v in inputs.items()}
+    gen_kwargs = {
+        "max_new_tokens": max_new_tokens,
+        "do_sample": False,
+        "pad_token_id": tokenizer.pad_token_id or tokenizer.eos_token_id,
+        "temperature": None,
+        "top_p": None,
+    }
+    with torch.no_grad():
+        out = model.generate(**inputs, **gen_kwargs)
+    tokenizer.padding_side = pad_side
+    prompt_len = inputs["input_ids"].shape[-1]
+    texts = []
+    for seq in out:
+        gen = seq[prompt_len:]
+        texts.append(tokenizer.decode(gen, skip_special_tokens=True).strip())
+    return texts

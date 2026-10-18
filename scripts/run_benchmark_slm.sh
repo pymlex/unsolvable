@@ -24,13 +24,15 @@ export TRANSFORMERS_CACHE="${TRANSFORMERS_CACHE:-$HF_HOME}"
 export HUGGINGFACE_HUB_CACHE="${HUGGINGFACE_HUB_CACHE:-$HF_HOME}"
 
 LIMIT="${1:-0}"
+BATCH_SIZE="${BATCH_SIZE:-8}"
 
 echo "SLM_MODEL_ID=${SLM_MODEL_ID:-Qwen/Qwen3.5-2B}"
+echo "BATCH_SIZE=${BATCH_SIZE}"
 echo "Dataset tip-2 116 → results/benchmark/"
 if [ "$LIMIT" != "0" ]; then
-  python main.py --step benchmark-slm --limit "$LIMIT"
+  python main.py --step benchmark-slm --limit "$LIMIT" --batch-size "$BATCH_SIZE"
 else
-  python main.py --step benchmark-slm
+  python main.py --step benchmark-slm --batch-size "$BATCH_SIZE"
 fi
 
 echo "Done. Results:"
