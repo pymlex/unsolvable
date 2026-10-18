@@ -12,9 +12,30 @@ if [ ! -f .env ]; then
   echo "Created .env from .env.example — set HF_TOKEN (and ZVENOAI_API_KEY for DeepSeek steps)"
 fi
 
+have_skip_apt_tools() {
+  command -v python3 >/dev/null 2>&1 && command -v curl >/dev/null 2>&1
+}
+
 if command -v apt-get >/dev/null 2>&1 && [ "$(id -u)" -eq 0 ]; then
-  apt-get update -qq
-  apt-get install -y -qq git build-essential curl ca-certificates
+  if have_skip_apt_tools; then
+    echo "apt: python3 and curl already present — skipping apt"
+  else
+    echo "apt: updating package lists (non-fatal if NVIDIA key warnings appear)..."
+    set +e
+    apt-get update
+    update_rc=$?
+    if [ "$update_rc" -eq 0 ]; then
+      echo "apt: installing git build-essential curl ca-certificates..."
+      apt-get install -y git build-essential curl ca-certificates
+      install_rc=$?
+    else
+      install_rc=1
+    fi
+    set -e
+    if [ "$update_rc" -ne 0 ] || [ "$install_rc" -ne 0 ]; then
+      echo "apt failed, continuing with venv/pip"
+    fi
+  fi
 fi
 
 PYTHON_BIN="${PYTHON_BIN:-}"
@@ -36,12 +57,21 @@ bootstrap_pip() {
   export PATH="${HOME}/.local/bin:${PATH}"
 }
 
+pip_user_install() {
+  if "$PYTHON_BIN" -m pip install --help 2>/dev/null | grep -q -- '--break-system-packages'; then
+    "$PYTHON_BIN" -m pip install -q --user --break-system-packages "$@"
+  else
+    "$PYTHON_BIN" -m pip install -q --user "$@"
+  fi
+}
+
 create_venv() {
-  if [ -x "$VENV_DIR/bin/python" ]; then
+  if [ -x "$VENV_DIR/bin/python" ] && "$VENV_DIR/bin/python" -c "import sys" 2>/dev/null; then
     echo "Reusing venv at $VENV_DIR"
     return 0
   fi
 
+  rm -rf "$VENV_DIR"
   echo "Creating venv at $VENV_DIR"
   if "$PYTHON_BIN" -m venv "$VENV_DIR" 2>/tmp/unsolvable-venv.err; then
     return 0
@@ -52,7 +82,7 @@ create_venv() {
   rm -rf "$VENV_DIR"
   bootstrap_pip
   export PATH="${HOME}/.local/bin:${PATH}"
-  "$PYTHON_BIN" -m pip install -q --user virtualenv
+  pip_user_install virtualenv
   "$PYTHON_BIN" -m virtualenv -p "$PYTHON_BIN" "$VENV_DIR"
 }
 
@@ -60,9 +90,12 @@ create_venv
 
 source "$VENV_DIR/bin/activate"
 
-python -m pip install -q -U pip setuptools wheel
-python -m pip install -q "torch>=2.5.0" --index-url "$TORCH_CUDA_INDEX"
-python -m pip install -q -r requirements.txt
+echo "pip: upgrading pip setuptools wheel..."
+python -m pip install -U pip setuptools wheel
+echo "pip: installing torch from $TORCH_CUDA_INDEX ..."
+python -m pip install "torch>=2.5.0" --index-url "$TORCH_CUDA_INDEX"
+echo "pip: installing requirements.txt ..."
+python -m pip install -r requirements.txt
 
 if [ "$(id -u)" -eq 0 ] && [ ! -e /root/venv ]; then
   ln -s "$VENV_DIR" /root/venv
