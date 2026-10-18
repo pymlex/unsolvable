@@ -1,0 +1,9 @@
+{
+  "n_total": 500,
+  "n_bad": 0,
+  "n_good": 500,
+  "bad_pct": 0.0,
+  "reasons": {},
+  "bad_examples": [],
+  "verdict": "OK"
+}
