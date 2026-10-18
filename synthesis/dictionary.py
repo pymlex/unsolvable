@@ -55,6 +55,27 @@ def _strip_tags(chunk: str) -> str:
     return chunk
 
 
+def is_weak_gloss(text: str) -> bool:
+    """Reject meta cross-refs and truncated dictionary stubs (not usable EGE options)."""
+    body = re.sub(r"^[А-ЯЁA-Za-z\.\s]+\s*", "", (text or "").strip())
+    body = body.strip()
+    if len(body) < 12:
+        return True
+    if re.match(r"(?i)то же,? что\b", body):
+        return True
+    if re.match(r"(?i)жидк\w*\s*\(в\s+\d", body):
+        return True
+    if re.search(r"(?i)\(\s*в\s+\d+[-\d]*\s*знач", body) and len(body) < 40:
+        return True
+    if re.match(r"(?i)см\.\s", body) and len(body) < 40:
+        return True
+    if re.search(r"(?i)\d-\d\s*зн\b", body):
+        return True
+    if body.endswith(("...", "…")) and len(body) < 40:
+        return True
+    return False
+
+
 def _clean_gloss(raw: str) -> str:
     body = _strip_tags(raw)
     body = body.replace("□", " ").replace("||", ". ")
@@ -98,7 +119,7 @@ def extract_senses_from_udarenieru_html(html: str) -> list[str]:
                 continue
             for m in re.finditer(r"<b>\s*(\d+)\.\s*</b>\s*([\s\S]*)", para):
                 gloss = _clean_gloss(m.group(2))
-                if len(gloss) >= 12 and gloss not in senses:
+                if len(gloss) >= 12 and not is_weak_gloss(gloss) and gloss not in senses:
                     senses.append(gloss)
             if re.search(r"<b>\s*\d+\.\s*</b>", para):
                 continue
@@ -114,12 +135,12 @@ def extract_senses_from_udarenieru_html(html: str) -> list[str]:
                 )
             if m_inline:
                 gloss = _clean_gloss(m_inline.group(1))
-                if len(gloss) >= 12 and gloss not in senses:
+                if len(gloss) >= 12 and not is_weak_gloss(gloss) and gloss not in senses:
                     senses.append(gloss)
             else:
                 for m in re.finditer(r"(?:^|\s)(\d+)\.\s+([А-ЯЁа-яёA-Za-z][^.]{8,200})", plain_head):
                     gloss = _clean_gloss(m.group(2))
-                    if len(gloss) >= 12 and gloss not in senses:
+                    if len(gloss) >= 12 and not is_weak_gloss(gloss) and gloss not in senses:
                         senses.append(gloss)
     return senses
 
@@ -133,5 +154,9 @@ def fetch_senses_udarenieru(lemma: str, max_senses: int = 32) -> tuple[str, ...]
 
 
 def fetch_senses(lemma: str, max_senses: int = 32) -> list[str]:
-    """Public entry: udarenieru.ru senses for ``lemma``."""
-    return list(fetch_senses_udarenieru(lemma, max_senses=max_senses))
+    """Public entry: udarenieru.ru senses for ``lemma`` (weak meta glosses dropped)."""
+    return [
+        g
+        for g in fetch_senses_udarenieru(lemma, max_senses=max_senses)
+        if not is_weak_gloss(g)
+    ][:max_senses]

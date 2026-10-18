@@ -39,7 +39,7 @@ from eval.data import load_rows
 from eval.prompt import FIXED_INSTRUCTION, format_options, item_text
 from eval.zveno_client import chat_completion, completion_text, has_zveno_key
 from schemas.models import SyntheticItem
-from synthesis.dictionary import UDARENIE_RU_DOC, fetch_senses
+from synthesis.dictionary import UDARENIE_RU_DOC, fetch_senses, is_weak_gloss
 from synthesis.lemmas import sample_lemmas
 from utils.paths import SYNTHESIS_DIR, ensure_result_dirs
 
@@ -236,6 +236,8 @@ def _validate_tip2(
     if len(set(digits)) != len(digits):
         raise ValueError(f"duplicate answer digits: {answer}")
     for opt in options:
+        if is_weak_gloss(str(opt)):
+            raise ValueError(f"weak/meta dictionary gloss rejected: {opt[:80]!r}")
         if not _gloss_matches_pool(str(opt), sense_pool):
             raise ValueError(f"option not literal dictionary gloss: {opt[:80]!r}")
     return [h.strip() for h in highlights]

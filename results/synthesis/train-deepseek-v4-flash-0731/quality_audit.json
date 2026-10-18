@@ -1,48 +1,23 @@
 {
   "n_total": 500,
-  "n_bad": 1,
-  "n_good": 499,
-  "bad_pct": 0.2,
-  "reasons": {
-    "meta_truncated_gloss": 1
-  },
+  "n_bad": 0,
+  "n_good": 500,
+  "bad_pct": 0.0,
+  "reasons": {},
   "checks": {
     "all_five_star_highlights": true,
     "answer_len_2_or_3": true,
     "no_lorem_todo_placeholder": true,
     "no_identical_templates_ge3": true,
-    "sampled": 20
+    "regenerated_ids": [
+      800125,
+      800152,
+      800491
+    ]
   },
-  "soft_crossref_gloss_rows": [
-    {
-      "id": 800152,
-      "opt": "ДОГОВОР. То же, что: договорённость.",
-      "note": "short_crossref_udarenieru_style_not_stub"
-    },
-    {
-      "id": 800491,
-      "opt": "То же, что: метрополитен",
-      "note": "short_crossref_udarenieru_style_not_stub"
-    }
-  ],
-  "bad_examples": [
-    {
-      "id": 800125,
-      "issues": [
-        "meta_truncated_gloss"
-      ],
-      "passage_head": "Осенью прошлого года я впервые столкнулся с затяжной простудой, которая никак не проходила. Врач назначил мне новый **препарат**, который до",
-      "opts": [
-        "ПРЕПАРАТ. Продукт лабораторного или фабричного изготовления лечебного или другого назначения.",
-        "ТЕРАПИЯ. Раздел медицины, изучающий внутренние болезни, их профилактику и лечение.",
-        "СРЕДСТВО. То, что служит какой-л. цели, необходимо для достижения, осуществления чего-л.",
-        "ЖИДКОСТЬ. жидкий (в 3 и 4 знач.)",
-        "ЗАБОЛЕВАНИЕ. Болезнь, недуг."
-      ],
-      "answer": "135"
-    }
-  ],
+  "soft_crossref_gloss_rows": [],
+  "bad_examples": [],
   "verdict": "OK",
-  "note": "1 meta-truncated gloss (ЖИДКОСТЬ. жидкий (в 3 и 4 знач.)) — 0.2% << 5%; filter that row only if regenerating. Soft crossref glosses are real udarenieru-style, not stubs.",
-  "audited_at_utc": "2026-10-18T20:54:03.076333+00:00"
+  "note": "Replaced 800125/800152/800491 in place. Pipeline now rejects weak meta/crossref glosses at fetch+validate.",
+  "audited_at_utc": "2026-10-18T21:45:29.260798+00:00"
 }
