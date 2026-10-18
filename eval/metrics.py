@@ -48,12 +48,14 @@ def normalize_answer(text: str) -> str:
     m = re.search(r"(?i)(?:ответ|answer)\s*[:：]?\s*([1-5]{1,5})\s*$", text)
     if m:
         return _digits_1_to_5(m.group(1))
+    text = re.sub(r"(?i)\btype\s*[1-5]\b", " ", text)
+    text = re.sub(r"(?i)\bтипа\s*[1-5]\b", " ", text)
     if len(text) > 40 and sum(ch.isdigit() for ch in text) <= 2:
         return ""
-    m = ANSWER_DIGITS_RE.search(text)
-    if not m:
+    matches = list(ANSWER_DIGITS_RE.finditer(text))
+    if not matches:
         return ""
-    return _digits_1_to_5(m.group(0))
+    return _digits_1_to_5(matches[-1].group(0))
 
 
 def gold_normalize(answer: str) -> str:

@@ -35,10 +35,12 @@ source .venv/bin/activate
 bash scripts/run_benchmark_slm.sh
 ```
 
-Equivalent one-liner after install:
+Chat template uses `enable_thinking=False` for Qwen3 / 3.5. Keep `MAX_NEW_TOKENS=32` for short digit answers. If a thinking model still emits preamble, try `MAX_NEW_TOKENS=64`.
+
+Qwen3.5-4B re-run on Clore:
 
 ```bash
-python main.py --step benchmark-slm
+cd /root/unsolvable && git pull && source .venv/bin/activate && SLM_MODEL_ID=Qwen/Qwen3.5-4B BATCH_SIZE=4 bash scripts/run_benchmark_slm.sh
 ```
 
 Smoke run with a small cap:
@@ -53,6 +55,7 @@ Results land under `results/benchmark/`:
 |---|---|
 | `results/benchmark/slm_Qwen_Qwen3.5-2B.json` | per-item preds + summary |
 | `results/benchmark/slm_Qwen_Qwen3.5-2B.md` | accuracy table with Wilson / bootstrap CI |
+| `results/benchmark/slm_Qwen_Qwen3.5-4B.json` | 4B run (re-run after thinking-off fix) |
 
 ### 3. Other pipeline steps
 
