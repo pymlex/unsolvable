@@ -11,10 +11,21 @@
 
 Temperature 0, numeric answers only, exact match on all tip-2 items from `pymlex/reshuege-ru-2026`. Wilson and bootstrap 95% CI. Artefacts under `results/benchmark/`.
 
+On Clore Ubuntu Jupyter after `bash scripts/install_ubuntu_jupyter.sh`:
+
+```bash
+source .venv/bin/activate
+bash scripts/run_benchmark_slm.sh
+```
+
+Or via `main.py`:
+
 ```bash
 python main.py --step benchmark-slm
 python main.py --step benchmark-deepseek
 ```
+
+SLM outputs: `results/benchmark/slm_Qwen_Qwen3.5-2B.json` and the matching `.md` table.
 
 ## Same-SLM training loop
 
