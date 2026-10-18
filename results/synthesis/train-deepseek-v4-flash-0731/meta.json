@@ -18,11 +18,15 @@
   "created_at_utc": "2026-10-18T20:50:33.534954+00:00",
   "temperature": 0.3,
   "fewshot_k": 3,
-  "hf_push": "python scripts/push_synthesis_hf.py --local results/synthesis/train-deepseek-v4-flash-0731/train.jsonl --repo pymlex/reshuege-ru-2026 --config-name train-deepseek-v4-flash-0731",
+  "hf_push": "python scripts/push_synthesis_hf.py --local results/synthesis/train-deepseek-v4-flash-0731/train.jsonl --repo pymlex/reshuege-ru-2026 --config-name train-deepseek-v4-flash",
   "regenerated_ids": [
     800125,
     800152,
     800491
   ],
-  "regenerated_at_utc": "2026-10-18T21:44:19.849170+00:00"
+  "regenerated_at_utc": "2026-10-18T21:44:19.849170+00:00",
+  "hf_repo": "pymlex/reshuege-ru-2026",
+  "hf_config": "train-deepseek-v4-flash",
+  "hf_split": "train",
+  "hf_pushed_at_utc": "2026-10-18T21:47:57.787517+00:00"
 }

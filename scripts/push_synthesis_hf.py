@@ -24,7 +24,7 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--local", type=Path, required=True)
     p.add_argument("--repo", default="pymlex/reshuege-ru-2026")
-    p.add_argument("--config-name", default="train-deepseek-v4-flash-0731")
+    p.add_argument("--config-name", default="train-deepseek-v4-flash")
     p.add_argument("--split", default="train")
     args = p.parse_args()
 
