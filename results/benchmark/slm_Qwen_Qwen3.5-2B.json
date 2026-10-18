@@ -19,8 +19,7 @@
     ],
     "device": "cuda",
     "latency_sec_mean": 0.6155548512415094,
-    "created_at_utc": "2026-10-18T16:22:59.309778+00:00",
-    "mean_jaccard": 0.48017241379310344
+    "created_at_utc": "2026-10-18T16:22:59.309778+00:00"
   },
   "items": [
     {
@@ -29,8 +28,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 1.1327693829989585,
-      "jaccard": 0.0
+      "latency_sec": 1.1327693829989585
     },
     {
       "id": 46284,
@@ -38,8 +36,7 @@
       "pred": "25",
       "raw": "25",
       "correct": true,
-      "latency_sec": 0.5056465019988536,
-      "jaccard": 1.0
+      "latency_sec": 0.5056465019988536
     },
     {
       "id": 48122,
@@ -47,8 +44,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.511561144998268,
-      "jaccard": 0.25
+      "latency_sec": 0.511561144998268
     },
     {
       "id": 48150,
@@ -56,8 +52,7 @@
       "pred": "34",
       "raw": "34",
       "correct": false,
-      "latency_sec": 0.4914461480002501,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.4914461480002501
     },
     {
       "id": 49127,
@@ -65,8 +60,7 @@
       "pred": "135",
       "raw": "135",
       "correct": false,
-      "latency_sec": 0.5784577740014356,
-      "jaccard": 0.25
+      "latency_sec": 0.5784577740014356
     },
     {
       "id": 49154,
@@ -74,8 +68,7 @@
       "pred": "34",
       "raw": "34",
       "correct": true,
-      "latency_sec": 0.4950833850016352,
-      "jaccard": 1.0
+      "latency_sec": 0.4950833850016352
     },
     {
       "id": 49955,
@@ -83,8 +76,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5332080190019042,
-      "jaccard": 0.25
+      "latency_sec": 0.5332080190019042
     },
     {
       "id": 49984,
@@ -92,8 +84,7 @@
       "pred": "35",
       "raw": "35",
       "correct": true,
-      "latency_sec": 0.49735115799921914,
-      "jaccard": 1.0
+      "latency_sec": 0.49735115799921914
     },
     {
       "id": 50204,
@@ -101,8 +92,7 @@
       "pred": "235",
       "raw": "235",
       "correct": false,
-      "latency_sec": 0.6098420400012401,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.6098420400012401
     },
     {
       "id": 50264,
@@ -110,8 +100,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5085147370009508,
-      "jaccard": 0.25
+      "latency_sec": 0.5085147370009508
     },
     {
       "id": 50291,
@@ -119,8 +108,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5024654190019646,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5024654190019646
     },
     {
       "id": 50318,
@@ -128,8 +116,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5087670970024192,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5087670970024192
     },
     {
       "id": 51823,
@@ -137,8 +124,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5207875199994305,
-      "jaccard": 0.25
+      "latency_sec": 0.5207875199994305
     },
     {
       "id": 51850,
@@ -146,8 +132,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.503794210999331,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.503794210999331
     },
     {
       "id": 52518,
@@ -155,8 +140,7 @@
       "pred": "35",
       "raw": "35",
       "correct": true,
-      "latency_sec": 0.521074520998809,
-      "jaccard": 1.0
+      "latency_sec": 0.521074520998809
     },
     {
       "id": 52545,
@@ -164,8 +148,7 @@
       "pred": "34",
       "raw": "34",
       "correct": false,
-      "latency_sec": 0.5238087200013979,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5238087200013979
     },
     {
       "id": 52950,
@@ -173,8 +156,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 3.8716552429978037,
-      "jaccard": 0.0
+      "latency_sec": 3.8716552429978037
     },
     {
       "id": 52977,
@@ -182,8 +164,7 @@
       "pred": "35",
       "raw": "35",
       "correct": true,
-      "latency_sec": 0.8596921210009896,
-      "jaccard": 1.0
+      "latency_sec": 0.8596921210009896
     },
     {
       "id": 53296,
@@ -191,8 +172,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.8394062709994614,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.8394062709994614
     },
     {
       "id": 53323,
@@ -200,8 +180,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.8992972119995102,
-      "jaccard": 0.0
+      "latency_sec": 0.8992972119995102
     },
     {
       "id": 54169,
@@ -209,8 +188,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.8439147509998293,
-      "jaccard": 0.0
+      "latency_sec": 0.8439147509998293
     },
     {
       "id": 54210,
@@ -218,8 +196,7 @@
       "pred": "24",
       "raw": "24",
       "correct": true,
-      "latency_sec": 0.8457138089979708,
-      "jaccard": 1.0
+      "latency_sec": 0.8457138089979708
     },
     {
       "id": 56079,
@@ -227,8 +204,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.8435793900025601,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.8435793900025601
     },
     {
       "id": 56496,
@@ -236,8 +212,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.85650310499841,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.85650310499841
     },
     {
       "id": 56523,
@@ -245,8 +220,7 @@
       "pred": "245",
       "raw": "245",
       "correct": true,
-      "latency_sec": 0.9439905789986369,
-      "jaccard": 1.0
+      "latency_sec": 0.9439905789986369
     },
     {
       "id": 57067,
@@ -254,8 +228,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.8263971930027765,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.8263971930027765
     },
     {
       "id": 57100,
@@ -263,8 +236,7 @@
       "pred": "14",
       "raw": "14",
       "correct": false,
-      "latency_sec": 0.8867220610009099,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.8867220610009099
     },
     {
       "id": 57504,
@@ -272,8 +244,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5462416310001572,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5462416310001572
     },
     {
       "id": 57532,
@@ -281,8 +252,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5249278500014043,
-      "jaccard": 0.25
+      "latency_sec": 0.5249278500014043
     },
     {
       "id": 58081,
@@ -290,8 +260,7 @@
       "pred": "35",
       "raw": "35",
       "correct": true,
-      "latency_sec": 0.5419493989975308,
-      "jaccard": 1.0
+      "latency_sec": 0.5419493989975308
     },
     {
       "id": 59238,
@@ -299,8 +268,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5290647670008184,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5290647670008184
     },
     {
       "id": 59265,
@@ -308,8 +276,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5252892800017435,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5252892800017435
     },
     {
       "id": 59866,
@@ -317,8 +284,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5436179339994851,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5436179339994851
     },
     {
       "id": 59897,
@@ -326,8 +292,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5180991509987507,
-      "jaccard": 0.0
+      "latency_sec": 0.5180991509987507
     },
     {
       "id": 60208,
@@ -335,8 +300,7 @@
       "pred": "235",
       "raw": "235",
       "correct": false,
-      "latency_sec": 0.5838076150030247,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5838076150030247
     },
     {
       "id": 60235,
@@ -344,8 +308,7 @@
       "pred": "24",
       "raw": "24",
       "correct": true,
-      "latency_sec": 0.5132062179982313,
-      "jaccard": 1.0
+      "latency_sec": 0.5132062179982313
     },
     {
       "id": 60919,
@@ -353,8 +316,7 @@
       "pred": "23",
       "raw": "23",
       "correct": false,
-      "latency_sec": 0.5341380350000691,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5341380350000691
     },
     {
       "id": 60946,
@@ -362,8 +324,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5166633120024926,
-      "jaccard": 0.25
+      "latency_sec": 0.5166633120024926
     },
     {
       "id": 61487,
@@ -371,8 +332,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5334415990000707,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5334415990000707
     },
     {
       "id": 61515,
@@ -380,8 +340,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5497674910002388,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5497674910002388
     },
     {
       "id": 67112,
@@ -389,8 +348,7 @@
       "pred": "235",
       "raw": "235",
       "correct": false,
-      "latency_sec": 0.5889825459998974,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5889825459998974
     },
     {
       "id": 67139,
@@ -398,8 +356,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.49620488400250906,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.49620488400250906
     },
     {
       "id": 45109,
@@ -407,8 +364,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5323478060017806,
-      "jaccard": 0.0
+      "latency_sec": 0.5323478060017806
     },
     {
       "id": 45110,
@@ -416,8 +372,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5094013460002316,
-      "jaccard": 0.0
+      "latency_sec": 0.5094013460002316
     },
     {
       "id": 45111,
@@ -425,8 +380,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5195259120009723,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5195259120009723
     },
     {
       "id": 45112,
@@ -434,8 +388,7 @@
       "pred": "23",
       "raw": "23",
       "correct": false,
-      "latency_sec": 0.506138414999441,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.506138414999441
     },
     {
       "id": 45113,
@@ -443,8 +396,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5253143209993141,
-      "jaccard": 0.25
+      "latency_sec": 0.5253143209993141
     },
     {
       "id": 45114,
@@ -452,8 +404,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5246232560020871,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5246232560020871
     },
     {
       "id": 45115,
@@ -461,8 +412,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5208373090026726,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5208373090026726
     },
     {
       "id": 45116,
@@ -470,8 +420,7 @@
       "pred": "24",
       "raw": "24",
       "correct": true,
-      "latency_sec": 0.5263089410000248,
-      "jaccard": 1.0
+      "latency_sec": 0.5263089410000248
     },
     {
       "id": 45117,
@@ -479,8 +428,7 @@
       "pred": "23",
       "raw": "23",
       "correct": false,
-      "latency_sec": 0.5132293360002222,
-      "jaccard": 0.25
+      "latency_sec": 0.5132293360002222
     },
     {
       "id": 45118,
@@ -488,8 +436,7 @@
       "pred": "35",
       "raw": "35",
       "correct": true,
-      "latency_sec": 0.5323469270006171,
-      "jaccard": 1.0
+      "latency_sec": 0.5323469270006171
     },
     {
       "id": 45119,
@@ -497,8 +444,7 @@
       "pred": "135",
       "raw": "135",
       "correct": false,
-      "latency_sec": 0.6127564070011431,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.6127564070011431
     },
     {
       "id": 45120,
@@ -506,8 +452,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5186361720006971,
-      "jaccard": 0.25
+      "latency_sec": 0.5186361720006971
     },
     {
       "id": 45121,
@@ -515,8 +460,7 @@
       "pred": "24",
       "raw": "24",
       "correct": true,
-      "latency_sec": 0.5273560019995784,
-      "jaccard": 1.0
+      "latency_sec": 0.5273560019995784
     },
     {
       "id": 45122,
@@ -524,8 +468,7 @@
       "pred": "35",
       "raw": "35",
       "correct": true,
-      "latency_sec": 0.5348447959986515,
-      "jaccard": 1.0
+      "latency_sec": 0.5348447959986515
     },
     {
       "id": 45123,
@@ -533,8 +476,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5318225500013796,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5318225500013796
     },
     {
       "id": 45124,
@@ -542,8 +484,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5135924279966275,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5135924279966275
     },
     {
       "id": 45125,
@@ -551,8 +492,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5138457850007399,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5138457850007399
     },
     {
       "id": 45126,
@@ -560,8 +500,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5114327810006216,
-      "jaccard": 0.25
+      "latency_sec": 0.5114327810006216
     },
     {
       "id": 45127,
@@ -569,8 +508,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.531859387003351,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.531859387003351
     },
     {
       "id": 45128,
@@ -578,8 +516,7 @@
       "pred": "34",
       "raw": "34",
       "correct": false,
-      "latency_sec": 0.5163251730009506,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5163251730009506
     },
     {
       "id": 45129,
@@ -587,8 +524,7 @@
       "pred": "24",
       "raw": "24",
       "correct": true,
-      "latency_sec": 0.5357189780006593,
-      "jaccard": 1.0
+      "latency_sec": 0.5357189780006593
     },
     {
       "id": 45130,
@@ -596,8 +532,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5141574209992541,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5141574209992541
     },
     {
       "id": 45131,
@@ -605,8 +540,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5314122159979888,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5314122159979888
     },
     {
       "id": 45132,
@@ -614,8 +548,7 @@
       "pred": "25",
       "raw": "25",
       "correct": false,
-      "latency_sec": 0.5290046070003882,
-      "jaccard": 0.5
+      "latency_sec": 0.5290046070003882
     },
     {
       "id": 45133,
@@ -623,8 +556,7 @@
       "pred": "25",
       "raw": "25",
       "correct": true,
-      "latency_sec": 0.5304229210014455,
-      "jaccard": 1.0
+      "latency_sec": 0.5304229210014455
     },
     {
       "id": 45134,
@@ -632,8 +564,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5219869809989177,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5219869809989177
     },
     {
       "id": 45135,
@@ -641,8 +572,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5243595200008713,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5243595200008713
     },
     {
       "id": 45136,
@@ -650,8 +580,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.4803869120005402,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.4803869120005402
     },
     {
       "id": 45137,
@@ -659,8 +588,7 @@
       "pred": "345",
       "raw": "345",
       "correct": false,
-      "latency_sec": 0.5950761239982967,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5950761239982967
     },
     {
       "id": 45138,
@@ -668,8 +596,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5062321830009751,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5062321830009751
     },
     {
       "id": 45139,
@@ -677,8 +604,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5254702080019342,
-      "jaccard": 0.25
+      "latency_sec": 0.5254702080019342
     },
     {
       "id": 45140,
@@ -686,8 +612,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5034874550001405,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5034874550001405
     },
     {
       "id": 45141,
@@ -695,8 +620,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5116506049998861,
-      "jaccard": 0.25
+      "latency_sec": 0.5116506049998861
     },
     {
       "id": 45142,
@@ -704,8 +628,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5154204210011812,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5154204210011812
     },
     {
       "id": 45143,
@@ -713,8 +636,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5032057299977168,
-      "jaccard": 0.0
+      "latency_sec": 0.5032057299977168
     },
     {
       "id": 45144,
@@ -722,8 +644,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5031508460015175,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5031508460015175
     },
     {
       "id": 45145,
@@ -731,8 +652,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5223762690002332,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5223762690002332
     },
     {
       "id": 45146,
@@ -740,8 +660,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5120392999997421,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5120392999997421
     },
     {
       "id": 45147,
@@ -749,8 +668,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5075586330021906,
-      "jaccard": 0.25
+      "latency_sec": 0.5075586330021906
     },
     {
       "id": 45148,
@@ -758,8 +676,7 @@
       "pred": "24",
       "raw": "24",
       "correct": true,
-      "latency_sec": 0.48381881900058943,
-      "jaccard": 1.0
+      "latency_sec": 0.48381881900058943
     },
     {
       "id": 45149,
@@ -767,8 +684,7 @@
       "pred": "135",
       "raw": "135",
       "correct": false,
-      "latency_sec": 0.5758392499992624,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5758392499992624
     },
     {
       "id": 45150,
@@ -776,8 +692,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5269468890001008,
-      "jaccard": 0.25
+      "latency_sec": 0.5269468890001008
     },
     {
       "id": 45151,
@@ -785,8 +700,7 @@
       "pred": "35",
       "raw": "35",
       "correct": true,
-      "latency_sec": 0.5115670089980995,
-      "jaccard": 1.0
+      "latency_sec": 0.5115670089980995
     },
     {
       "id": 45152,
@@ -794,8 +708,7 @@
       "pred": "245",
       "raw": "245",
       "correct": false,
-      "latency_sec": 0.5714378060001764,
-      "jaccard": 0.0
+      "latency_sec": 0.5714378060001764
     },
     {
       "id": 45153,
@@ -803,8 +716,7 @@
       "pred": "234",
       "raw": "234",
       "correct": true,
-      "latency_sec": 0.5880650649996824,
-      "jaccard": 1.0
+      "latency_sec": 0.5880650649996824
     },
     {
       "id": 45154,
@@ -812,8 +724,7 @@
       "pred": "345",
       "raw": "345",
       "correct": false,
-      "latency_sec": 0.5962006240006303,
-      "jaccard": 0.25
+      "latency_sec": 0.5962006240006303
     },
     {
       "id": 45155,
@@ -821,8 +732,7 @@
       "pred": "24",
       "raw": "24",
       "correct": true,
-      "latency_sec": 3.5278880129990284,
-      "jaccard": 1.0
+      "latency_sec": 3.5278880129990284
     },
     {
       "id": 45156,
@@ -830,8 +740,7 @@
       "pred": "23",
       "raw": "23",
       "correct": false,
-      "latency_sec": 0.5099905290007882,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5099905290007882
     },
     {
       "id": 45157,
@@ -839,8 +748,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5123494719991868,
-      "jaccard": 0.25
+      "latency_sec": 0.5123494719991868
     },
     {
       "id": 45158,
@@ -848,8 +756,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.4920378659990092,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.4920378659990092
     },
     {
       "id": 45159,
@@ -857,8 +764,7 @@
       "pred": "35",
       "raw": "35",
       "correct": true,
-      "latency_sec": 0.514641276000475,
-      "jaccard": 1.0
+      "latency_sec": 0.514641276000475
     },
     {
       "id": 50635,
@@ -866,8 +772,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5124078020016896,
-      "jaccard": 0.25
+      "latency_sec": 0.5124078020016896
     },
     {
       "id": 50644,
@@ -875,8 +780,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5163233840030443,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5163233840030443
     },
     {
       "id": 50647,
@@ -884,8 +788,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5143923180003185,
-      "jaccard": 0.25
+      "latency_sec": 0.5143923180003185
     },
     {
       "id": 50651,
@@ -893,8 +796,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5334720999999263,
-      "jaccard": 0.2
+      "latency_sec": 0.5334720999999263
     },
     {
       "id": 50657,
@@ -902,8 +804,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5150755069989827,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5150755069989827
     },
     {
       "id": 50659,
@@ -911,8 +812,7 @@
       "pred": "34",
       "raw": "34",
       "correct": true,
-      "latency_sec": 0.522901300999365,
-      "jaccard": 1.0
+      "latency_sec": 0.522901300999365
     },
     {
       "id": 50660,
@@ -920,8 +820,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5398926139969262,
-      "jaccard": 0.0
+      "latency_sec": 0.5398926139969262
     },
     {
       "id": 50670,
@@ -929,8 +828,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5286577089973434,
-      "jaccard": 0.25
+      "latency_sec": 0.5286577089973434
     },
     {
       "id": 50672,
@@ -938,8 +836,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5277647739967506,
-      "jaccard": 0.25
+      "latency_sec": 0.5277647739967506
     },
     {
       "id": 50677,
@@ -947,8 +844,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.5434276150008372,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5434276150008372
     },
     {
       "id": 50679,
@@ -956,8 +852,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5342121739995491,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5342121739995491
     },
     {
       "id": 60975,
@@ -965,8 +860,7 @@
       "pred": "345",
       "raw": "345",
       "correct": false,
-      "latency_sec": 0.6076957210025284,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.6076957210025284
     },
     {
       "id": 45057,
@@ -974,8 +868,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5113501689993427,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5113501689993427
     },
     {
       "id": 50439,
@@ -983,8 +876,7 @@
       "pred": "345",
       "raw": "345",
       "correct": true,
-      "latency_sec": 0.5910726469992369,
-      "jaccard": 1.0
+      "latency_sec": 0.5910726469992369
     },
     {
       "id": 50639,
@@ -992,8 +884,7 @@
       "pred": "345",
       "raw": "345",
       "correct": false,
-      "latency_sec": 0.5594117820000974,
-      "jaccard": 0.5
+      "latency_sec": 0.5594117820000974
     },
     {
       "id": 50665,
@@ -1001,8 +892,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5138371760003793,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5138371760003793
     },
     {
       "id": 54087,
@@ -1010,8 +900,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.5118701079991297,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.5118701079991297
     },
     {
       "id": 58356,
@@ -1019,8 +908,7 @@
       "pred": "25",
       "raw": "25",
       "correct": false,
-      "latency_sec": 0.5044143439990876,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.5044143439990876
     },
     {
       "id": 59296,
@@ -1028,8 +916,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.4885698029975174,
-      "jaccard": 0.25
+      "latency_sec": 0.4885698029975174
     },
     {
       "id": 59495,
@@ -1037,8 +924,7 @@
       "pred": "24",
       "raw": "24",
       "correct": false,
-      "latency_sec": 0.4955730539986689,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.4955730539986689
     },
     {
       "id": 59667,
@@ -1046,8 +932,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.4938198639974871,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.4938198639974871
     },
     {
       "id": 65168,
@@ -1055,8 +940,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.512186620002467,
-      "jaccard": 0.3333333333333333
+      "latency_sec": 0.512186620002467
     },
     {
       "id": 66795,
@@ -1064,8 +948,7 @@
       "pred": "35",
       "raw": "35",
       "correct": false,
-      "latency_sec": 0.512737934001052,
-      "jaccard": 0.6666666666666666
+      "latency_sec": 0.512737934001052
     }
   ]
 }
