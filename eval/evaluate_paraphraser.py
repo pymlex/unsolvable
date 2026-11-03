@@ -56,7 +56,7 @@ def evaluate_items(rows, generate, solve, gate, *, baseline_raw=None) -> dict:
     accuracy, lo, hi = binomial_wilson_ci(sum(r["correct"] for r in records), n)
     valid_only = [r for r in records if r["quality"]["valid"]]
     summary = {"n_items": n, "n_valid": len(accepted), "valid_rate": len(accepted) / n,
-               "quality_mode": "structural_only",
+               "quality_mode": "completion_only",
                "baseline_accuracy": baseline_correct / n, "accuracy": accuracy,
                "accuracy_drop": baseline_correct / n - accuracy, "wilson_95_ci": [lo, hi],
                "mean_jaccard": sum(r["jaccard"] for r in records) / n,
@@ -79,7 +79,7 @@ class EgeEvaluator:
         self.history_path = output_dir / "validation_history.json"
         self.history = [] if reset_history or not self.history_path.exists() else json.loads(self.history_path.read_text(encoding="utf-8"))
         self.identity = {"dataset": self.manifest, "solver": solver.model_id,
-                         "quality_mode": "structural_only",
+                         "quality_mode": "completion_only",
                          "paraphraser_decoding": {"do_sample": False, "repetition_penalty": 1.05,
                                                   "length_limit": "native_context_only", "loop_detection": "per_item_v3_metadata"}}
         self.output_dir.mkdir(parents=True, exist_ok=True)

@@ -55,7 +55,6 @@ def test_small_gaps_are_retained_and_nonfinite_scores_fail(row):
 
 
 @pytest.mark.parametrize("change,expected", [
-    (lambda text: text.replace("**два**", "**другой**"), "highlight_changed"),
     (lambda text: "Ответ: 25\n" + text, "commentary_or_reasoning"),
     (lambda text: text + "\u200b", "invisible_character"),
 ])
@@ -80,7 +79,7 @@ def test_invalid_rewrite_cannot_inflate_asr(row, tmp_path):
         return ["1"] * len(items)
     gate = QualityGate()
     def generate(items):
-        return [[{"text": row["passage"].replace("Вчера", "Сегодня")}], [{"text": "garbage"}]]
+        return [[{"text": row["passage"].replace("Вчера", "Сегодня")}], [{"text": "unfinished", "truncated": True}]]
     result = evaluate_items([row, other], generate, solve, gate, baseline_raw=["25", "25"])
     assert len(calls[0]) == 1
     assert result["summary"]["accuracy"] == .5
@@ -88,6 +87,13 @@ def test_invalid_rewrite_cannot_inflate_asr(row, tmp_path):
     assert result["summary"]["n_valid"] == 1
     assert result["items"][1]["raw"] == "25"
     assert result["items"][1]["attack_success"] is False
+
+
+def test_lexemes_order_markup_and_length_are_diagnostics_not_gates(row):
+    text = "Другой порядок и иные слова. " * 20
+    checked = QualityGate().check(row, {"text": text, "truncated": False})
+    assert checked["valid"] and not checked["highlight_match_diagnostic"]
+    assert checked["length_change_diagnostic"] > .2
 
 
 def test_pair_provenance_prevents_test_or_partial_training(row):

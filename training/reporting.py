@@ -96,7 +96,7 @@ def plot_epoch_report(logs, validation, target):
     axes[0].plot(epochs, [r["baseline_accuracy"] * 100 for r in validation], "--", label="Исходные задания")
     axes[0].plot(epochs, [r["accuracy"] * 100 for r in validation], "o-", label="После перефразирования")
     axes[0].set(title="Точность замороженного решателя", ylabel="Точность, %")
-    axes[1].plot(epochs, [r["valid_rate"] * 100 for r in validation], "o-", label="Структурно допустимые")
+    axes[1].plot(epochs, [r["valid_rate"] * 100 for r in validation], "o-", label="Завершённые перефразы")
     axes[1].plot(epochs, [100 * r["conditional_asr"] if r["conditional_asr"] is not None else float("nan")
                           for r in validation], "o-", label="Успешные атаки (ASR)")
     axes[1].set(title="Формат перефразов и атаки", ylabel="Доля, %")

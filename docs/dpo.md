@@ -29,11 +29,12 @@ For each of the 500 training items:
 1. Give the small model the original passage, dictionary definitions from the
    options, the fixed key, and `explanation`. Ask it to change the sentences
    carefully, preserve word meanings and return **only the complete passage**.
-   Inflection is allowed when grammar requires it; target-word synonyms are not.
+   Word order, inflection, lexemes and syntax can change while the meaning and
+   correctness of the original answer must be preserved by the instruction.
 2. Call generation twice independently at temperature 0.8, with thinking off.
-3. Record structural diagnostics for changed highlight lemmas, extra commentary,
-   invisible characters and word-count changes above 20%. These flags do not
-   discard training rows. Actually truncated samples are regenerated.
+3. Record highlight and length changes as diagnostics. They never reject an
+   eval rewrite. Only incomplete/empty outputs, control characters or leaked
+   answer/explanation metadata cause a completion failure.
 4. Compute the log probability of the gold digit answer plus EOS under the
    frozen solver's exam prompt. The solver never receives the explanation or key.
 5. Choose the lowest-score rewrite as `chosen`, the highest as `rejected`.
@@ -61,9 +62,8 @@ repeats and 96 repeated tokens) are abandoned per item and archived, while
 other items continue to their natural EOS; this is not a
 length cap. Unfinished loop outputs are never scored or used in DPO.
 
-Local morphology (`pymorphy3`) permits grammatical inflections such as
-«фразу → фразой», while rejecting replacement by a different lexeme. This is
-a structural check, not a semantic judge. The scorer computes log-softmax in
+Local morphology (`pymorphy3`) supplies diagnostic comparisons only. Highlight
+order, lemma, markup and length changes are not eval gates. The scorer computes log-softmax in
 float32 even when the model uses bf16, to avoid rounding away small score gaps.
 The 0.5 threshold is an experiment requirement, not a calibrated accuracy gain.
 This difference measures gold-answer log probability, not solver accuracy.
@@ -71,7 +71,7 @@ This difference measures gold-answer log probability, not solver accuracy.
 
 There are no DeepSeek API calls or semantic rechecks in this DPO pipeline.
 Preservation of meanings is instructed through the definitions and explanation;
-the diagnostic checks are structural. Reports label this `structural_only`.
+the remaining output-completion checks are local. Reports label this `completion_only`.
 The original key and options never become trainable completions.
 All candidates are scored, regardless of structural diagnostics. Ties use stable
 generation order in the raw pool; final selected pairs must pass the strict margin.

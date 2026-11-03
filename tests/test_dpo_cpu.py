@@ -6,7 +6,7 @@ import torch
 def test_real_dpo_step_preserves_frozen_solver_and_saves_adapter(tmp_path):
     from tokenizers import Tokenizer, models, pre_tokenizers, trainers
     from transformers import GPT2Config, GPT2LMHeadModel, PreTrainedTokenizerFast
-    from peft import PeftModel
+    from peft import PeftModel, LoraConfig, get_peft_model
     from training.dpo_train import make_trainer
     from training.callbacks import EgeMonitorCallback
     from scoring.frozen_solver import FrozenSolver
@@ -23,6 +23,8 @@ def test_real_dpo_step_preserves_frozen_solver_and_saves_adapter(tmp_path):
     model = GPT2LMHeadModel(GPT2Config(vocab_size=len(tokenizer), n_positions=1024, n_embd=16,
                                       n_layer=1, n_head=2, eos_token_id=tokenizer.eos_token_id,
                                       pad_token_id=tokenizer.pad_token_id))
+    model = get_peft_model(model, LoraConfig(r=16, lora_alpha=32, lora_dropout=0.,
+                                            target_modules="all-linear", task_type="CAUSAL_LM"))
     pairs = [{"item_id": "1", "prompt": "rewrite original", "chosen": "good words", "rejected": "bad words"}] * 2
     trainer = make_trainer(model, tokenizer, pairs, output_dir=tmp_path / "run", max_steps=2,
                            batch_size=1, accumulation=1, max_length=None, monitor_every=1)
@@ -54,6 +56,17 @@ def test_real_dpo_step_preserves_frozen_solver_and_saves_adapter(tmp_path):
     assert (tmp_path / "final" / "adapter_config.json").exists()
     assert abs(solver.score(row, "original") - frozen_before) < 1e-6
     assert trainer.model.training
+
+    # A warm start retains trained policy weights AND the original frozen DPO
+    # reference, instead of silently making the trained policy its own reference.
+    from training.dpo_train import restore_dpo_reference
+    warm = PeftModel.from_pretrained(GPT2LMHeadModel(model.config), str(tmp_path / "final"), is_trainable=True)
+    warm_trainer = make_trainer(warm, tokenizer, pairs, output_dir=tmp_path / "warm", max_steps=2,
+                                batch_size=1, accumulation=1)
+    restore_dpo_reference(warm_trainer.model, tmp_path / "final")
+    expected = {n: p.detach() for n, p in trainer.model.named_parameters() if ".ref." in n}
+    assert expected
+    assert all(torch.equal(p, expected[n]) for n, p in warm_trainer.model.named_parameters() if n in expected)
 
     # The same model wrapper must make two real generate calls for a pair.
     calls = []

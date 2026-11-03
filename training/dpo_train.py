@@ -22,6 +22,16 @@ DPO_DIR = CHECKPOINTS_DIR / "dpo"
 FINAL_DIR = DPO_DIR / "final"
 
 
+def restore_dpo_reference(model, adapter_dir):
+    """Keep the original DPO reference when warm-starting a trained adapter."""
+    from safetensors.torch import load_file
+    from peft import set_peft_model_state_dict
+    reference = Path(adapter_dir) / "ref" / "adapter_model.safetensors"
+    if reference.exists():
+        set_peft_model_state_dict(model, load_file(str(reference)), adapter_name="ref")
+        print(f"[DPO] Restored frozen reference adapter from {reference}", flush=True)
+
+
 def validate_pairs(pairs: list[dict], meta: dict, train: list[dict], manifest: dict) -> None:
     if meta["source"] != manifest or meta["pairs_fingerprint"] != fingerprint(pairs):
         raise ValueError("DPO pairs do not match the prepared data/manifest; rebuild preferences")
@@ -111,7 +121,7 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
     plan = {"model": SLM_MODEL_ID, "solver": SOLVER_MODEL_ID, "pairs": len(pairs),
             "train": manifest["train"], "eval": manifest["test"], "revision": manifest["revision"],
             "pairs_fingerprint": fingerprint(pairs), "epochs": DPO_EPOCHS, "max_steps": max_steps,
-            "monitor_every_steps": DPO_MONITOR_EVERY_STEPS, "quality_mode": "structural_only",
+            "monitor_every_steps": DPO_MONITOR_EVERY_STEPS, "quality_mode": "completion_only",
             "monitor_every_epochs": DPO_MONITOR_EVERY_EPOCHS,
             "max_length": DPO_MAX_LENGTH, "seed": DPO_SEED,
             "beta": DPO_BETA, "learning_rate": DPO_LEARNING_RATE, "warmup_steps": DPO_WARMUP_STEPS,
@@ -127,6 +137,10 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
             adapter_sha = hashlib.file_digest(stream, "sha256").hexdigest()
         plan["initial_adapter"] = {"path": str(initial_path), "sha256": adapter_sha,
                                    "optimizer": "fresh", "scheduler": "fresh"}
+        ref_path = initial_path / "ref" / "adapter_model.safetensors"
+        if ref_path.exists():
+            with ref_path.open("rb") as stream:
+                plan["initial_adapter"]["reference_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()
     plan["live_run_id"] = fingerprint(plan)[:16]
     print(json.dumps(plan, ensure_ascii=False, indent=2))
     if dry_run:
@@ -172,6 +186,8 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
     history = TrainingHistoryCallback(MONITORING_DIR / "dpo", resume=bool(resume))
     convergence = LossConvergenceCallback(MONITORING_DIR / "dpo", resume=bool(resume))
     trainer = make_trainer(model, tokenizer, pairs, output_dir=DPO_DIR, callbacks=[history, convergence, monitor], max_steps=max_steps)
+    if initial_adapter:
+        restore_dpo_reference(trainer.model, initial_adapter)
     monitor.loss_evaluator = lambda: trainer.evaluate(eval_dataset=trainer.train_dataset,
                                                      metric_key_prefix="train_probe")["train_probe_loss"]
     write_json(run_path, plan)

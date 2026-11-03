@@ -49,16 +49,8 @@ class GenerationProgress:
                     "Словарные толкования из задания (не переписывать):",
                 )):
                     self.invalid_sections[item_id] = "prompt_metadata_in_output"
-                if re.search(r"(?im)^\s*(?:ключ|пояснение|словарные толкования(?: из задания)?|перефразированный текст|варианты ответа)\s*(?:\([^\n)]*\))?\s*:", decoded):
+                if re.search(r"(?im)^\s*(?:ключ|пояснение|словарные толкования(?: из задания)?|варианты ответа)\s*(?:\([^\n)]*\))?\s*:", decoded):
                     self.invalid_sections[item_id] = "prompt_metadata_in_output"
-                # Once this existing structural condition is violated, appending
-                # tokens cannot make the output admissible. Reject the attempt;
-                # never shorten it into a purportedly complete training passage.
-                from constants import LENGTH_MARGIN
-                original = self.rows[i].get("passage") or self.rows[i].get("text") or ""
-                original_words = len(original.split())
-                if original_words and len(decoded.split()) > original_words * (1 + LENGTH_MARGIN):
-                    self.invalid_sections[item_id] = "length_cannot_pass_structural_check"
             if item_id in self.abandoned_ids:
                 continue
             if token in self.eos_ids:
