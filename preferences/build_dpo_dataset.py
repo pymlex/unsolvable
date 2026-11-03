@@ -148,6 +148,8 @@ def build_preference_dataset(*, limit=0, device=None, publish=False) -> Path:
         writer.writeheader()
         writer.writerows(pairs)
     Dataset.from_list([{k: p[k] for k in ("prompt", "chosen", "rejected")} for p in pairs]).save_to_disk(str(PREFERENCES_DIR / "dpo_hf_dataset"))
+    from preferences.gap_report import write_gap_report
+    write_gap_report(pairs, PREFERENCES_DIR, model_id=SOLVER_MODEL_ID)
     if publish and not limit:
         publish_preferences()
     return PAIRS_PATH
@@ -169,10 +171,10 @@ def publish_preferences() -> str:
     validate_pairs(pairs, meta, train, source)
     config = "dpo-" + SLM_MODEL_ID.split("/")[-1].lower()
     Dataset.from_list(pairs).push_to_hub(DATASET_ID, config_name=config, split="train")
-    HfApi().upload_folder(repo_id=DATASET_ID, repo_type="dataset", folder_path=str(PREFERENCES_DIR),
+    commit = HfApi().upload_folder(repo_id=DATASET_ID, repo_type="dataset", folder_path=str(PREFERENCES_DIR),
                          path_in_repo=f"artifacts/{config}",
-                         allow_patterns=["candidates.jsonl", "dpo_manifest.json", "build_stats.json", "dpo_preferences.csv"])
+                         allow_patterns=["candidates.jsonl", "dpo_manifest.json", "build_stats.json", "dpo_preferences.csv", "gap_distribution.json", "gap_histogram.png"])
     url = f"https://huggingface.co/datasets/{DATASET_ID}/viewer/{config}/train"
-    write_json(PREFERENCES_DIR / "hf_publication.json", {"repo": DATASET_ID, "config": config, "n_pairs": 500, "url": url})
+    write_json(PREFERENCES_DIR / "hf_publication.json", {"repo": DATASET_ID, "config": config, "n_pairs": 500, "url": url, "commit": commit.oid})
     print(f"[HF] Published all 500 pairs: {url}", flush=True)
     return url
