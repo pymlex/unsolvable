@@ -79,7 +79,9 @@ class EgeEvaluator:
         self.history_path = output_dir / "validation_history.json"
         self.history = [] if reset_history or not self.history_path.exists() else json.loads(self.history_path.read_text(encoding="utf-8"))
         self.identity = {"dataset": self.manifest, "solver": solver.model_id,
-                         "quality_mode": "structural_only"}
+                         "quality_mode": "structural_only",
+                         "paraphraser_decoding": {"do_sample": False, "repetition_penalty": 1.05,
+                                                  "length_limit": "native_context_only", "loop_detection": "per_item_v2"}}
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.run_path = output_dir / "eval_protocol.json"
         if self.run_path.exists() and json.loads(self.run_path.read_text(encoding="utf-8")) != self.identity:
@@ -92,7 +94,7 @@ class EgeEvaluator:
         payload = evaluate_items(
             self.rows,
             lambda rows: generate_item_paraphrases(model, self.tokenizer, rows, num_samples=1, do_sample=False,
-                                                  progress_dir=self.output_dir / "generation"),
+                                                  progress_dir=self.output_dir / "generation", repetition_penalty=1.05),
             self.solver.solve, self.gate, baseline_raw=self.baseline_raw,
         )
         # A differentiable-like signal analogous to mean detector logit, measured

@@ -29,7 +29,8 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                 prompts = [apply_chat_template_no_think(tokenizer, [{"role": "user", "content": build_item_paraphrase_prompt(r)}]) for r in chunk]
                 inputs = tokenizer(prompts, padding=True, return_tensors="pt", add_special_tokens=False).to(model.device)
                 kwargs = {**generation_bounds(model, tokenizer, inputs["input_ids"].shape[1], max_new_tokens), "do_sample": do_sample,
-                          "pad_token_id": tokenizer.pad_token_id, "use_cache": True}
+                          "pad_token_id": tokenizer.pad_token_id, "use_cache": True,
+                          "repetition_penalty": repetition_penalty}
                 if do_sample:
                     kwargs.update(temperature=temperature, top_p=top_p, repetition_penalty=repetition_penalty)
                 else:
@@ -40,7 +41,8 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                     kwargs["streamer"] = GenerationProgress(
                         tokenizer, chunk, eos if isinstance(eos, list) else [eos], progress_dir,
                         sample_pass=sample_pass + 1,
-                        sampling={"temperature": temperature, "top_p": top_p,
+                        sampling={"do_sample": do_sample, "temperature": temperature if do_sample else None,
+                                  "top_p": top_p if do_sample else None,
                                   "repetition_penalty": repetition_penalty, "seed": torch.initial_seed()})
                     kwargs["stopping_criteria"] = repetition_stopping_criteria(kwargs["streamer"])
                 with torch.no_grad():
@@ -56,7 +58,8 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                     }
                     if progress_dir is not None:
                         candidate["generation_event_id"] = f"{kwargs['streamer'].run_id}:{chunk[i]['id']}:{sample_pass+1}"
-                        if candidate["truncated"] and kwargs["streamer"].loop_ids:
+                        if str(chunk[i]["id"]) in kwargs["streamer"].loop_ids:
+                            candidate["truncated"] = True
                             candidate["failure_reason"] = "repeated_paragraph_loop"
                     groups[start + i].append(candidate)
     finally:

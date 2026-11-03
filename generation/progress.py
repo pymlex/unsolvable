@@ -30,12 +30,13 @@ class GenerationProgress:
             return
         values = value.tolist()
         for i, token in enumerate(values):
-            if i in self.finished:
+            if i in self.finished or str(self.rows[i]["id"]) in self.loop_ids:
                 continue
             self.tokens[i].append(token)
-            for size in (32, 48, 64, 96):
+            for size in (*range(1, 97), 128, 192, 256, 384, 512):
                 tail = self.tokens[i]
-                if len(tail) >= size * 3 and tail[-size:] == tail[-size*2:-size] == tail[-size*3:-size*2]:
+                repeats = max(3, (96 + size - 1) // size)
+                if len(tail) >= size * repeats and tail[-size*repeats:] == tail[-size:] * repeats:
                     self.loop_ids.add(str(self.rows[i]["id"]))
                     break
             if token in self.eos_ids:
@@ -58,14 +59,16 @@ class GenerationProgress:
         lengths = [len(tokens) for tokens in self.tokens]
         progress = {"run_id": self.run_id, "sample_pass": self.sample_pass,
                     "batch_size": len(self.rows), "n_finished": len(self.finished),
-                    "n_active": len(self.rows) - len(self.finished), "elapsed_sec": round(elapsed, 1),
+                    "n_active": len(self.rows) - len(self.finished) - len(self.loop_ids), "elapsed_sec": round(elapsed, 1),
                     "max_generated_tokens": max(lengths, default=0),
                     "total_generated_tokens": sum(lengths),
                     "tokens_per_sec": round(sum(lengths) / max(elapsed, .001), 1),
-                    "active_item_ids": [str(row["id"]) for i, row in enumerate(self.rows) if i not in self.finished],
+                    "active_item_ids": [str(row["id"]) for i, row in enumerate(self.rows)
+                                        if i not in self.finished and str(row["id"]) not in self.loop_ids],
                     "repetition_loop_item_ids": sorted(self.loop_ids),
                     "active_tail_preview": {str(row["id"]): self.tokenizer.decode(self.tokens[i][-96:], skip_special_tokens=True)
-                                            for i, row in enumerate(self.rows) if i not in self.finished},
+                                            for i, row in enumerate(self.rows)
+                                            if i not in self.finished and str(row["id"]) not in self.loop_ids},
                     "sampling": self.sampling}
         write_json(self.directory / "generation_progress.json", progress)
         print(f"[generate] pass={self.sample_pass} EOS={len(self.finished)}/{len(self.rows)} "
@@ -82,6 +85,6 @@ def repetition_stopping_criteria(progress):
     import torch
     class StopRepeatedParagraph(StoppingCriteria):
         def __call__(self, input_ids, scores, **kwargs):
-            return torch.full((input_ids.shape[0],), bool(progress.loop_ids),
-                              dtype=torch.bool, device=input_ids.device)
+            return torch.tensor([str(row["id"]) in progress.loop_ids for row in progress.rows],
+                                dtype=torch.bool, device=input_ids.device)
     return StoppingCriteriaList([StopRepeatedParagraph()])

@@ -347,6 +347,12 @@ def test_generation_abandons_repeated_paragraph_loop_without_token_cap(tmp_path)
         progress.put(torch.tensor([token]))
     assert stop(torch.tensor([[1]]), None).all()
     assert progress.loop_ids == {"a"} and not progress.finished
+    short = GenerationProgress(tokenizer, [{"id": "b"}], [999], tmp_path / "short",
+                               sample_pass=1, sampling={})
+    short.put(torch.tensor([[1, 2]]))
+    for token in list(range(5)) * 20:
+        short.put(torch.tensor([token]))
+    assert short.loop_ids == {"b"}
 
 
 def test_loss_convergence_stops_only_after_observed_plateau(tmp_path):
@@ -362,3 +368,17 @@ def test_loss_convergence_stops_only_after_observed_plateau(tmp_path):
     for step in range(1, 161):
         decreasing.on_log(None, SimpleNamespace(global_step=step), control, logs={"loss": 1-step*.002})
     assert not decreasing.converged and not control.should_training_stop
+
+
+def test_loop_stop_is_per_item_and_padding_cannot_become_valid_eos(tmp_path):
+    import torch
+    from generation.progress import GenerationProgress, repetition_stopping_criteria
+    tokenizer = SimpleNamespace(decode=lambda tokens, **kwargs: str(tokens))
+    progress = GenerationProgress(tokenizer, [{"id": "a"}, {"id": "b"}], [999], tmp_path,
+                                  sample_pass=1, sampling={})
+    progress.put(torch.tensor([[1, 2], [1, 2]]))
+    progress.loop_ids.add("a")
+    assert repetition_stopping_criteria(progress)(torch.tensor([[1], [1]]), None).tolist() == [True, False]
+    progress.put(torch.tensor([999, 999]))
+    assert progress.finished == {1}
+    assert '"item_id": "a"' not in (tmp_path / "generation_samples.jsonl").read_text()

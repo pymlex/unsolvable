@@ -56,8 +56,9 @@ that reaches the model's native context boundary is archived in
 Generation reports EOS counts, active item IDs, token counts and tail previews
 every 10 seconds in `generation_progress.json`. Each EOS-complete sample is
 fsynced to `generation_samples.jsonl` immediately and can be recovered after an
-interrupted batch. Exact paragraph loops (the same 32–96-token block three times)
-are abandoned and archived, while completed samples survive; this is not a
+interrupted batch. Exact loops (repeated 1–512-token blocks, at least three
+repeats and 96 repeated tokens) are abandoned per item and archived, while
+other items continue to their natural EOS; this is not a
 length cap. Unfinished loop outputs are never scored or used in DPO.
 
 Local morphology (`pymorphy3`) permits grammatical inflections such as
