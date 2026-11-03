@@ -35,13 +35,14 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                 else:
                     kwargs.update(temperature=None, top_p=None, top_k=None)
                 if progress_dir is not None:
-                    from generation.progress import GenerationProgress
+                    from generation.progress import GenerationProgress, repetition_stopping_criteria
                     eos = kwargs["eos_token_id"]
                     kwargs["streamer"] = GenerationProgress(
                         tokenizer, chunk, eos if isinstance(eos, list) else [eos], progress_dir,
                         sample_pass=sample_pass + 1,
                         sampling={"temperature": temperature, "top_p": top_p,
                                   "repetition_penalty": repetition_penalty, "seed": torch.initial_seed()})
+                    kwargs["stopping_criteria"] = repetition_stopping_criteria(kwargs["streamer"])
                 with torch.no_grad():
                     output = model.generate(**inputs, **kwargs)
                 offset = inputs["input_ids"].shape[1]
@@ -49,10 +50,15 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                 eos_ids = set(eos if isinstance(eos, list) else [eos])
                 for i, sequence in enumerate(output):
                     tokens = sequence[offset:].tolist()
-                    groups[start + i].append({
+                    candidate = {
                         "text": tokenizer.decode(tokens, skip_special_tokens=True).strip(),
                         "truncated": not any(t in eos_ids for t in tokens),
-                    })
+                    }
+                    if progress_dir is not None:
+                        candidate["generation_event_id"] = f"{kwargs['streamer'].run_id}:{chunk[i]['id']}:{sample_pass+1}"
+                        if candidate["truncated"] and kwargs["streamer"].loop_ids:
+                            candidate["failure_reason"] = "repeated_paragraph_loop"
+                    groups[start + i].append(candidate)
     finally:
         tokenizer.padding_side = pad_side
         model.train(was_training)

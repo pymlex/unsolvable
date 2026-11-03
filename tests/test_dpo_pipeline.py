@@ -178,11 +178,19 @@ def test_pair_builder_batches_and_resumes_without_regeneration(row, tmp_path, mo
     build.build_preference_dataset()
     assert calls == [4, 1]
     assert len(read_jsonl(build.PAIRS_PATH)) == 5
+    import json
+    (tmp_path / "generation_samples.jsonl").write_text(json.dumps({
+        "run_id": "interrupted-batch", "item_id": "0", "sample_pass": 1,
+        "text": rows[0]["passage"], "truncated": False,
+    }) + "\n", encoding="utf-8")
     calls.clear()
     monkeypatch.setattr(build, "GENERATION_BATCH_SIZE", 8)
     build.build_preference_dataset()
     assert calls == []
-    assert len(read_jsonl(build.CACHE_PATH)) == 5
+    assert len(read_jsonl(build.CACHE_PATH)) == 6
+    assert read_jsonl(build.PAIRS_PATH)[0]["candidate_count"] == 3
+    build.build_preference_dataset()
+    assert len(read_jsonl(build.CACHE_PATH)) == 6  # Journal replay is idempotent.
 
 
 def test_legacy_candidates_survive_batch_size_tuning(row):
@@ -322,3 +330,20 @@ def test_generation_progress_saves_eos_before_other_items_finish(tmp_path):
     progress.put(torch.tensor([9, 9]))
     progress.end()
     assert len((tmp_path / "generation_samples.jsonl").read_text().splitlines()) == 2
+
+
+def test_generation_abandons_repeated_paragraph_loop_without_token_cap(tmp_path):
+    import torch
+    from generation.progress import GenerationProgress, repetition_stopping_criteria
+    tokenizer = SimpleNamespace(decode=lambda tokens, **kwargs: str(tokens))
+    progress = GenerationProgress(tokenizer, [{"id": "a"}], [999], tmp_path,
+                                  sample_pass=1, sampling={})
+    progress.put(torch.tensor([[1, 2]]))
+    stop = repetition_stopping_criteria(progress)
+    for token in list(range(32)) * 2:
+        progress.put(torch.tensor([token]))
+    assert not stop(torch.tensor([[1]]), None).any()
+    for token in range(32):
+        progress.put(torch.tensor([token]))
+    assert stop(torch.tensor([[1]]), None).all()
+    assert progress.loop_ids == {"a"} and not progress.finished

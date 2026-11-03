@@ -109,7 +109,7 @@ def refine_until_margin(source, pools, *, generate, score, gate, persist,
                 incomplete = [c for c in candidates if c.get("truncated")]
                 if incomplete:
                     record.setdefault("failed_candidates", []).extend(
-                        [{**c, "generation_round": round_id, "failure_reason": "native_context_exhausted"} for c in incomplete])
+                        [{**c, "generation_round": round_id, "failure_reason": c.get("failure_reason", "native_context_exhausted")} for c in incomplete])
                 candidates = [c for c in candidates if not c.get("truncated")]
                 for candidate in candidates:
                     candidate["quality"] = gate.check(row, candidate)
@@ -142,6 +142,34 @@ def build_preference_dataset(*, limit=0, device=None, publish=False) -> Path:
                 "max_new_tokens": None, "length_margin": LENGTH_MARGIN,
                 "structural_check_version": CHECK_VERSION, "source_revision": manifest["revision"],
                 "score": "gold_logprob_sum_with_eos_no_thinking_float32"}
+    # Recover EOS-complete samples even if another row held the previous batch
+    # open. Never treat an unfinished completion as a training candidate.
+    journal = PREFERENCES_DIR / "generation_samples.jsonl"
+    if journal.exists():
+        source_by_id = {str(row["id"]): row for row in source}
+        recovered = 0
+        for sample in read_jsonl(journal):
+            row = source_by_id.get(sample["item_id"])
+            if row is None or sample.get("truncated"):
+                continue
+            if sample.get("source_fingerprint") not in (None, fingerprint(row)):
+                continue
+            key, record = cached_candidate(cache, settings, row)
+            if record is None:
+                continue
+            event_id = f"{sample['run_id']}:{sample['item_id']}:{sample['sample_pass']}"
+            if any(c.get("generation_event_id") == event_id for c in record["candidates"]):
+                continue
+            candidate = {**sample, "generation_event_id": event_id}
+            candidate["quality"] = gate.check(row, candidate)
+            candidate["score"] = solver.score(row, candidate["text"])
+            record["candidates"].append(candidate)
+            import json
+            with CACHE_PATH.open("a", encoding="utf-8") as stream:
+                stream.write(json.dumps(record, ensure_ascii=False, allow_nan=False) + "\n")
+                stream.flush()
+            recovered += 1
+        print(f"[recovery] recovered {recovered} EOS-complete samples from generation journal", flush=True)
     pairs, records = [], []
     if GENERATION_BATCH_SIZE < 1:
         raise ValueError("GENERATION_BATCH_SIZE must be positive")
