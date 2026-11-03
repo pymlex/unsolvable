@@ -68,6 +68,7 @@ def select_pair(row: dict, candidates: list[dict], *, tau=PAIRWISE_GAP_TAU) -> d
 def refine_until_margin(source, pools, *, generate, score, gate, persist,
                         minimum_gap=DPO_MIN_PAIR_GAP, batch_size=GENERATION_BATCH_SIZE):
     """Keep every attempt; continue only pending items, with no round limit."""
+    import torch
     from transformers import set_seed
     round_id = max((r.get("refinement_round", 0) for r in pools.values()), default=0)
     while True:
@@ -87,15 +88,33 @@ def refine_until_margin(source, pools, *, generate, score, gate, persist,
         for start in range(0, len(pending), batch_size):
             chunk = pending[start:start + batch_size]
             set_seed(DPO_SEED + round_id * 100003 + start)
-            groups = generate(chunk)
+            try:
+                groups = generate(chunk)
+            except torch.OutOfMemoryError:
+                # An unusually long natural completion can exhaust a batch's VRAM.
+                # Keep all completed pools and retry with fresh random samples;
+                # never impose a token limit or repeat the same failing seed.
+                import gc
+                gc.collect()
+                torch.cuda.empty_cache()
+                for row in chunk:
+                    record = pools[str(row["id"])]
+                    record["refinement_round"] = round_id
+                    record.setdefault("failed_generation_attempts", []).append({"round": round_id, "reason": "cuda_oom"})
+                    persist(record)
+                print(f"[refine-retry] round={round_id} CUDA OOM; preserved pools, retrying fresh samples", flush=True)
+                break
             for row, candidates in zip(chunk, groups, strict=True):
-                if any(c.get("truncated") for c in candidates):
-                    raise RuntimeError(f"Native context exhausted for {row['id']}; refusing truncated training text")
+                record = pools[str(row["id"])]
+                incomplete = [c for c in candidates if c.get("truncated")]
+                if incomplete:
+                    record.setdefault("failed_candidates", []).extend(
+                        [{**c, "generation_round": round_id, "failure_reason": "native_context_exhausted"} for c in incomplete])
+                candidates = [c for c in candidates if not c.get("truncated")]
                 for candidate in candidates:
                     candidate["quality"] = gate.check(row, candidate)
                     candidate["score"] = score(row, candidate["text"])
                     candidate["generation_round"] = round_id
-                record = pools[str(row["id"])]
                 record["candidates"].extend(candidates)
                 record["refinement_round"] = round_id
                 persist(record)

@@ -261,3 +261,44 @@ def test_training_history_is_saved_on_each_log_before_train_end(tmp_path):
     assert "rewards/margins" in (tmp_path / "train_history.csv").read_text()
     resumed = TrainingHistoryCallback(tmp_path, resume=True)
     assert len(resumed.records) == 2
+
+
+def test_refinement_retries_oom_without_losing_pools(row, tmp_path, monkeypatch):
+    import torch
+    import preferences.build_dpo_dataset as build
+    monkeypatch.setattr(build, "PREFERENCES_DIR", tmp_path)
+    pools = {"a": {"item_id": "a", "candidates": [candidate("old-low", -1), candidate("old-high", -.5)]}}
+    calls = []
+    def generate(rows):
+        calls.append(torch.initial_seed())
+        if len(calls) == 1:
+            raise torch.OutOfMemoryError("simulated long completion")
+        return [[{"text": "new-low", "truncated": False}, {"text": "new-high", "truncated": False}]]
+    gate = SimpleNamespace(check=lambda *args: {"valid": True, "judge_checked": False})
+    result = build.refine_until_margin([row], pools, generate=generate,
+               score=lambda r, t: -2 if t == "new-low" else -.4, gate=gate,
+               persist=lambda record: None, minimum_gap=.5)
+    assert len(calls) == 2 and calls[0] != calls[1]
+    assert len(pools["a"]["candidates"]) == 4
+    assert pools["a"]["failed_generation_attempts"] == [{"round": 1, "reason": "cuda_oom"}]
+    assert result[0]["gap"] > .5
+
+
+def test_native_context_exhaustion_is_archived_and_regenerated(row, tmp_path, monkeypatch):
+    import preferences.build_dpo_dataset as build
+    monkeypatch.setattr(build, "PREFERENCES_DIR", tmp_path)
+    pools = {"a": {"item_id": "a", "candidates": [candidate("old-low", -1), candidate("old-high", -.5)]}}
+    batches = iter([
+        [[{"text": "unfinished passage", "truncated": True}, {"text": "unchanged", "truncated": False}]],
+        [[{"text": "new-low", "truncated": False}, {"text": "new-high", "truncated": False}]],
+    ])
+    gate = SimpleNamespace(check=lambda *args: {"valid": True, "judge_checked": False})
+    scored = []
+    def score(r, text):
+        scored.append(text)
+        return -2 if text == "new-low" else -.5
+    result = build.refine_until_margin([row], pools, generate=lambda rows: next(batches),
+               score=score, gate=gate, persist=lambda record: None, minimum_gap=.5)
+    assert "unfinished passage" not in scored
+    assert pools["a"]["failed_candidates"][0]["text"] == "unfinished passage"
+    assert result[0]["gap"] > .5

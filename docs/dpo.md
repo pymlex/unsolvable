@@ -43,6 +43,11 @@ For each of the 500 training items:
    greater than 0.5. Sources already above the threshold are not regenerated.
    All attempts, including duplicates and ties, remain in the raw cache.
 
+If a natural completion exhausts VRAM, refinement preserves the existing pools
+and retries with a fresh seed. It does not impose an output-token cap. A sample
+that reaches the model's native context boundary is archived in
+`failed_candidates` and regenerated rather than used as an incomplete DPO target.
+
 Local morphology (`pymorphy3`) permits grammatical inflections such as
 «фразу → фразой», while rejecting replacement by a different lexeme. This is
 a structural check, not a semantic judge. The scorer computes log-softmax in
