@@ -49,24 +49,22 @@ def cached_candidate(cache: dict, settings: dict, row: dict) -> tuple[str, dict 
     return key, None
 
 
-def select_pair(row: dict, candidates: list[dict], *, tau=PAIRWISE_GAP_TAU) -> dict | None:
-    if len(candidates) != 2 or not all(c["quality"]["valid"] for c in candidates):
-        return None
-    if candidates[0]["text"] == candidates[1]["text"]:
-        return None
+def select_pair(row: dict, candidates: list[dict], *, tau=PAIRWISE_GAP_TAU) -> dict:
+    if len(candidates) != 2:
+        raise ValueError(f"Item {row['id']} must have exactly two candidates")
     if not all(math.isfinite(c["score"]) for c in candidates):
-        return None
+        raise ValueError(f"Item {row['id']} has an invalid score")
     chosen, rejected = sorted(candidates, key=lambda c: c["score"])
     gap = rejected["score"] - chosen["score"]
-    if gap <= 0 or gap < tau:
-        return None
     return {"item_id": str(row["id"]), "prompt": build_item_paraphrase_prompt(row),
             "chosen": chosen["text"], "rejected": rejected["text"],
             "score_chosen": chosen["score"], "score_rejected": rejected["score"], "gap": gap,
-            "chosen_quality": chosen["quality"], "rejected_quality": rejected["quality"]}
+            "chosen_quality": chosen["quality"], "rejected_quality": rejected["quality"],
+            "is_tie": gap == 0, "is_duplicate": chosen["text"] == rejected["text"],
+            "below_probe_margin": gap < tau}
 
 
-def build_preference_dataset(*, limit=0, device=None) -> Path:
+def build_preference_dataset(*, limit=0, device=None, publish=False) -> Path:
     from transformers import set_seed
 
     ensure_result_dirs()
@@ -100,7 +98,7 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
             for (row, key), candidates in zip(missing, groups, strict=True):
                 for candidate in candidates:
                     candidate["quality"] = gate.check(row, candidate)
-                    candidate["score"] = solver.score(row, candidate["text"]) if candidate["quality"]["valid"] else None
+                    candidate["score"] = solver.score(row, candidate["text"])
                 cached = {"key": key, "item_id": str(row["id"]), "candidates": candidates,
                           "generation_batch_size": GENERATION_BATCH_SIZE}
                 CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -110,6 +108,15 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
                 cache[key] = cached
         for offset, (row, key) in enumerate(zip(chunk, keys, strict=True)):
             cached = cache[key]
+            rescored = False
+            for candidate in cached["candidates"]:
+                if candidate.get("score") is None:
+                    candidate["score"] = solver.score(row, candidate["text"])
+                    rescored = True
+            if rescored:
+                import json
+                with CACHE_PATH.open("a", encoding="utf-8") as stream:
+                    stream.write(json.dumps(cached, ensure_ascii=False, allow_nan=False) + "\n")
             pair = select_pair(row, cached["candidates"])
             records.append(cached)
             if pair:
@@ -123,10 +130,15 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
     write_json(PREFERENCES_DIR / "build_stats.json", {
         "train_rows": len(source), "pairs_built": len(pairs), "pairs_skipped": len(source) - len(pairs),
         "invalid_candidates": sum(not c["quality"]["valid"] for r in records for c in r["candidates"]),
+        "ties_retained": sum(p["is_tie"] for p in pairs),
+        "duplicates_retained": sum(p["is_duplicate"] for p in pairs),
+        "below_margin_retained": sum(p["below_probe_margin"] for p in pairs),
         "gaps": gaps, "mean_gap": sum(gaps) / len(gaps) if gaps else None,
     })
     if not pairs:
         raise RuntimeError("No valid DPO pairs; inspect candidates.jsonl and build_stats.json before training")
+    if len(pairs) != len(source):
+        raise RuntimeError("Every source item must have exactly one DPO pair")
     # Same portable artifacts as the detector project.
     import csv
     from datasets import Dataset
@@ -136,4 +148,31 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
         writer.writeheader()
         writer.writerows(pairs)
     Dataset.from_list([{k: p[k] for k in ("prompt", "chosen", "rejected")} for p in pairs]).save_to_disk(str(PREFERENCES_DIR / "dpo_hf_dataset"))
+    if publish and not limit:
+        publish_preferences()
     return PAIRS_PATH
+
+
+def publish_preferences() -> str:
+    """Publish all 500 pairs plus every raw candidate attempt to the existing HF repo."""
+    from datasets import Dataset
+    from huggingface_hub import HfApi
+    from constants import DATASET_ID
+    import json
+
+    pairs = read_jsonl(PAIRS_PATH)
+    meta = json.loads(PAIRS_META_PATH.read_text(encoding="utf-8"))
+    if len(pairs) != 500 or meta["partial"] or len({p["item_id"] for p in pairs}) != 500:
+        raise ValueError("HF publication requires one pair for each of the 500 train items")
+    from training.dpo_train import validate_pairs
+    train, _, source = load_prepared()
+    validate_pairs(pairs, meta, train, source)
+    config = "dpo-" + SLM_MODEL_ID.split("/")[-1].lower()
+    Dataset.from_list(pairs).push_to_hub(DATASET_ID, config_name=config, split="train")
+    HfApi().upload_folder(repo_id=DATASET_ID, repo_type="dataset", folder_path=str(PREFERENCES_DIR),
+                         path_in_repo=f"artifacts/{config}",
+                         allow_patterns=["candidates.jsonl", "dpo_manifest.json", "build_stats.json", "dpo_preferences.csv"])
+    url = f"https://huggingface.co/datasets/{DATASET_ID}/viewer/{config}/train"
+    write_json(PREFERENCES_DIR / "hf_publication.json", {"repo": DATASET_ID, "config": config, "n_pairs": 500, "url": url})
+    print(f"[HF] Published all 500 pairs: {url}", flush=True)
+    return url

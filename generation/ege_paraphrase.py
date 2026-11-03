@@ -36,7 +36,7 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                 with torch.no_grad():
                     output = model.generate(**inputs, **kwargs)
                 offset = inputs["input_ids"].shape[1]
-                eos = model.generation_config.eos_token_id or tokenizer.eos_token_id
+                eos = kwargs.get("eos_token_id") or model.generation_config.eos_token_id or tokenizer.eos_token_id
                 eos_ids = set(eos if isinstance(eos, list) else [eos])
                 for i, sequence in enumerate(output):
                     tokens = sequence[offset:].tolist()

@@ -39,17 +39,19 @@ def test_lower_gold_likelihood_is_chosen(row):
     pair = select_pair(row, [a, b], tau=0.25)
     assert pair["chosen"] == b["text"]
     assert pair["gap"] == 4
-    assert select_pair(row, [b, b], tau=0) is None
+    duplicate = select_pair(row, [b, b], tau=0)
+    assert duplicate["is_duplicate"] and duplicate["is_tie"]
     a["quality"]["valid"] = False
-    assert select_pair(row, [a, b]) is None
+    assert select_pair(row, [a, b])["rejected_quality"]["valid"] is False
 
 
-def test_ties_nonfinite_and_small_gaps_are_skipped(row):
+def test_small_gaps_are_retained_and_nonfinite_scores_fail(row):
     a = candidate(row["passage"], -1)
     b = candidate(row["passage"].replace("Вчера", "Сегодня"), -1.01)
-    assert select_pair(row, [a, b], tau=.25) is None
+    assert select_pair(row, [a, b], tau=.25)["below_probe_margin"] is True
     b["score"] = float("nan")
-    assert select_pair(row, [a, b]) is None
+    with pytest.raises(ValueError, match="invalid score"):
+        select_pair(row, [a, b])
 
 
 @pytest.mark.parametrize("change,expected", [
@@ -212,3 +214,13 @@ def test_complete_capped_candidates_can_be_reused_without_cap(row):
     cache[old_key]["candidates"][0]["truncated"] = True
     cache.pop(key, None)
     assert cached_candidate(cache, {**settings, "max_new_tokens": None}, row)[1] is None
+
+
+def test_qwen_keeps_both_document_and_chat_eos_after_trainer_alignment():
+    from utils.model_context import generation_bounds
+    model = SimpleNamespace(config=SimpleNamespace(max_position_embeddings=32768),
+                            generation_config=SimpleNamespace(eos_token_id=248046))
+    tokenizer = SimpleNamespace(model_max_length=32768, eos_token_id=248046,
+                                all_special_tokens=["<|im_end|>", "<|endoftext|>"],
+                                convert_tokens_to_ids=lambda token: {"<|im_end|>": 248046, "<|endoftext|>": 248044}[token])
+    assert generation_bounds(model, tokenizer, 100)["eos_token_id"] == [248044, 248046]

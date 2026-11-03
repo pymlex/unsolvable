@@ -14,7 +14,6 @@ from constants import (DPO_BETA, DPO_EPOCHS, DPO_GRADIENT_ACCUMULATION_STEPS,
 from eval.ege_data import load_prepared
 from eval.model_io import apply_chat_template_no_think, load_slm
 from generation.prompts import build_item_paraphrase_prompt
-from judge.ege_quality import structural_error
 from preferences.build_dpo_dataset import PAIRS_META_PATH, PAIRS_PATH
 from utils.artifacts import fingerprint, read_jsonl, write_json
 from utils.paths import CHECKPOINTS_DIR, MONITORING_DIR
@@ -28,7 +27,7 @@ def validate_pairs(pairs: list[dict], meta: dict, train: list[dict], manifest: d
         raise ValueError("DPO pairs do not match the prepared data/manifest; rebuild preferences")
     if meta["partial"] or meta["n_source"] != len(train):
         raise ValueError("Partial smoke-test pairs cannot be used for the full DPO run")
-    if not pairs or meta["n_pairs"] != len(pairs):
+    if len(pairs) != len(train) or meta["n_pairs"] != len(pairs):
         raise ValueError("DPO pairs are empty or their count disagrees with the manifest")
     if meta["settings"]["generator"] != SLM_MODEL_ID or meta["settings"]["solver"] != SOLVER_MODEL_ID:
         raise ValueError("Generator/solver changed; rebuild preferences with the intended models")
@@ -44,12 +43,10 @@ def validate_pairs(pairs: list[dict], meta: dict, train: list[dict], manifest: d
             raise ValueError(f"Prompt/explanation mismatch for {item_id}")
         for side in ("chosen", "rejected"):
             quality = pair[f"{side}_quality"]
-            if quality.get("valid") is not True:
-                raise ValueError(f"Unvalidated {side} for {item_id}")
-            if structural_error(row, {"text": pair[side]}):
-                raise ValueError(f"Invalid {side} for {item_id}")
+            if "valid" not in quality:
+                raise ValueError(f"Missing diagnostic flags for {item_id}")
         gap = pair["score_rejected"] - pair["score_chosen"]
-        if pair["chosen"] == pair["rejected"] or not math.isfinite(gap) or gap <= 0 or gap < meta["tau"]:
+        if not math.isfinite(gap) or gap < 0:
             raise ValueError(f"Invalid adversarial preference direction/gap for {item_id}")
 
 

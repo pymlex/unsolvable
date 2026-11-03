@@ -46,7 +46,12 @@ def validate_sources(train: list[dict], test: list[dict], *, expected_train=500,
         raise ValueError("Train/test passage overlap")
 
 
-def prepare_data() -> Path:
+def prepare_data(*, refresh=False) -> Path:
+    if MANIFEST_PATH.exists() and not refresh:
+        _, _, existing = load_prepared()
+        if DATASET_REVISION in {"main", existing["revision"]}:
+            print(f"Using pinned source snapshot {existing['revision']} (500 train / 116 test)", flush=True)
+            return MANIFEST_PATH
     from datasets import load_dataset
     from huggingface_hub import HfApi
 

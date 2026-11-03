@@ -18,6 +18,9 @@ or identical passages overlap. Real test data is retained as published, includin
 items with missing or repeated highlight markup; no test items are dropped.
 The `highlighted_words` metadata can contain dictionary forms while passages
 contain inflected forms. Rewrite checks use the actual `**spans**` in the passage.
+Subsequent prepare calls reuse that snapshot. Publishing preferences to another
+config in the same HF repo does not invalidate it. Use `--refresh-data` only
+when intentionally replacing the source snapshot.
 
 ## Generate and rank pairs
 
@@ -28,12 +31,14 @@ For each of the 500 training items:
    carefully, preserve word meanings and return **only the complete passage**.
    Inflection is allowed when grammar requires it; target-word synonyms are not.
 2. Call generation twice independently at temperature 0.8, with thinking off.
-3. Reject empty/truncated outputs, changed highlight lemmas, extra commentary,
-   invisible characters, and word-count changes above 20%.
+3. Record structural diagnostics for changed highlight lemmas, extra commentary,
+   invisible characters and word-count changes above 20%. These flags do not
+   discard training rows. Actually truncated samples are regenerated.
 4. Compute the log probability of the gold digit answer plus EOS under the
    frozen solver's exam prompt. The solver never receives the explanation or key.
 5. Choose the lower-score rewrite as `chosen`, the other as `rejected`.
-   Discard duplicate rewrites and gaps below `PAIRWISE_GAP_TAU` (default 0.10).
+   Keep every pair, including duplicates, ties and small gaps. `PAIRWISE_GAP_TAU`
+   (default 0.10) is a diagnostic annotation only.
 
 Local morphology (`pymorphy3`) permits grammatical inflections such as
 «фразу → фразой», while rejecting replacement by a different lexeme. This is
@@ -45,12 +50,14 @@ nats (25th/75th percentiles 0.043/0.281). Real EGE eval was not used to choose i
 
 There are no DeepSeek API calls or semantic rechecks in this DPO pipeline.
 Preservation of meanings is instructed through the definitions and explanation;
-the acceptance checks are structural. Reports label this `structural_only`.
+the diagnostic checks are structural. Reports label this `structural_only`.
 The original key and options never become trainable completions.
+All candidates are scored, regardless of structural diagnostics. Ties use stable
+generation order; duplicate/tied pairs are retained and explicitly flagged.
 
 Candidate records are appended after each item. Rerunning `preferences` reuses
 matching candidates and scores; changes to source, prompt or generation settings
-invalidate their cache keys. The resulting dataset has at most 500 pairs.
+invalidate their cache keys. The resulting full dataset always has exactly 500 pairs, one per train item.
 Items are processed in batches of four (`GENERATION_BATCH_SIZE`), with two
 separate generation passes per batch. Each item still has exactly two samples.
 Batch size can be tuned for GPU throughput without invalidating completed
@@ -154,3 +161,13 @@ CPU model, unchanged frozen-solver scores, adapter updates/checkpoint saving,
 two independent generation calls, pair direction, source isolation and callback
 scheduling. They require no API key or model downloads. GPU/model-specific
 compatibility is verified separately on the target server.
+
+## HF publication
+
+A full `preferences` run automatically publishes all 500 pairs to
+`pymlex/reshuege-ru-2026`, config `dpo-qwen3.5-2b`, split `train`.
+The existing `train-deepseek-v4-flash/train` and `test-reshuege/test` configs are
+preserved. Raw candidate attempts (including earlier attempts), the pair manifest,
+CSV and build diagnostics are uploaded under `artifacts/dpo-qwen3.5-2b/`.
+`HF_TOKEN` must have write access to that dataset. Retry publication independently
+with `python main.py --step publish-preferences`; regeneration is not required.

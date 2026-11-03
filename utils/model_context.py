@@ -17,6 +17,18 @@ def generation_bounds(model, tokenizer, prompt_length: int, max_new_tokens=None)
     limit = context_window(model, tokenizer)
     if prompt_length >= limit:
         raise ValueError(f"Complete prompt has {prompt_length} tokens, exceeding the native context window {limit}")
-    if max_new_tokens is not None:
-        return {"max_new_tokens": max_new_tokens}  # Explicit bounded unit-test/legacy call.
-    return {"max_length": limit, "max_new_tokens": None}
+    bounds = ({"max_new_tokens": max_new_tokens} if max_new_tokens is not None
+              else {"max_length": limit, "max_new_tokens": None})
+    # Trainer may replace Qwen's document EOS by its chat EOS. Both are natural
+    # terminators; keep both so generation cannot continue after a finished turn.
+    eos = getattr(getattr(model, "generation_config", None), "eos_token_id", None)
+    ids = set(eos if isinstance(eos, list) else [eos])
+    ids.add(getattr(tokenizer, "eos_token_id", None))
+    special = getattr(tokenizer, "all_special_tokens", [])
+    for token in ("<|im_end|>", "<|endoftext|>", "<|eot_id|>"):
+        if token in special:
+            ids.add(tokenizer.convert_tokens_to_ids(token))
+    ids.discard(None)
+    if ids:
+        bounds["eos_token_id"] = sorted(ids)
+    return bounds

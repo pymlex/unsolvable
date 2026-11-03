@@ -11,7 +11,7 @@ from utils.paths import ensure_result_dirs
 
 
 STEPS = [
-    "prepare", "preferences", "train", "evaluate",
+    "prepare", "preferences", "publish-preferences", "train", "evaluate",
     "benchmark-slm",
     "benchmark-deepseek",
     "probe-margin",
@@ -41,6 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-steps", type=int, default=-1)
     parser.add_argument("--checkpoint", default=None, help="Paraphraser checkpoint for standalone evaluation")
     parser.add_argument("--device", default=None)
+    parser.add_argument("--refresh-data", action="store_true", help="Explicitly replace the pinned HF source snapshot")
     return parser.parse_args()
 
 
@@ -55,10 +56,13 @@ def main() -> None:
         raise ValueError("Use --step train --dry-run after preparing preferences")
     if args.step in {"prepare", "all"}:
         from eval.ege_data import prepare_data
-        prepare_data()
+        prepare_data(refresh=args.refresh_data)
     if args.step in {"preferences", "all"}:
         from preferences.build_dpo_dataset import build_preference_dataset
-        build_preference_dataset(limit=limit, device=args.device)
+        build_preference_dataset(limit=limit, device=args.device, publish=True)
+    if args.step == "publish-preferences":
+        from preferences.build_dpo_dataset import publish_preferences
+        publish_preferences()
     if args.step in {"train", "all"}:
         from training.dpo_train import train_dpo
         train_dpo(dry_run=args.dry_run, resume=args.resume, max_steps=args.max_steps, device=args.device)

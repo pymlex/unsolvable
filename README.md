@@ -14,6 +14,7 @@ definitions and `explanation`. A frozen no-thinking solver ranks them by gold
 answer log probability, then LoRA DPO trains the paraphraser.
 
 - Training: HF config `train-deepseek-v4-flash`, split `train`, **500** synthetic items.
+- Preferences: exactly **500 pairs**, all retained; published to HF config `dpo-qwen3.5-2b/train`.
 - Evaluation: HF config `test-reshuege`, split `test`, **all 116** real items every time.
 - DeepSeek is the source of the synthetic items; the DPO run makes **no API calls**.
 - Eval runs before training, every 20 optimizer steps, and at the final step.
