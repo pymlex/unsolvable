@@ -302,3 +302,23 @@ def test_native_context_exhaustion_is_archived_and_regenerated(row, tmp_path, mo
     assert "unfinished passage" not in scored
     assert pools["a"]["failed_candidates"][0]["text"] == "unfinished passage"
     assert result[0]["gap"] > .5
+
+
+def test_generation_progress_saves_eos_before_other_items_finish(tmp_path):
+    import json
+    import torch
+    from generation.progress import GenerationProgress
+    tokenizer = SimpleNamespace(decode=lambda tokens, **kwargs: str(tokens))
+    progress = GenerationProgress(tokenizer, [{"id": "a"}, {"id": "b"}], [9], tmp_path,
+                                  sample_pass=1, sampling={"temperature": 1.1})
+    progress.put(torch.tensor([[1, 2], [1, 2]]))
+    progress.put(torch.tensor([3, 4]))
+    progress.put(torch.tensor([9, 5]))
+    rows = [json.loads(line) for line in (tmp_path / "generation_samples.jsonl").read_text().splitlines()]
+    assert [r["item_id"] for r in rows] == ["a"]
+    progress.report()
+    state = json.loads((tmp_path / "generation_progress.json").read_text())
+    assert state["n_finished"] == 1 and state["active_item_ids"] == ["b"]
+    progress.put(torch.tensor([9, 9]))
+    progress.end()
+    assert len((tmp_path / "generation_samples.jsonl").read_text().splitlines()) == 2

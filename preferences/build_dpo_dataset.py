@@ -180,6 +180,19 @@ def build_preference_dataset(*, limit=0, device=None, publish=False) -> Path:
                 pairs.append(pair)
             print(f"[preferences] {start + offset + 1}/{len(source)} | pairs={len(pairs)} | id={row['id']}", flush=True)
     pools = {r["item_id"]: r for r in records}
+    # Refinement is a continuation of the existing pools, not a reason to discard
+    # the original temperature-0.8 candidates and their completed scores.
+    import os
+    refinement_sampling = {"temperature": float(os.getenv("REFINEMENT_TEMPERATURE", "1.1")),
+                           "top_p": float(os.getenv("REFINEMENT_TOP_P", "0.95")),
+                           "repetition_penalty": float(os.getenv("REFINEMENT_REPETITION_PENALTY", "1.05"))}
+    def generate_refinement(rows):
+        groups = generate_item_paraphrases(generator, tokenizer, rows, num_samples=2,
+                                          progress_dir=PREFERENCES_DIR, **refinement_sampling)
+        for group in groups:
+            for candidate in group:
+                candidate["sampling"] = refinement_sampling.copy()
+        return groups
     def persist(record):
         import json
         import os
@@ -189,7 +202,7 @@ def build_preference_dataset(*, limit=0, device=None, publish=False) -> Path:
             os.fsync(stream.fileno())
     pairs = refine_until_margin(
         source, pools,
-        generate=lambda rows: generate_item_paraphrases(generator, tokenizer, rows, num_samples=2),
+        generate=generate_refinement,
         score=solver.score, gate=gate, persist=persist,
     )
     records = list(pools.values())
@@ -197,6 +210,7 @@ def build_preference_dataset(*, limit=0, device=None, publish=False) -> Path:
     write_json(PAIRS_META_PATH, {"source": manifest, "settings": settings, "tau": PAIRWISE_GAP_TAU,
                                "n_source": len(source), "n_pairs": len(pairs), "partial": bool(limit),
                                "minimum_gap": DPO_MIN_PAIR_GAP, "selection": "cumulative_pool_extremes_strict",
+                               "refinement_sampling": refinement_sampling,
                                "pairs_fingerprint": fingerprint(pairs)})
     gaps = [p["gap"] for p in pairs]
     write_json(PREFERENCES_DIR / "build_stats.json", {
@@ -245,7 +259,7 @@ def publish_preferences() -> str:
     Dataset.from_list(pairs).push_to_hub(DATASET_ID, config_name=config, split="train")
     commit = HfApi().upload_folder(repo_id=DATASET_ID, repo_type="dataset", folder_path=str(PREFERENCES_DIR),
                          path_in_repo=f"artifacts/{config}",
-                         allow_patterns=["candidates.jsonl", "dpo_manifest.json", "build_stats.json", "dpo_preferences.csv", "gap_distribution.json", "gap_histogram.png", "refinement_progress.json"])
+                         allow_patterns=["candidates.jsonl", "dpo_manifest.json", "build_stats.json", "dpo_preferences.csv", "gap_distribution.json", "gap_histogram.png", "refinement_progress.json", "generation_samples.jsonl"])
     url = f"https://huggingface.co/datasets/{DATASET_ID}/viewer/{config}/train"
     write_json(PREFERENCES_DIR / "hf_publication.json", {"repo": DATASET_ID, "config": config, "n_pairs": 500, "url": url, "commit": commit.oid})
     print(f"[HF] Published all 500 pairs: {url}", flush=True)

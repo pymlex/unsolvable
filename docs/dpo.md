@@ -43,6 +43,12 @@ For each of the 500 training items:
    greater than 0.5. Sources already above the threshold are not regenerated.
    All attempts, including duplicates and ties, remain in the raw cache.
 
+Refinement uses temperature 1.1, top-p 0.95 and a mild repetition penalty of
+1.05 to increase diversity and discourage runaway repetition. These settings
+can be changed with `REFINEMENT_TEMPERATURE`, `REFINEMENT_TOP_P` and
+`REFINEMENT_REPETITION_PENALTY`. Sampling metadata is saved on each new candidate;
+earlier temperature-0.8 candidates remain available for ranking.
+
 If a natural completion exhausts VRAM, refinement preserves the existing pools
 and retries with a fresh seed. It does not impose an output-token cap. A sample
 that reaches the model's native context boundary is archived in

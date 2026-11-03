@@ -37,7 +37,7 @@ def write_gap_report(pairs: list[dict], directory: Path, *, model_id: str) -> di
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     fig.text(.1, .025, f"{model_id}, замороженный решатель, без thinking. "
-             "Train DeepSeek; включая нулевые разницы и дубли.", fontsize=9)
+             f"Train DeepSeek; минимум Δ = {stats['min']:.3f} нат; нулевых: {stats['n_zero']}.", fontsize=9)
     fig.tight_layout(rect=(0, .06, 1, 1))
     fig.savefig(directory / "gap_histogram.png", dpi=160)
     plt.close(fig)

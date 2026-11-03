@@ -10,7 +10,8 @@ from utils.model_context import generation_bounds
 
 def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples=2,
                              do_sample=True, max_new_tokens=None,
-                             batch_size=GENERATION_BATCH_SIZE, temperature=GENERATION_TEMPERATURE) -> list[list[dict]]:
+                             batch_size=GENERATION_BATCH_SIZE, temperature=GENERATION_TEMPERATURE,
+                             top_p=0.9, repetition_penalty=1.0, progress_dir=None) -> list[list[dict]]:
     import torch
 
     if num_samples < 1 or batch_size < 1:
@@ -22,7 +23,7 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
     tokenizer.padding_side = "left"
     try:
         # Each pass calls generate independently (no shared beam / duplicated output).
-        for _ in range(num_samples):
+        for sample_pass in range(num_samples):
             for start in range(0, len(rows), batch_size):
                 chunk = rows[start:start + batch_size]
                 prompts = [apply_chat_template_no_think(tokenizer, [{"role": "user", "content": build_item_paraphrase_prompt(r)}]) for r in chunk]
@@ -30,9 +31,17 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                 kwargs = {**generation_bounds(model, tokenizer, inputs["input_ids"].shape[1], max_new_tokens), "do_sample": do_sample,
                           "pad_token_id": tokenizer.pad_token_id, "use_cache": True}
                 if do_sample:
-                    kwargs.update(temperature=temperature, top_p=0.9)
+                    kwargs.update(temperature=temperature, top_p=top_p, repetition_penalty=repetition_penalty)
                 else:
                     kwargs.update(temperature=None, top_p=None, top_k=None)
+                if progress_dir is not None:
+                    from generation.progress import GenerationProgress
+                    eos = kwargs["eos_token_id"]
+                    kwargs["streamer"] = GenerationProgress(
+                        tokenizer, chunk, eos if isinstance(eos, list) else [eos], progress_dir,
+                        sample_pass=sample_pass + 1,
+                        sampling={"temperature": temperature, "top_p": top_p,
+                                  "repetition_penalty": repetition_penalty, "seed": torch.initial_seed()})
                 with torch.no_grad():
                     output = model.generate(**inputs, **kwargs)
                 offset = inputs["input_ids"].shape[1]
