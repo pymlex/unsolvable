@@ -165,7 +165,8 @@ Artifacts:
 
 Loss convergence is measured from non-overlapping 20-step windows. After at least
 80 optimizer steps, three windows without a decrease of at least 0.001 in the
-best mean loss stop training. This is training-loss convergence, not evidence
+best mean loss stop training. The observation period also extends at least three
+full windows past learning-rate warmup. This is training-loss convergence, not evidence
 of improved attack success; the full 116-item metrics must be inspected separately.
 Use `DPO_LOGGING_STEPS=1`. `DPO_EPOCHS` is the maximum training budget.
 After measured convergence, the final LoRA adapter, tokenizer, loss histories,

@@ -355,8 +355,9 @@ def test_generation_abandons_repeated_paragraph_loop_without_token_cap(tmp_path)
     assert short.loop_ids == {"b"}
 
 
-def test_loss_convergence_stops_only_after_observed_plateau(tmp_path):
+def test_loss_convergence_stops_only_after_observed_plateau(tmp_path, monkeypatch):
     from training.convergence import LossConvergenceCallback
+    monkeypatch.setattr("training.convergence.write_json", lambda *args: None)
     callback = LossConvergenceCallback(tmp_path)
     control = SimpleNamespace(should_training_stop=False)
     for step in range(1, 81):
@@ -368,6 +369,12 @@ def test_loss_convergence_stops_only_after_observed_plateau(tmp_path):
     for step in range(1, 161):
         decreasing.on_log(None, SimpleNamespace(global_step=step), control, logs={"loss": 1-step*.002})
     assert not decreasing.converged and not control.should_training_stop
+    warmup = LossConvergenceCallback(tmp_path / "warmup")
+    control.should_training_stop = False
+    args = SimpleNamespace(get_warmup_steps=lambda max_steps: 100)
+    for step in range(1, 161):
+        warmup.on_log(args, SimpleNamespace(global_step=step, max_steps=200), control, logs={"loss": .4})
+        assert control.should_training_stop == (step == 160)
 
 
 def test_loop_stop_is_per_item_and_padding_cannot_become_valid_eos(tmp_path):

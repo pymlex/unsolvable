@@ -41,6 +41,9 @@ class LossConvergenceCallback(TrainerCallback):
         loss = (logs or {}).get("loss")
         if not isinstance(loss, (int, float)) or not math.isfinite(loss):
             return control
+        if args is not None and hasattr(args, "get_warmup_steps"):
+            warmup = args.get_warmup_steps(state.max_steps)
+            self.min_steps = max(self.min_steps, warmup + self.window * self.patience)
         self._observe(int(state.global_step), float(loss))
         write_json(self.directory / "convergence.json", {
             "converged": self.converged, "criterion": "training_loss_plateau",
