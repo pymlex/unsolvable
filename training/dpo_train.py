@@ -115,6 +115,8 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
             "beta": DPO_BETA, "learning_rate": DPO_LEARNING_RATE,
             "batch_size": DPO_PER_DEVICE_BATCH_SIZE, "accumulation": DPO_GRADIENT_ACCUMULATION_STEPS,
             "lora_r": DPO_LORA_R, "lora_alpha": DPO_LORA_ALPHA}
+    plan["convergence"] = {"criterion": "training_loss_plateau", "window_steps": 20,
+                           "patience_windows": 3, "min_steps": 80, "min_delta": .001}
     print(json.dumps(plan, ensure_ascii=False, indent=2))
     if dry_run:
         return PAIRS_META_PATH
@@ -134,6 +136,7 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
     from scoring.frozen_solver import FrozenSolver
     from training.callbacks import EgeMonitorCallback
     from training.history import TrainingHistoryCallback
+    from training.convergence import LossConvergenceCallback
 
     set_seed(DPO_SEED)
     model, tokenizer, _ = load_slm(SLM_MODEL_ID, device)
@@ -150,7 +153,8 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
     evaluator = EgeEvaluator(tokenizer, solver, output_dir=MONITORING_DIR / "dpo", reset_history=not resume)
     monitor = EgeMonitorCallback(evaluator, every_steps=DPO_MONITOR_EVERY_STEPS)
     history = TrainingHistoryCallback(MONITORING_DIR / "dpo", resume=bool(resume))
-    trainer = make_trainer(model, tokenizer, pairs, output_dir=DPO_DIR, callbacks=[monitor, history], max_steps=max_steps)
+    convergence = LossConvergenceCallback(MONITORING_DIR / "dpo", resume=bool(resume))
+    trainer = make_trainer(model, tokenizer, pairs, output_dir=DPO_DIR, callbacks=[monitor, history, convergence], max_steps=max_steps)
     write_json(run_path, plan)
     trainer.train(resume_from_checkpoint=resume or None)
     final_dir = DPO_DIR / "final"
@@ -158,6 +162,9 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
     tokenizer.save_pretrained(str(final_dir))
     write_json(MONITORING_DIR / "dpo" / "trainer_state_log.json", trainer.state.log_history)
     plot_history(MONITORING_DIR / "dpo")
+    if (MONITORING_DIR / "dpo" / "convergence.json").exists():
+        from training.publish import publish_converged_adapter
+        publish_converged_adapter(final_dir, MONITORING_DIR / "dpo", plan)
     return final_dir
 
 
@@ -180,4 +187,15 @@ def plot_history(directory: Path) -> None:
     fig.suptitle("Source: test-reshuege/test, fixed HF revision recorded in eval_protocol.json", fontsize=9)
     fig.tight_layout()
     fig.savefig(directory / "training_summary.png", dpi=150)
+    plt.close(fig)
+    logs = read_jsonl(directory / "train_history.jsonl")
+    losses = [r for r in logs if isinstance(r.get("loss"), (int, float))]
+    margins = [r for r in logs if isinstance(r.get("rewards/margins"), (int, float))]
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+    axes[0].plot([r["step"] for r in losses], [r["loss"] for r in losses])
+    axes[0].set(title="DPO training loss", xlabel="Optimizer step", ylabel="Loss")
+    axes[1].plot([r["step"] for r in margins], [r["rewards/margins"] for r in margins])
+    axes[1].set(title="DPO reward margin", xlabel="Optimizer step", ylabel="Reward margin")
+    fig.tight_layout()
+    fig.savefig(directory / "loss_history.png", dpi=150)
     plt.close(fig)

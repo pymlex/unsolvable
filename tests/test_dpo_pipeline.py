@@ -347,3 +347,18 @@ def test_generation_abandons_repeated_paragraph_loop_without_token_cap(tmp_path)
         progress.put(torch.tensor([token]))
     assert stop(torch.tensor([[1]]), None).all()
     assert progress.loop_ids == {"a"} and not progress.finished
+
+
+def test_loss_convergence_stops_only_after_observed_plateau(tmp_path):
+    from training.convergence import LossConvergenceCallback
+    callback = LossConvergenceCallback(tmp_path)
+    control = SimpleNamespace(should_training_stop=False)
+    for step in range(1, 81):
+        callback.on_log(None, SimpleNamespace(global_step=step), control, logs={"loss": .4})
+        assert control.should_training_stop == (step == 80)
+    assert callback.converged and len(callback.windows) == 4
+    decreasing = LossConvergenceCallback(tmp_path / "decreasing")
+    control.should_training_stop = False
+    for step in range(1, 161):
+        decreasing.on_log(None, SimpleNamespace(global_step=step), control, logs={"loss": 1-step*.002})
+    assert not decreasing.converged and not control.should_training_stop

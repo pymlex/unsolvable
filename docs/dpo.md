@@ -53,6 +53,12 @@ If a natural completion exhausts VRAM, refinement preserves the existing pools
 and retries with a fresh seed. It does not impose an output-token cap. A sample
 that reaches the model's native context boundary is archived in
 `failed_candidates` and regenerated rather than used as an incomplete DPO target.
+Generation reports EOS counts, active item IDs, token counts and tail previews
+every 10 seconds in `generation_progress.json`. Each EOS-complete sample is
+fsynced to `generation_samples.jsonl` immediately and can be recovered after an
+interrupted batch. Exact paragraph loops (the same 32–96-token block three times)
+are abandoned and archived, while completed samples survive; this is not a
+length cap. Unfinished loop outputs are never scored or used in DPO.
 
 Local morphology (`pymorphy3`) permits grammatical inflections such as
 «фразу → фразой», while rejecting replacement by a different lexeme. This is
@@ -154,6 +160,17 @@ Artifacts:
   step (`DPO_LOGGING_STEPS=1`), before training finishes. JSONL is flushed and
   fsynced per log; JSON/CSV snapshots are replaced atomically. Resume retains history.
 - `results/monitoring/dpo/training_summary.png`.
+- `results/monitoring/dpo/loss_history.png`, `convergence.json`.
+
+Loss convergence is measured from non-overlapping 20-step windows. After at least
+80 optimizer steps, three windows without a decrease of at least 0.001 in the
+best mean loss stop training. This is training-loss convergence, not evidence
+of improved attack success; the full 116-item metrics must be inspected separately.
+Use `DPO_LOGGING_STEPS=1`. `DPO_EPOCHS` is the maximum training budget.
+After measured convergence, the final LoRA adapter, tokenizer, loss histories,
+per-item evaluations and convergence windows are published to `HF_MODEL_REPO`
+(default `pymlex/unsolvable-qwen3.5-2b-dpo`). If the epoch budget is exhausted
+without convergence, local checkpoints are retained and no convergence is claimed.
 
 ```bash
 # Resume optimizer/RNG state from the latest saved checkpoint:
