@@ -53,6 +53,8 @@ matching candidates and scores; changes to source, prompt or generation settings
 invalidate their cache keys. The resulting dataset has at most 500 pairs.
 Items are processed in batches of four (`GENERATION_BATCH_SIZE`), with two
 separate generation passes per batch. Each item still has exactly two samples.
+Batch size can be tuned for GPU throughput without invalidating completed
+candidate records; the sampling-policy and prompt settings must still match.
 
 ## Ubuntu / Clore
 
@@ -92,7 +94,11 @@ pipeline; it does not rerun the historical zero-edit benchmarks or synthesis.
 Default LoRA: rank 16, alpha 32, all linear layers; four epochs, LR 1e-5,
 beta 0.1, microbatch 1, accumulation 8. Dependencies are pinned in requirements.
 Before training, token lengths are checked; oversized pairs fail explicitly
-instead of silently truncating the prompt, explanation or rewritten text.
+against the native model context window instead of silently truncating the
+prompt, explanation or rewritten text. DPO uses `max_length=None`. Generation
+has no application-level token cap: it stops at EOS within the native context
+window. Completed cached samples remain reusable when removing an old cap;
+any actually truncated samples are regenerated.
 
 The callback evaluates at step 0, every 20 optimizer steps, and the final step.
 Each evaluation greedily generates one passage for **each of the 116 real items**.

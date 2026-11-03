@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 from constants import (DPO_CANDIDATES, DPO_SEED, GENERATION_BATCH_SIZE, GENERATION_TEMPERATURE, LENGTH_MARGIN,
-                       PAIRWISE_GAP_TAU, PARAPHRASE_MAX_NEW_TOKENS, SLM_MODEL_ID, SOLVER_MODEL_ID)
+                       PAIRWISE_GAP_TAU, SLM_MODEL_ID, SOLVER_MODEL_ID)
 from eval.ege_data import load_prepared
 from eval.model_io import load_slm
 from generation.ege_paraphrase import generate_item_paraphrases
@@ -19,6 +19,34 @@ from utils.paths import PREFERENCES_DIR, ensure_result_dirs
 PAIRS_PATH = PREFERENCES_DIR / "dpo_preferences.jsonl"
 PAIRS_META_PATH = PREFERENCES_DIR / "dpo_manifest.json"
 CACHE_PATH = PREFERENCES_DIR / "candidates.jsonl"
+
+
+def candidate_key(settings: dict, row: dict) -> str:
+    # Batch size is a throughput setting, not a change in the sampling policy.
+    identity = {k: v for k, v in settings.items() if k not in {"generation_batch_size", "max_new_tokens"}}
+    return fingerprint({"settings": identity, "prompt": build_item_paraphrase_prompt(row)})
+
+
+def cached_candidate(cache: dict, settings: dict, row: dict) -> tuple[str, dict | None]:
+    key = candidate_key(settings, row)
+    if key in cache and all(not c.get("truncated") for c in cache[key]["candidates"]):
+        return key, cache[key]
+    cache.pop(key, None)
+    # Preserve candidates from the first v4 runs when tuning GPU batch size.
+    variants = [settings]
+    if "max_new_tokens" in settings:
+        variants.append({**settings, "max_new_tokens": 1024})
+    for variant in variants:
+        for previous_batch in (4, 8, 16, 32, 64, 128):
+            legacy = {**variant, "generation_batch_size": previous_batch}
+            possible = [legacy, {k: v for k, v in legacy.items() if k != "generation_batch_size"}]
+            for identity in possible:
+                old_key = fingerprint({"settings": identity, "prompt": build_item_paraphrase_prompt(row)})
+                if old_key in cache and all(not c.get("truncated") for c in cache[old_key]["candidates"]):
+                    record = {**cache[old_key], "key": key, "generation_batch_size": previous_batch}
+                    cache[key] = record
+                    return key, record
+    return key, None
 
 
 def select_pair(row: dict, candidates: list[dict], *, tau=PAIRWISE_GAP_TAU) -> dict | None:
@@ -56,7 +84,7 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
     cache = {r["key"]: r for r in read_jsonl(CACHE_PATH)} if CACHE_PATH.exists() else {}
     settings = {"version": 4, "generator": SLM_MODEL_ID, "solver": SOLVER_MODEL_ID,
                 "seed": DPO_SEED, "samples": DPO_CANDIDATES, "generation_batch_size": GENERATION_BATCH_SIZE, "temperature": GENERATION_TEMPERATURE,
-                "max_new_tokens": PARAPHRASE_MAX_NEW_TOKENS, "length_margin": LENGTH_MARGIN,
+                "max_new_tokens": None, "length_margin": LENGTH_MARGIN,
                 "structural_check_version": CHECK_VERSION, "source_revision": manifest["revision"],
                 "score": "gold_logprob_sum_with_eos_no_thinking_float32"}
     pairs, records = [], []
@@ -64,7 +92,7 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
         raise ValueError("GENERATION_BATCH_SIZE must be positive")
     for start in range(0, len(source), GENERATION_BATCH_SIZE):
         chunk = source[start:start + GENERATION_BATCH_SIZE]
-        keys = [fingerprint({"settings": settings, "prompt": build_item_paraphrase_prompt(row)}) for row in chunk]
+        keys = [cached_candidate(cache, settings, row)[0] for row in chunk]
         missing = [(row, key) for row, key in zip(chunk, keys, strict=True) if key not in cache]
         if missing:
             set_seed(DPO_SEED + start)
@@ -73,7 +101,8 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
                 for candidate in candidates:
                     candidate["quality"] = gate.check(row, candidate)
                     candidate["score"] = solver.score(row, candidate["text"]) if candidate["quality"]["valid"] else None
-                cached = {"key": key, "item_id": str(row["id"]), "candidates": candidates}
+                cached = {"key": key, "item_id": str(row["id"]), "candidates": candidates,
+                          "generation_batch_size": GENERATION_BATCH_SIZE}
                 CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
                 import json
                 with CACHE_PATH.open("a", encoding="utf-8") as stream:

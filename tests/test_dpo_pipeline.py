@@ -177,6 +177,38 @@ def test_pair_builder_batches_and_resumes_without_regeneration(row, tmp_path, mo
     assert calls == [4, 1]
     assert len(read_jsonl(build.PAIRS_PATH)) == 5
     calls.clear()
+    monkeypatch.setattr(build, "GENERATION_BATCH_SIZE", 8)
     build.build_preference_dataset()
     assert calls == []
     assert len(read_jsonl(build.CACHE_PATH)) == 5
+
+
+def test_legacy_candidates_survive_batch_size_tuning(row):
+    from preferences.build_dpo_dataset import cached_candidate
+    settings = {"version": 4, "seed": 42, "generation_batch_size": 16}
+    old_key = fingerprint({"settings": settings, "prompt": build_item_paraphrase_prompt(row)})
+    cache = {old_key: {"key": old_key, "item_id": row["id"], "candidates": [{"text": "cached", "truncated": False}]}}
+    key, record = cached_candidate(cache, {**settings, "generation_batch_size": 64}, row)
+    assert record["candidates"][0]["text"] == "cached"
+    assert record["generation_batch_size"] == 16
+
+
+def test_generation_uses_eos_and_native_context_instead_of_manual_cap():
+    from utils.model_context import generation_bounds
+    model = SimpleNamespace(config=SimpleNamespace(max_position_embeddings=32768))
+    tokenizer = SimpleNamespace(model_max_length=10**30)
+    assert generation_bounds(model, tokenizer, 5000) == {"max_length": 32768, "max_new_tokens": None}
+    with pytest.raises(ValueError, match="Complete prompt"):
+        generation_bounds(model, tokenizer, 40000)
+
+
+def test_complete_capped_candidates_can_be_reused_without_cap(row):
+    from preferences.build_dpo_dataset import cached_candidate
+    settings = {"version": 4, "max_new_tokens": 1024, "generation_batch_size": 16}
+    old_key = fingerprint({"settings": settings, "prompt": build_item_paraphrase_prompt(row)})
+    cache = {old_key: {"key": old_key, "candidates": [{"text": "complete", "truncated": False}]}}
+    key, record = cached_candidate(cache, {**settings, "max_new_tokens": None, "generation_batch_size": 64}, row)
+    assert record["candidates"][0]["text"] == "complete"
+    cache[old_key]["candidates"][0]["truncated"] = True
+    cache.pop(key, None)
+    assert cached_candidate(cache, {**settings, "max_new_tokens": None}, row)[1] is None

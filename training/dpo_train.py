@@ -64,9 +64,9 @@ def format_pairs(pairs, tokenizer, *, max_length=DPO_MAX_LENGTH):
         for side in ("chosen", "rejected"):
             # TRL tokenizes the prompt and completion separately and appends EOS.
             n_tokens = len(tokenizer.encode(prompt, add_special_tokens=False)) + len(tokenizer.encode(pair[side], add_special_tokens=False)) + 1
-            if n_tokens > max_length:
-                raise ValueError(f"Pair {pair['item_id']} {side}: {n_tokens} tokens > DPO_MAX_LENGTH={max_length}; "
-                                 "increase the limit; silent truncation would damage the exam text")
+            if max_length is not None and n_tokens > max_length:
+                raise ValueError(f"Pair {pair['item_id']} {side}: {n_tokens} tokens > native context {max_length}; "
+                                 "refusing to truncate the complete exam text")
         formatted.append({"prompt": prompt, "chosen": pair["chosen"], "rejected": pair["rejected"]})
     return Dataset.from_list(formatted)
 
@@ -77,7 +77,8 @@ def make_trainer(model, tokenizer, pairs, *, output_dir: Path, callbacks=None, m
     from peft import LoraConfig
     from trl import DPOConfig, DPOTrainer
 
-    dataset = format_pairs(pairs, tokenizer, max_length=max_length)
+    from utils.model_context import context_window
+    dataset = format_pairs(pairs, tokenizer, max_length=context_window(model, tokenizer) if max_length is None else max_length)
     args = DPOConfig(
         output_dir=str(output_dir), num_train_epochs=DPO_EPOCHS, max_steps=max_steps,
         per_device_train_batch_size=batch_size, gradient_accumulation_steps=accumulation,

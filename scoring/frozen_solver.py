@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager, nullcontext
 
-from constants import BATCH_SIZE, MAX_NEW_TOKENS
+from constants import BATCH_SIZE
 from eval.model_io import generate_tip2_answers_batch
 from scoring.answer_logprob import answer_token_logprob_sum
 
@@ -37,6 +37,6 @@ class FrozenSolver:
             for start in range(0, len(rows), BATCH_SIZE):
                 outputs.extend(generate_tip2_answers_batch(
                     self.model, self.tokenizer, str(self.model.device), rows[start:start + BATCH_SIZE],
-                    max_new_tokens=MAX_NEW_TOKENS,
+                    max_new_tokens=None,
                 ))
             return outputs

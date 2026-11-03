@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from constants import GENERATION_BATCH_SIZE, GENERATION_TEMPERATURE, PARAPHRASE_MAX_NEW_TOKENS
+from constants import GENERATION_BATCH_SIZE, GENERATION_TEMPERATURE
 from eval.model_io import apply_chat_template_no_think
 from generation.prompts import build_item_paraphrase_prompt
+from utils.model_context import generation_bounds
 
 
 def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples=2,
-                             do_sample=True, max_new_tokens=PARAPHRASE_MAX_NEW_TOKENS,
+                             do_sample=True, max_new_tokens=None,
                              batch_size=GENERATION_BATCH_SIZE, temperature=GENERATION_TEMPERATURE) -> list[list[dict]]:
     import torch
 
@@ -26,7 +27,7 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                 chunk = rows[start:start + batch_size]
                 prompts = [apply_chat_template_no_think(tokenizer, [{"role": "user", "content": build_item_paraphrase_prompt(r)}]) for r in chunk]
                 inputs = tokenizer(prompts, padding=True, return_tensors="pt", add_special_tokens=False).to(model.device)
-                kwargs = {"max_new_tokens": max_new_tokens, "do_sample": do_sample,
+                kwargs = {**generation_bounds(model, tokenizer, inputs["input_ids"].shape[1], max_new_tokens), "do_sample": do_sample,
                           "pad_token_id": tokenizer.pad_token_id, "use_cache": True}
                 if do_sample:
                     kwargs.update(temperature=temperature, top_p=0.9)

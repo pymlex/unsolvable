@@ -79,8 +79,9 @@ def generate_chat(
 
     inputs = tokenizer(prompt, return_tensors="pt")
     inputs = {k: v.to(model.device if hasattr(model, "device") else device) for k, v in inputs.items()}
+    from utils.model_context import generation_bounds
     gen_kwargs = {
-        "max_new_tokens": max_new_tokens,
+        **generation_bounds(model, tokenizer, inputs["input_ids"].shape[1], max_new_tokens),
         "do_sample": do_sample,
         "pad_token_id": tokenizer.pad_token_id or tokenizer.eos_token_id,
     }
@@ -141,8 +142,9 @@ def generate_tip2_answers_batch(
     inputs = tokenizer(prompts, return_tensors="pt", padding=True)
     target = model.device if hasattr(model, "device") else device
     inputs = {k: v.to(target) for k, v in inputs.items()}
+    from utils.model_context import generation_bounds
     gen_kwargs = {
-        "max_new_tokens": max_new_tokens,
+        **generation_bounds(model, tokenizer, inputs["input_ids"].shape[1], max_new_tokens),
         "do_sample": False,
         "pad_token_id": tokenizer.pad_token_id or tokenizer.eos_token_id,
         "temperature": None,

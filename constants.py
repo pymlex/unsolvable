@@ -49,7 +49,6 @@ GITHUB_RESULTS_PATHS = env_str(
 
 # DPO mirrors ai-text-detector-tricking: base generator x2 -> frozen scorer -> DPO.
 SOLVER_MODEL_ID = env_str("SOLVER_MODEL_ID", SLM_MODEL_ID)
-PARAPHRASE_MAX_NEW_TOKENS = env_int("PARAPHRASE_MAX_NEW_TOKENS", 1024)
 DPO_CANDIDATES = 2
 DPO_SEED = env_int("DPO_SEED", 42)
 DPO_EPOCHS = env_int("DPO_EPOCHS", 4)
@@ -59,6 +58,6 @@ DPO_PER_DEVICE_BATCH_SIZE = env_int("DPO_PER_DEVICE_BATCH_SIZE", 1)
 DPO_GRADIENT_ACCUMULATION_STEPS = env_int("DPO_GRADIENT_ACCUMULATION_STEPS", 8)
 DPO_MONITOR_EVERY_STEPS = env_int("DPO_MONITOR_EVERY_STEPS", 20)
 DPO_LOGGING_STEPS = env_int("DPO_LOGGING_STEPS", 5)
-DPO_MAX_LENGTH = env_int("DPO_MAX_LENGTH", 6144)
+DPO_MAX_LENGTH = None  # No trainer truncation; validate against the native model window.
 DPO_LORA_R = env_int("DPO_LORA_R", 16)
 DPO_LORA_ALPHA = env_int("DPO_LORA_ALPHA", 32)
