@@ -382,3 +382,18 @@ def test_loop_stop_is_per_item_and_padding_cannot_become_valid_eos(tmp_path):
     progress.put(torch.tensor([999, 999]))
     assert progress.finished == {1}
     assert '"item_id": "a"' not in (tmp_path / "generation_samples.jsonl").read_text()
+
+
+def test_prompt_metadata_leak_is_abandoned_without_a_length_limit(tmp_path):
+    import torch
+    from generation.progress import GenerationProgress
+    tokenizer = SimpleNamespace(decode=lambda tokens, **kwargs:
+                                "Ключ (не выводить): 134" if tokens[0] == 2 else "Полный перефраз.")
+    progress = GenerationProgress(tokenizer, [{"id": "a"}, {"id": "b"}], [9], tmp_path,
+                                  sample_pass=1, sampling={})
+    progress.put(torch.tensor([[1], [1]]))
+    progress.put(torch.tensor([2, 1]))
+    progress.put(torch.tensor([9, 9]))
+    assert progress.invalid_sections == {"a": "prompt_metadata_in_output"}
+    assert progress.finished == {1}
+    assert '"item_id": "a"' not in (tmp_path / "generation_samples.jsonl").read_text()

@@ -58,9 +58,10 @@ def generate_item_paraphrases(model, tokenizer, rows: list[dict], *, num_samples
                     }
                     if progress_dir is not None:
                         candidate["generation_event_id"] = f"{kwargs['streamer'].run_id}:{chunk[i]['id']}:{sample_pass+1}"
-                        if str(chunk[i]["id"]) in kwargs["streamer"].loop_ids:
+                        item_id = str(chunk[i]["id"])
+                        if item_id in kwargs["streamer"].abandoned_ids:
                             candidate["truncated"] = True
-                            candidate["failure_reason"] = "repeated_paragraph_loop"
+                            candidate["failure_reason"] = kwargs["streamer"].invalid_sections.get(item_id, "repeated_paragraph_loop")
                     groups[start + i].append(candidate)
     finally:
         tokenizer.padding_side = pad_side

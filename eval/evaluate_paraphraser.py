@@ -81,7 +81,7 @@ class EgeEvaluator:
         self.identity = {"dataset": self.manifest, "solver": solver.model_id,
                          "quality_mode": "structural_only",
                          "paraphraser_decoding": {"do_sample": False, "repetition_penalty": 1.05,
-                                                  "length_limit": "native_context_only", "loop_detection": "per_item_v2"}}
+                                                  "length_limit": "native_context_only", "loop_detection": "per_item_v3_metadata"}}
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.run_path = output_dir / "eval_protocol.json"
         if self.run_path.exists() and json.loads(self.run_path.read_text(encoding="utf-8")) != self.identity:
