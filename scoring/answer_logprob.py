@@ -14,13 +14,8 @@ def render_exam_prompt(tokenizer: PreTrainedTokenizerBase, row: dict) -> str:
     messages = build_messages(row)
     if not (hasattr(tokenizer, "apply_chat_template") and tokenizer.chat_template):
         return messages[0]["content"] + "\n\n" + messages[1]["content"]
-    import inspect
-
-    kwargs = {"tokenize": False, "add_generation_prompt": True}
-    params = inspect.signature(tokenizer.apply_chat_template).parameters
-    if "enable_thinking" in params:
-        kwargs["enable_thinking"] = False
-    return tokenizer.apply_chat_template(messages, **kwargs)
+    from eval.model_io import apply_chat_template_no_think
+    return apply_chat_template_no_think(tokenizer, messages)
 
 
 def answer_token_logprob_sum(
@@ -40,7 +35,8 @@ def answer_token_logprob_sum(
 
     prompt = render_exam_prompt(tokenizer, row)
     prompt_ids = tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
-    answer_ids = tokenizer(gold, return_tensors="pt", add_special_tokens=False)
+    # Include the assistant terminator so a short answer is not scored as a prefix.
+    answer_ids = tokenizer(gold + (tokenizer.eos_token or ""), return_tensors="pt", add_special_tokens=False)
     device = next(model.parameters()).device
     prompt_ids = {k: v.to(device) for k, v in prompt_ids.items()}
     answer_ids = {k: v.to(device) for k, v in answer_ids.items()}

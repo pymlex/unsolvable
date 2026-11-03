@@ -16,17 +16,9 @@ def _build_chat_inputs(
     device: torch.device | str,
 ) -> dict[str, torch.Tensor]:
     messages_batch = [[{"role": "user", "content": prompt}] for prompt in prompts]
-    import inspect
-
-    kwargs = {
-        "tokenize": False,
-        "add_generation_prompt": True,
-    }
-    params = inspect.signature(tokenizer.apply_chat_template).parameters
-    if "enable_thinking" in params:
-        kwargs["enable_thinking"] = False
+    from eval.model_io import apply_chat_template_no_think
     rendered = [
-        tokenizer.apply_chat_template(messages, **kwargs)
+        apply_chat_template_no_think(tokenizer, messages)
         for messages in messages_batch
     ]
     return tokenizer(rendered, return_tensors="pt", padding=True).to(device)

@@ -14,3 +14,23 @@ PARAPHRASE_PROMPT_TEMPLATE = (
 def build_paraphrase_prompt(original_text: str) -> str:
     """Build a minimal Russian paraphrase instruction for one tip-2 text."""
     return PARAPHRASE_PROMPT_TEMPLATE.format(original_text=original_text)
+
+
+def build_item_paraphrase_prompt(row: dict) -> str:
+    """Give the author the explanation, but request only the rewritten passage."""
+    from eval.prompt import format_options, item_text
+
+    return (
+        "Немного перефразируй предложения экзаменационного текста по русскому языку. "
+        "Сохрани все факты, связи между предложениями и значения выделенных слов. "
+        "Выделенные слова и их порядок оставь без изменений, с разметкой **слово**. "
+        "Не меняй правильность ни одного варианта ответа. Пиши грамотно и естественно. "
+        "Словарные толкования, ключ и пояснение ниже нужны только для сохранения смысла. "
+        "Верни ТОЛЬКО полный перефразированный текст: без вступления, вариантов, "
+        "ключа, пояснения и собственных рассуждений.\n\n"
+        f"Исходный текст:\n{item_text(row)}\n\n"
+        f"Словарные толкования из задания (не переписывать):\n{format_options(row['options'])}\n\n"
+        f"Ключ (не выводить): {row['answer']}\n"
+        f"Пояснение (не выводить):\n{row.get('explanation', '')}\n\n"
+        "Перефразированный текст:"
+    )

@@ -16,7 +16,7 @@ import _bootstrap  # noqa: F401
 from constants import (
     ANALYZE_MARGIN_SAMPLES,
     DATASET_ID,
-    DATASET_SPLIT,
+    TRAIN_SPLIT,
     LENGTH_MARGIN,
     PARAPHRASES_PER_TEXT,
     SLM_MODEL_ID,
@@ -38,7 +38,7 @@ def _within_length(original: str, candidate: str, margin: float = LENGTH_MARGIN)
 def run_probe(
     *,
     dataset: str = DATASET_ID,
-    split: str = DATASET_SPLIT,
+    split: str = TRAIN_SPLIT,
     model_id: str = SLM_MODEL_ID,
     n_samples: int = ANALYZE_MARGIN_SAMPLES,
     k: int = PARAPHRASES_PER_TEXT,
@@ -141,7 +141,7 @@ def run_probe(
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--dataset", default=DATASET_ID)
-    p.add_argument("--split", default=DATASET_SPLIT)
+    p.add_argument("--split", default=TRAIN_SPLIT)
     p.add_argument("--model", default=SLM_MODEL_ID)
     p.add_argument("--n-samples", type=int, default=ANALYZE_MARGIN_SAMPLES)
     p.add_argument("--k", type=int, default=PARAPHRASES_PER_TEXT)

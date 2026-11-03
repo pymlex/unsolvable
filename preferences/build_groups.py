@@ -13,7 +13,7 @@ import _bootstrap  # noqa: F401
 
 from constants import (
     DATASET_ID,
-    DATASET_SPLIT,
+    TRAIN_SPLIT,
     GRPO_GROUP_SIZE,
     LENGTH_MARGIN,
     PAIRWISE_GAP_TAU,
@@ -40,7 +40,7 @@ def _within_length(original: str, candidate: str, margin: float = LENGTH_MARGIN)
 def build_groups(
     *,
     dataset: str = DATASET_ID,
-    split: str = DATASET_SPLIT,
+    split: str = TRAIN_SPLIT,
     model_id: str = SLM_MODEL_ID,
     k: int = PARAPHRASES_PER_TEXT,
     group_size: int = GRPO_GROUP_SIZE,
@@ -168,7 +168,7 @@ def build_groups(
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--dataset", default=DATASET_ID)
-    p.add_argument("--split", default=DATASET_SPLIT)
+    p.add_argument("--split", default=TRAIN_SPLIT)
     p.add_argument("--model", default=SLM_MODEL_ID)
     p.add_argument("--k", type=int, default=PARAPHRASES_PER_TEXT)
     p.add_argument("--group-size", type=int, default=GRPO_GROUP_SIZE)

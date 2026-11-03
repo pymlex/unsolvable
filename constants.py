@@ -4,7 +4,13 @@ from utils.config_loader import env_float, env_int, env_str
 
 
 DATASET_ID = env_str("DATASET_ID", "pymlex/reshuege-ru-2026")
-DATASET_SPLIT = env_str("DATASET_SPLIT", "train")
+# Legacy benchmark/synthesis entry points read the real exam split by default.
+TRAIN_CONFIG = "train-deepseek-v4-flash"
+TRAIN_SPLIT = "train"
+EVAL_CONFIG = "test-reshuege"
+EVAL_SPLIT = "test"
+DATASET_SPLIT = env_str("DATASET_SPLIT", EVAL_SPLIT)
+DATASET_REVISION = env_str("DATASET_REVISION", "main")
 
 SLM_MODEL_ID = env_str("SLM_MODEL_ID", "Qwen/Qwen3.5-2B")
 ZVENO_BASE_URL = env_str("ZVENO_BASE_URL", "https://api.zveno.ai/v1")
@@ -40,3 +46,19 @@ GITHUB_RESULTS_PATHS = env_str(
     "GITHUB_RESULTS_PATHS",
     "results/benchmark/ results/preferences/ results/plots/ results/groups/ results/synthesis/",
 )
+
+# DPO mirrors ai-text-detector-tricking: base generator x2 -> frozen scorer -> DPO.
+SOLVER_MODEL_ID = env_str("SOLVER_MODEL_ID", SLM_MODEL_ID)
+PARAPHRASE_MAX_NEW_TOKENS = env_int("PARAPHRASE_MAX_NEW_TOKENS", 1024)
+DPO_CANDIDATES = 2
+DPO_SEED = env_int("DPO_SEED", 42)
+DPO_EPOCHS = env_int("DPO_EPOCHS", 4)
+DPO_LEARNING_RATE = env_float("DPO_LEARNING_RATE", 1e-5)
+DPO_BETA = env_float("DPO_BETA", 0.1)
+DPO_PER_DEVICE_BATCH_SIZE = env_int("DPO_PER_DEVICE_BATCH_SIZE", 1)
+DPO_GRADIENT_ACCUMULATION_STEPS = env_int("DPO_GRADIENT_ACCUMULATION_STEPS", 8)
+DPO_MONITOR_EVERY_STEPS = env_int("DPO_MONITOR_EVERY_STEPS", 20)
+DPO_LOGGING_STEPS = env_int("DPO_LOGGING_STEPS", 5)
+DPO_MAX_LENGTH = env_int("DPO_MAX_LENGTH", 6144)
+DPO_LORA_R = env_int("DPO_LORA_R", 16)
+DPO_LORA_ALPHA = env_int("DPO_LORA_ALPHA", 32)

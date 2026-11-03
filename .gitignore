@@ -31,6 +31,7 @@ wheels/
 .installed.cfg
 *.egg
 .venv/
+.venv-test/
 venv/
 ENV/
 env/
@@ -75,6 +76,10 @@ data/private/
 models/
 checkpoints/
 results/checkpoints/
+results/data/
+results/preferences/candidates.jsonl
+results/preferences/dpo_hf_dataset/
+results/monitoring/judge_cache.jsonl
 wandb/
 mlruns/
 .huggingface/

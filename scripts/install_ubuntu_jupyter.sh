@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 VENV_DIR="${VENV_DIR:-$ROOT/.venv}"
-TORCH_CUDA_INDEX="${TORCH_CUDA_INDEX:-https://download.pytorch.org/whl/cu124}"
+TORCH_CUDA_INDEX="${TORCH_CUDA_INDEX:-https://download.pytorch.org/whl/cu128}"
 
 if [ ! -f .env ]; then
   cp .env.example .env
@@ -113,5 +113,5 @@ echo
 echo "Install complete."
 echo "  source $VENV_DIR/bin/activate"
 echo "  # edit .env: HF_TOKEN=...  (ZVENOAI_API_KEY for DeepSeek)"
-echo "  bash scripts/run_benchmark_slm.sh"
+echo "  bash scripts/run_all.sh"
 echo "Artefacts: results/benchmark/slm_Qwen_Qwen3.5-2B.json"

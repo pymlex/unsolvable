@@ -16,7 +16,7 @@ def normalize_row(row: dict) -> dict:
     return out
 
 
-def load_rows(dataset: str, split: str = "train") -> list[dict]:
+def load_rows(dataset: str, split: str = "test", *, config: str | None = None) -> list[dict]:
     """Load tip-2 rows from a local JSONL path or a Hugging Face dataset id."""
     path = Path(dataset)
     if path.exists() and path.suffix == ".jsonl":
@@ -30,5 +30,9 @@ def load_rows(dataset: str, split: str = "train") -> list[dict]:
 
     from datasets import load_dataset
 
-    ds = load_dataset(dataset, split=split)
+    from constants import DATASET_ID, EVAL_CONFIG, TRAIN_CONFIG
+
+    if config is None and dataset == DATASET_ID:
+        config = TRAIN_CONFIG if split == "train" else EVAL_CONFIG
+    ds = load_dataset(dataset, name=config, split=split)
     return [normalize_row(dict(r)) for r in ds]
