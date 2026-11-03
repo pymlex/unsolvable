@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
-from constants import (DPO_CANDIDATES, DPO_SEED, GENERATION_TEMPERATURE, LENGTH_MARGIN,
+from constants import (DPO_CANDIDATES, DPO_SEED, GENERATION_BATCH_SIZE, GENERATION_TEMPERATURE, LENGTH_MARGIN,
                        PAIRWISE_GAP_TAU, PARAPHRASE_MAX_NEW_TOKENS, SLM_MODEL_ID, SOLVER_MODEL_ID)
 from eval.ege_data import load_prepared
 from eval.model_io import load_slm
@@ -54,31 +54,38 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
         solver = FrozenSolver(solver_model, solver_tokenizer, model_id=SOLVER_MODEL_ID)
     gate = QualityGate()
     cache = {r["key"]: r for r in read_jsonl(CACHE_PATH)} if CACHE_PATH.exists() else {}
-    settings = {"version": 2, "generator": SLM_MODEL_ID, "solver": SOLVER_MODEL_ID,
-                "seed": DPO_SEED, "samples": DPO_CANDIDATES, "temperature": GENERATION_TEMPERATURE,
+    settings = {"version": 3, "generator": SLM_MODEL_ID, "solver": SOLVER_MODEL_ID,
+                "seed": DPO_SEED, "samples": DPO_CANDIDATES, "generation_batch_size": GENERATION_BATCH_SIZE, "temperature": GENERATION_TEMPERATURE,
                 "max_new_tokens": PARAPHRASE_MAX_NEW_TOKENS, "length_margin": LENGTH_MARGIN,
                 "structural_check_version": CHECK_VERSION, "source_revision": manifest["revision"],
                 "score": "gold_logprob_sum_with_eos_no_thinking"}
     pairs, records = [], []
-    for index, row in enumerate(source):
-        key = fingerprint({"settings": settings, "prompt": build_item_paraphrase_prompt(row)})
-        cached = cache.get(key)
-        if cached is None:
-            set_seed(DPO_SEED + index)
-            candidates = generate_item_paraphrases(generator, tokenizer, [row], num_samples=2)[0]
-            for candidate in candidates:
-                candidate["quality"] = gate.check(row, candidate)
-                candidate["score"] = solver.score(row, candidate["text"]) if candidate["quality"]["valid"] else None
-            cached = {"key": key, "item_id": str(row["id"]), "candidates": candidates}
-            CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-            import json
-            with CACHE_PATH.open("a", encoding="utf-8") as stream:
-                stream.write(json.dumps(cached, ensure_ascii=False, allow_nan=False) + "\n")
-        pair = select_pair(row, cached["candidates"])
-        records.append(cached)
-        if pair:
-            pairs.append(pair)
-        print(f"[preferences] {index + 1}/{len(source)} | pairs={len(pairs)} | id={row['id']}", flush=True)
+    if GENERATION_BATCH_SIZE < 1:
+        raise ValueError("GENERATION_BATCH_SIZE must be positive")
+    for start in range(0, len(source), GENERATION_BATCH_SIZE):
+        chunk = source[start:start + GENERATION_BATCH_SIZE]
+        keys = [fingerprint({"settings": settings, "prompt": build_item_paraphrase_prompt(row)}) for row in chunk]
+        missing = [(row, key) for row, key in zip(chunk, keys, strict=True) if key not in cache]
+        if missing:
+            set_seed(DPO_SEED + start)
+            groups = generate_item_paraphrases(generator, tokenizer, [row for row, _ in missing], num_samples=2)
+            for (row, key), candidates in zip(missing, groups, strict=True):
+                for candidate in candidates:
+                    candidate["quality"] = gate.check(row, candidate)
+                    candidate["score"] = solver.score(row, candidate["text"]) if candidate["quality"]["valid"] else None
+                cached = {"key": key, "item_id": str(row["id"]), "candidates": candidates}
+                CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+                import json
+                with CACHE_PATH.open("a", encoding="utf-8") as stream:
+                    stream.write(json.dumps(cached, ensure_ascii=False, allow_nan=False) + "\n")
+                cache[key] = cached
+        for offset, (row, key) in enumerate(zip(chunk, keys, strict=True)):
+            cached = cache[key]
+            pair = select_pair(row, cached["candidates"])
+            records.append(cached)
+            if pair:
+                pairs.append(pair)
+            print(f"[preferences] {start + offset + 1}/{len(source)} | pairs={len(pairs)} | id={row['id']}", flush=True)
     write_jsonl(PAIRS_PATH, pairs)
     write_json(PAIRS_META_PATH, {"source": manifest, "settings": settings, "tau": PAIRWISE_GAP_TAU,
                                "n_source": len(source), "n_pairs": len(pairs), "partial": bool(limit),

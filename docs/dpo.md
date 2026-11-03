@@ -42,6 +42,8 @@ The original key and options never become trainable completions.
 Candidate records are appended after each item. Rerunning `preferences` reuses
 matching candidates and scores; changes to source, prompt or generation settings
 invalidate their cache keys. The resulting dataset has at most 500 pairs.
+Items are processed in batches of four (`GENERATION_BATCH_SIZE`), with two
+separate generation passes per batch. Each item still has exactly two samples.
 
 ## Ubuntu / Clore
 

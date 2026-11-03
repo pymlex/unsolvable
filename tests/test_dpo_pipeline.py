@@ -138,3 +138,37 @@ def test_quality_gate_never_calls_external_api(row, monkeypatch):
     monkeypatch.setattr(zveno, "chat_completion", forbidden)
     result = QualityGate().check(row, {"text": row["passage"]})
     assert result["valid"] is True and result["judge_checked"] is False
+
+
+def test_pair_builder_batches_and_resumes_without_regeneration(row, tmp_path, monkeypatch):
+    import preferences.build_dpo_dataset as build
+    from utils.artifacts import read_jsonl
+    rows = [{**row, "id": str(i), "passage": row["passage"] + f" Число {i}."} for i in range(5)]
+    calls = []
+    def generate(model, tokenizer, items, *, num_samples):
+        assert num_samples == 2
+        calls.append(len(items))
+        return [[{"text": r["passage"].replace("Вчера", word), "truncated": False}
+                 for word in ("Сегодня", "Недавно")] for r in items]
+    class Solver:
+        def __init__(self, *args, **kwargs):
+            pass
+        def score(self, source, text):
+            return -5.0 if "Недавно" in text else -1.0
+    monkeypatch.setattr(build, "GENERATION_BATCH_SIZE", 4)
+    monkeypatch.setattr(build, "load_prepared", lambda: (rows, [], {"revision": "test-sha"}))
+    monkeypatch.setattr(build, "load_slm", lambda *a: (object(), object(), "cpu"))
+    monkeypatch.setattr(build, "FrozenSolver", Solver)
+    monkeypatch.setattr(build, "generate_item_paraphrases", generate)
+    monkeypatch.setattr(build, "ensure_result_dirs", lambda: None)
+    monkeypatch.setattr(build, "PREFERENCES_DIR", tmp_path)
+    monkeypatch.setattr(build, "PAIRS_PATH", tmp_path / "pairs.jsonl")
+    monkeypatch.setattr(build, "PAIRS_META_PATH", tmp_path / "manifest.json")
+    monkeypatch.setattr(build, "CACHE_PATH", tmp_path / "cache.jsonl")
+    build.build_preference_dataset()
+    assert calls == [4, 1]
+    assert len(read_jsonl(build.PAIRS_PATH)) == 5
+    calls.clear()
+    build.build_preference_dataset()
+    assert calls == []
+    assert len(read_jsonl(build.CACHE_PATH)) == 5
