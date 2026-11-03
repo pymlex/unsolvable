@@ -140,6 +140,14 @@ def test_quality_gate_never_calls_external_api(row, monkeypatch):
     assert result["valid"] is True and result["judge_checked"] is False
 
 
+def test_morphology_allows_inflection_but_not_synonyms():
+    from judge.ege_quality import same_lexeme
+    assert same_lexeme("фразу", "фразой")
+    assert same_lexeme("правом", "правый")
+    assert not same_lexeme("фразу", "фрагмент")
+    assert not same_lexeme("волна", "эмоции")
+
+
 def test_pair_builder_batches_and_resumes_without_regeneration(row, tmp_path, monkeypatch):
     import preferences.build_dpo_dataset as build
     from utils.artifacts import read_jsonl

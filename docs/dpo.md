@@ -26,13 +26,22 @@ For each of the 500 training items:
 1. Give the small model the original passage, dictionary definitions from the
    options, the fixed key, and `explanation`. Ask it to change the sentences
    carefully, preserve word meanings and return **only the complete passage**.
+   Inflection is allowed when grammar requires it; target-word synonyms are not.
 2. Call generation twice independently at temperature 0.8, with thinking off.
-3. Reject empty/truncated outputs, changed highlights, extra commentary,
+3. Reject empty/truncated outputs, changed highlight lemmas, extra commentary,
    invisible characters, and word-count changes above 20%.
 4. Compute the log probability of the gold digit answer plus EOS under the
    frozen solver's exam prompt. The solver never receives the explanation or key.
 5. Choose the lower-score rewrite as `chosen`, the other as `rejected`.
-   Discard duplicate rewrites and gaps below `PAIRWISE_GAP_TAU` (default 0.25).
+   Discard duplicate rewrites and gaps below `PAIRWISE_GAP_TAU` (default 0.10).
+
+Local morphology (`pymorphy3`) permits grammatical inflections such as
+«фразу → фразой», while rejecting replacement by a different lexeme. This is
+a structural check, not a semantic judge. The scorer computes log-softmax in
+float32 even when the model uses bf16, to avoid rounding away small score gaps.
+The default gap was calibrated on synthetic train candidates: in an initial
+172-source probe, 44 literal-form-preserving pairs had a median gap of 0.148
+nats (25th/75th percentiles 0.043/0.281). Real EGE eval was not used to choose it.
 
 There are no DeepSeek API calls or semantic rechecks in this DPO pipeline.
 Preservation of meanings is instructed through the definitions and explanation;

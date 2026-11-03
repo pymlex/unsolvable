@@ -53,7 +53,7 @@ def answer_token_logprob_sum(
 
     shift_logits = logits[:, prompt_len - 1 : prompt_len + answer_len - 1, :]
     target = answer_ids["input_ids"]
-    log_probs = torch.log_softmax(shift_logits, dim=-1)
+    log_probs = torch.log_softmax(shift_logits.float(), dim=-1)
     token_logprobs = log_probs.gather(2, target.unsqueeze(-1)).squeeze(-1)
     return float(token_logprobs.sum().item())
 

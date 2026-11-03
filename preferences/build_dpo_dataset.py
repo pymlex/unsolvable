@@ -54,11 +54,11 @@ def build_preference_dataset(*, limit=0, device=None) -> Path:
         solver = FrozenSolver(solver_model, solver_tokenizer, model_id=SOLVER_MODEL_ID)
     gate = QualityGate()
     cache = {r["key"]: r for r in read_jsonl(CACHE_PATH)} if CACHE_PATH.exists() else {}
-    settings = {"version": 3, "generator": SLM_MODEL_ID, "solver": SOLVER_MODEL_ID,
+    settings = {"version": 4, "generator": SLM_MODEL_ID, "solver": SOLVER_MODEL_ID,
                 "seed": DPO_SEED, "samples": DPO_CANDIDATES, "generation_batch_size": GENERATION_BATCH_SIZE, "temperature": GENERATION_TEMPERATURE,
                 "max_new_tokens": PARAPHRASE_MAX_NEW_TOKENS, "length_margin": LENGTH_MARGIN,
                 "structural_check_version": CHECK_VERSION, "source_revision": manifest["revision"],
-                "score": "gold_logprob_sum_with_eos_no_thinking"}
+                "score": "gold_logprob_sum_with_eos_no_thinking_float32"}
     pairs, records = [], []
     if GENERATION_BATCH_SIZE < 1:
         raise ValueError("GENERATION_BATCH_SIZE must be positive")
