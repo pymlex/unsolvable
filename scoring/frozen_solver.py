@@ -5,6 +5,7 @@ from __future__ import annotations
 from contextlib import contextmanager, nullcontext
 
 from constants import BATCH_SIZE
+from utils.paths import MONITORING_DIR
 from eval.model_io import generate_tip2_answers_batch
 from scoring.answer_logprob import answer_token_logprob_sum
 
@@ -38,5 +39,7 @@ class FrozenSolver:
                 outputs.extend(generate_tip2_answers_batch(
                     self.model, self.tokenizer, str(self.model.device), rows[start:start + BATCH_SIZE],
                     max_new_tokens=None,
+                    progress_dir=MONITORING_DIR / "solver_generation",
                 ))
+                print(f"[solver] completed={min(start+BATCH_SIZE,len(rows))}/{len(rows)}", flush=True)
             return outputs

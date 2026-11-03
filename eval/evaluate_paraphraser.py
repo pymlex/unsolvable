@@ -91,7 +91,8 @@ class EgeEvaluator:
             self.baseline_raw = self.solver.solve(self.rows)
         payload = evaluate_items(
             self.rows,
-            lambda rows: generate_item_paraphrases(model, self.tokenizer, rows, num_samples=1, do_sample=False),
+            lambda rows: generate_item_paraphrases(model, self.tokenizer, rows, num_samples=1, do_sample=False,
+                                                  progress_dir=self.output_dir / "generation"),
             self.solver.solve, self.gate, baseline_raw=self.baseline_raw,
         )
         # A differentiable-like signal analogous to mean detector logit, measured

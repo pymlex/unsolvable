@@ -125,13 +125,14 @@ def generate_tip2_answers_batch(
     device: str,
     rows: list[dict],
     max_new_tokens: int = 32,
+    progress_dir=None,
 ) -> list[str]:
     """Greedy tip-2 solve for a batch of items (left-padded)."""
     import torch
 
     if not rows:
         return []
-    if len(rows) == 1:
+    if len(rows) == 1 and progress_dir is None:
         return [generate_tip2_answer(model, tokenizer, device, rows[0], max_new_tokens)]
 
     prompts = [_row_prompt(tokenizer, row) for row in rows]
@@ -149,7 +150,15 @@ def generate_tip2_answers_batch(
         "pad_token_id": tokenizer.pad_token_id or tokenizer.eos_token_id,
         "temperature": None,
         "top_p": None,
+        "use_cache": True,
     }
+    if progress_dir is not None:
+        from generation.progress import GenerationProgress, repetition_stopping_criteria
+        eos = gen_kwargs["eos_token_id"]
+        progress = GenerationProgress(tokenizer, rows, eos if isinstance(eos, list) else [eos],
+                                      progress_dir, sample_pass=1, sampling={"do_sample": False})
+        gen_kwargs["streamer"] = progress
+        gen_kwargs["stopping_criteria"] = repetition_stopping_criteria(progress)
     with torch.no_grad():
         out = model.generate(**inputs, **gen_kwargs)
     tokenizer.padding_side = pad_side
