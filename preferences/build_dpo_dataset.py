@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
-from constants import (DPO_CANDIDATES, DPO_SEED, GENERATION_BATCH_SIZE, GENERATION_TEMPERATURE, LENGTH_MARGIN,
+from constants import (DPO_CANDIDATES, DPO_MIN_PAIR_GAP, DPO_SEED, GENERATION_BATCH_SIZE, GENERATION_TEMPERATURE, LENGTH_MARGIN,
                        PAIRWISE_GAP_TAU, SLM_MODEL_ID, SOLVER_MODEL_ID)
 from eval.ege_data import load_prepared
 from eval.model_io import load_slm
@@ -50,18 +50,56 @@ def cached_candidate(cache: dict, settings: dict, row: dict) -> tuple[str, dict 
 
 
 def select_pair(row: dict, candidates: list[dict], *, tau=PAIRWISE_GAP_TAU) -> dict:
-    if len(candidates) != 2:
-        raise ValueError(f"Item {row['id']} must have exactly two candidates")
+    if len(candidates) < 2:
+        raise ValueError(f"Item {row['id']} must have at least two candidates")
     if not all(math.isfinite(c["score"]) for c in candidates):
         raise ValueError(f"Item {row['id']} has an invalid score")
-    chosen, rejected = sorted(candidates, key=lambda c: c["score"])
+    ranked = sorted(candidates, key=lambda c: c["score"])
+    chosen, rejected = ranked[0], ranked[-1]
     gap = rejected["score"] - chosen["score"]
     return {"item_id": str(row["id"]), "prompt": build_item_paraphrase_prompt(row),
             "chosen": chosen["text"], "rejected": rejected["text"],
             "score_chosen": chosen["score"], "score_rejected": rejected["score"], "gap": gap,
             "chosen_quality": chosen["quality"], "rejected_quality": rejected["quality"],
             "is_tie": gap == 0, "is_duplicate": chosen["text"] == rejected["text"],
-            "below_probe_margin": gap < tau}
+            "below_probe_margin": gap < tau, "candidate_count": len(candidates)}
+
+
+def refine_until_margin(source, pools, *, generate, score, gate, persist,
+                        minimum_gap=DPO_MIN_PAIR_GAP, batch_size=GENERATION_BATCH_SIZE):
+    """Keep every attempt; continue only pending items, with no round limit."""
+    from transformers import set_seed
+    round_id = max((r.get("refinement_round", 0) for r in pools.values()), default=0)
+    while True:
+        pairs = [select_pair(row, pools[str(row["id"])]["candidates"]) for row in source]
+        pending = [row for row, pair in zip(source, pairs, strict=True) if pair["gap"] <= minimum_gap]
+        progress = {"n_source": len(source), "n_ready": len(source) - len(pending), "n_pending": len(pending),
+                    "round": round_id, "minimum_gap_strictly_greater_than": minimum_gap,
+                    "min_gap": min(p["gap"] for p in pairs),
+                    "n_candidates": sum(len(r["candidates"]) for r in pools.values())}
+        write_json(PREFERENCES_DIR / "refinement_progress.json", progress)
+        write_jsonl(PREFERENCES_DIR / "refinement_best_pairs.jsonl", pairs)
+        print(f"[refine] round={round_id} ready={progress['n_ready']}/{len(source)} "
+              f"pending={len(pending)} min_gap={progress['min_gap']:.6f}", flush=True)
+        if not pending:
+            return pairs
+        round_id += 1
+        for start in range(0, len(pending), batch_size):
+            chunk = pending[start:start + batch_size]
+            set_seed(DPO_SEED + round_id * 100003 + start)
+            groups = generate(chunk)
+            for row, candidates in zip(chunk, groups, strict=True):
+                if any(c.get("truncated") for c in candidates):
+                    raise RuntimeError(f"Native context exhausted for {row['id']}; refusing truncated training text")
+                for candidate in candidates:
+                    candidate["quality"] = gate.check(row, candidate)
+                    candidate["score"] = score(row, candidate["text"])
+                    candidate["generation_round"] = round_id
+                record = pools[str(row["id"])]
+                record["candidates"].extend(candidates)
+                record["refinement_round"] = round_id
+                persist(record)
+            print(f"[refine-batch] round={round_id} processed={min(start+batch_size,len(pending))}/{len(pending)}", flush=True)
 
 
 def build_preference_dataset(*, limit=0, device=None, publish=False) -> Path:
@@ -122,9 +160,24 @@ def build_preference_dataset(*, limit=0, device=None, publish=False) -> Path:
             if pair:
                 pairs.append(pair)
             print(f"[preferences] {start + offset + 1}/{len(source)} | pairs={len(pairs)} | id={row['id']}", flush=True)
+    pools = {r["item_id"]: r for r in records}
+    def persist(record):
+        import json
+        import os
+        with CACHE_PATH.open("a", encoding="utf-8") as stream:
+            stream.write(json.dumps(record, ensure_ascii=False, allow_nan=False) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+    pairs = refine_until_margin(
+        source, pools,
+        generate=lambda rows: generate_item_paraphrases(generator, tokenizer, rows, num_samples=2),
+        score=solver.score, gate=gate, persist=persist,
+    )
+    records = list(pools.values())
     write_jsonl(PAIRS_PATH, pairs)
     write_json(PAIRS_META_PATH, {"source": manifest, "settings": settings, "tau": PAIRWISE_GAP_TAU,
                                "n_source": len(source), "n_pairs": len(pairs), "partial": bool(limit),
+                               "minimum_gap": DPO_MIN_PAIR_GAP, "selection": "cumulative_pool_extremes_strict",
                                "pairs_fingerprint": fingerprint(pairs)})
     gaps = [p["gap"] for p in pairs]
     write_json(PREFERENCES_DIR / "build_stats.json", {
@@ -173,7 +226,7 @@ def publish_preferences() -> str:
     Dataset.from_list(pairs).push_to_hub(DATASET_ID, config_name=config, split="train")
     commit = HfApi().upload_folder(repo_id=DATASET_ID, repo_type="dataset", folder_path=str(PREFERENCES_DIR),
                          path_in_repo=f"artifacts/{config}",
-                         allow_patterns=["candidates.jsonl", "dpo_manifest.json", "build_stats.json", "dpo_preferences.csv", "gap_distribution.json", "gap_histogram.png"])
+                         allow_patterns=["candidates.jsonl", "dpo_manifest.json", "build_stats.json", "dpo_preferences.csv", "gap_distribution.json", "gap_histogram.png", "refinement_progress.json"])
     url = f"https://huggingface.co/datasets/{DATASET_ID}/viewer/{config}/train"
     write_json(PREFERENCES_DIR / "hf_publication.json", {"repo": DATASET_ID, "config": config, "n_pairs": 500, "url": url, "commit": commit.oid})
     print(f"[HF] Published all 500 pairs: {url}", flush=True)

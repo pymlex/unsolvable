@@ -97,7 +97,7 @@ def test_pair_provenance_prevents_test_or_partial_training(row):
     from constants import SLM_MODEL_ID, SOLVER_MODEL_ID
     manifest = {"test": "fixed-116"}
     meta = {"source": manifest, "pairs_fingerprint": fingerprint(pairs), "partial": False,
-            "n_source": 1, "n_pairs": 1, "tau": .25,
+            "n_source": 1, "n_pairs": 1, "tau": .25, "minimum_gap": .5,
             "settings": {"generator": SLM_MODEL_ID, "solver": SOLVER_MODEL_ID}}
     validate_pairs(pairs, meta, [row], manifest)
     with pytest.raises(ValueError, match="Partial"):
@@ -224,3 +224,40 @@ def test_qwen_keeps_both_document_and_chat_eos_after_trainer_alignment():
                                 all_special_tokens=["<|im_end|>", "<|endoftext|>"],
                                 convert_tokens_to_ids=lambda token: {"<|im_end|>": 248046, "<|endoftext|>": 248044}[token])
     assert generation_bounds(model, tokenizer, 100)["eos_token_id"] == [248044, 248046]
+
+
+def test_refinement_is_strict_and_reuses_existing_extremes(row, tmp_path, monkeypatch):
+    import preferences.build_dpo_dataset as build
+    monkeypatch.setattr(build, "PREFERENCES_DIR", tmp_path)
+    other = {**row, "id": "b"}
+    pools = {
+        "a": {"item_id": "a", "candidates": [candidate("old-low", -1), candidate("old-high", -.5)]},
+        "b": {"item_id": "b", "candidates": [candidate("ready-low", -3), candidate("ready-high", -1)]},
+    }
+    calls, persisted = [], []
+    def generate(rows):
+        calls.append([r["id"] for r in rows])
+        return [[{"text": "new-low", "truncated": False}, {"text": "new-high", "truncated": False}]]
+    gate = SimpleNamespace(check=lambda *args: {"valid": True, "judge_checked": False})
+    result = build.refine_until_margin([row, other], pools, generate=generate,
+               score=lambda r, t: -2 if t == "new-low" else -.4, gate=gate,
+               persist=lambda record: persisted.append(record["item_id"]), minimum_gap=.5)
+    assert calls == [["a"]]  # Exactly .5 must be refined; ready item is untouched.
+    assert persisted == ["a"]
+    assert len(pools["a"]["candidates"]) == 4
+    assert all(p["gap"] > .5 for p in result)
+
+
+def test_training_history_is_saved_on_each_log_before_train_end(tmp_path):
+    import json
+    from training.history import TrainingHistoryCallback
+    callback = TrainingHistoryCallback(tmp_path)
+    state = SimpleNamespace(global_step=1, epoch=.1)
+    callback.on_log(None, state, None, logs={"loss": .7, "learning_rate": 1e-5})
+    assert json.loads((tmp_path / "train_history.json").read_text())[0]["loss"] == .7
+    state.global_step = 2
+    callback.on_log(None, state, None, logs={"loss": .6, "rewards/margins": .2})
+    assert len((tmp_path / "train_history.jsonl").read_text().splitlines()) == 2
+    assert "rewards/margins" in (tmp_path / "train_history.csv").read_text()
+    resumed = TrainingHistoryCallback(tmp_path, resume=True)
+    assert len(resumed.records) == 2

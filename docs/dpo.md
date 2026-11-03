@@ -36,30 +36,33 @@ For each of the 500 training items:
    discard training rows. Actually truncated samples are regenerated.
 4. Compute the log probability of the gold digit answer plus EOS under the
    frozen solver's exam prompt. The solver never receives the explanation or key.
-5. Choose the lower-score rewrite as `chosen`, the other as `rejected`.
-   Keep every pair, including duplicates, ties and small gaps. `PAIRWISE_GAP_TAU`
-   (default 0.10) is a diagnostic annotation only.
+5. Choose the lowest-score rewrite as `chosen`, the highest as `rejected`.
+   If their difference is <= `DPO_MIN_PAIR_GAP` (default 0.5 nats), generate two
+   more independent rewrites for that source and extend its candidate pool.
+   Repeat without a round limit until every source has a difference strictly
+   greater than 0.5. Sources already above the threshold are not regenerated.
+   All attempts, including duplicates and ties, remain in the raw cache.
 
 Local morphology (`pymorphy3`) permits grammatical inflections such as
 «фразу → фразой», while rejecting replacement by a different lexeme. This is
 a structural check, not a semantic judge. The scorer computes log-softmax in
 float32 even when the model uses bf16, to avoid rounding away small score gaps.
-The default gap was calibrated on synthetic train candidates: in an initial
-172-source probe, 44 literal-form-preserving pairs had a median gap of 0.148
-nats (25th/75th percentiles 0.043/0.281). Real EGE eval was not used to choose it.
+The 0.5 threshold is an experiment requirement, not a calibrated accuracy gain.
+This difference measures gold-answer log probability, not solver accuracy.
+`PAIRWISE_GAP_TAU` remains a legacy diagnostic annotation only.
 
 There are no DeepSeek API calls or semantic rechecks in this DPO pipeline.
 Preservation of meanings is instructed through the definitions and explanation;
 the diagnostic checks are structural. Reports label this `structural_only`.
 The original key and options never become trainable completions.
 All candidates are scored, regardless of structural diagnostics. Ties use stable
-generation order; duplicate/tied pairs are retained and explicitly flagged.
+generation order in the raw pool; final selected pairs must pass the strict margin.
 
 Candidate records are appended after each item. Rerunning `preferences` reuses
 matching candidates and scores; changes to source, prompt or generation settings
 invalidate their cache keys. The resulting full dataset always has exactly 500 pairs, one per train item.
-Items are processed in batches of four (`GENERATION_BATCH_SIZE`), with two
-separate generation passes per batch. Each item still has exactly two samples.
+Items are processed in batches (`GENERATION_BATCH_SIZE`), with two
+separate generation passes per batch. Refinement adds two samples per pending item.
 Batch size can be tuned for GPU throughput without invalidating completed
 candidate records; the sampling-policy and prompt settings must still match.
 
@@ -129,10 +132,16 @@ Artifacts:
 - `results/preferences/candidates.jsonl`: resumable raw candidates and scores.
 - `results/preferences/dpo_preferences.{jsonl,csv}`, `dpo_hf_dataset/`.
 - `results/preferences/dpo_manifest.json`, `build_stats.json`.
+- `results/preferences/refinement_progress.json`, `refinement_best_pairs.jsonl`:
+  current readiness and best pairs while refinement is running.
 - `results/checkpoints/dpo/checkpoint-*`: LoRA, optimizer, RNG and trainer state.
 - `results/checkpoints/dpo/final`: final LoRA adapter and tokenizer.
 - `results/monitoring/dpo/monitor_step_*.json`: all 116 item outputs per eval.
-- `results/monitoring/dpo/validation_history.{json,csv}`, `train_history.json`.
+- `results/monitoring/dpo/validation_history.{json,csv}`.
+- `results/monitoring/dpo/train_history.{jsonl,json,csv}`: loss, learning rate,
+  DPO rewards/margins and other Trainer metrics persisted after every optimizer
+  step (`DPO_LOGGING_STEPS=1`), before training finishes. JSONL is flushed and
+  fsynced per log; JSON/CSV snapshots are replaced atomically. Resume retains history.
 - `results/monitoring/dpo/training_summary.png`.
 
 ```bash

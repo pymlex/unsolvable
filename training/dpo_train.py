@@ -10,7 +10,7 @@ from pathlib import Path
 from constants import (DPO_BETA, DPO_EPOCHS, DPO_GRADIENT_ACCUMULATION_STEPS,
                        DPO_LEARNING_RATE, DPO_LOGGING_STEPS, DPO_LORA_ALPHA, DPO_LORA_R,
                        DPO_MAX_LENGTH, DPO_MONITOR_EVERY_STEPS, DPO_PER_DEVICE_BATCH_SIZE,
-                       DPO_SEED, SLM_MODEL_ID, SOLVER_MODEL_ID)
+                       DPO_MIN_PAIR_GAP, DPO_SEED, SLM_MODEL_ID, SOLVER_MODEL_ID)
 from eval.ege_data import load_prepared
 from eval.model_io import apply_chat_template_no_think, load_slm
 from generation.prompts import build_item_paraphrase_prompt
@@ -31,6 +31,8 @@ def validate_pairs(pairs: list[dict], meta: dict, train: list[dict], manifest: d
         raise ValueError("DPO pairs are empty or their count disagrees with the manifest")
     if meta["settings"]["generator"] != SLM_MODEL_ID or meta["settings"]["solver"] != SOLVER_MODEL_ID:
         raise ValueError("Generator/solver changed; rebuild preferences with the intended models")
+    if meta.get("minimum_gap", -1) < DPO_MIN_PAIR_GAP:
+        raise ValueError("Preference data must certify the requested minimum gap before training")
     by_id = {str(r["id"]): r for r in train}
     seen = set()
     for pair in pairs:
@@ -46,7 +48,7 @@ def validate_pairs(pairs: list[dict], meta: dict, train: list[dict], manifest: d
             if "valid" not in quality:
                 raise ValueError(f"Missing diagnostic flags for {item_id}")
         gap = pair["score_rejected"] - pair["score_chosen"]
-        if not math.isfinite(gap) or gap < 0:
+        if not math.isfinite(gap) or gap <= meta["minimum_gap"]:
             raise ValueError(f"Invalid adversarial preference direction/gap for {item_id}")
 
 
@@ -131,6 +133,7 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
     from eval.evaluate_paraphraser import EgeEvaluator
     from scoring.frozen_solver import FrozenSolver
     from training.callbacks import EgeMonitorCallback
+    from training.history import TrainingHistoryCallback
 
     set_seed(DPO_SEED)
     model, tokenizer, _ = load_slm(SLM_MODEL_ID, device)
@@ -146,13 +149,14 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
         solver = FrozenSolver(solver_model, solver_tokenizer, model_id=SOLVER_MODEL_ID)
     evaluator = EgeEvaluator(tokenizer, solver, output_dir=MONITORING_DIR / "dpo", reset_history=not resume)
     monitor = EgeMonitorCallback(evaluator, every_steps=DPO_MONITOR_EVERY_STEPS)
-    trainer = make_trainer(model, tokenizer, pairs, output_dir=DPO_DIR, callbacks=[monitor], max_steps=max_steps)
+    history = TrainingHistoryCallback(MONITORING_DIR / "dpo", resume=bool(resume))
+    trainer = make_trainer(model, tokenizer, pairs, output_dir=DPO_DIR, callbacks=[monitor, history], max_steps=max_steps)
     write_json(run_path, plan)
     trainer.train(resume_from_checkpoint=resume or None)
     final_dir = DPO_DIR / "final"
     trainer.save_model(str(final_dir))
     tokenizer.save_pretrained(str(final_dir))
-    write_json(MONITORING_DIR / "dpo" / "train_history.json", trainer.state.log_history)
+    write_json(MONITORING_DIR / "dpo" / "trainer_state_log.json", trainer.state.log_history)
     plot_history(MONITORING_DIR / "dpo")
     return final_dir
 
