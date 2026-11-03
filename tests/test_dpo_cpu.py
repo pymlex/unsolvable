@@ -26,6 +26,8 @@ def test_real_dpo_step_preserves_frozen_solver_and_saves_adapter(tmp_path):
     pairs = [{"item_id": "1", "prompt": "rewrite original", "chosen": "good words", "rejected": "bad words"}] * 2
     trainer = make_trainer(model, tokenizer, pairs, output_dir=tmp_path / "run", max_steps=2,
                            batch_size=1, accumulation=1, max_length=None, monitor_every=1)
+    assert trainer.args.warmup_steps == 10
+    assert trainer.args.learning_rate == 3e-5
     solver = FrozenSolver(trainer.model, tokenizer, model_id="tiny", disable_adapter=True)
     row = {"id": "1", "passage": "original", "options": ["good"] * 5, "answer": "25", "explanation": ""}
     frozen_before = solver.score(row, "original")

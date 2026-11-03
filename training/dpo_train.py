@@ -10,7 +10,7 @@ from pathlib import Path
 from constants import (DPO_BETA, DPO_EPOCHS, DPO_GRADIENT_ACCUMULATION_STEPS,
                        DPO_LEARNING_RATE, DPO_LOGGING_STEPS, DPO_LORA_ALPHA, DPO_LORA_R,
                        DPO_MAX_LENGTH, DPO_MONITOR_EVERY_STEPS, DPO_PER_DEVICE_BATCH_SIZE,
-                       DPO_MIN_PAIR_GAP, DPO_SEED, SLM_MODEL_ID, SOLVER_MODEL_ID)
+                       DPO_MIN_PAIR_GAP, DPO_SEED, DPO_WARMUP_STEPS, SLM_MODEL_ID, SOLVER_MODEL_ID)
 from eval.ege_data import load_prepared
 from eval.model_io import apply_chat_template_no_think, load_slm
 from generation.prompts import build_item_paraphrase_prompt
@@ -82,7 +82,7 @@ def make_trainer(model, tokenizer, pairs, *, output_dir: Path, callbacks=None, m
         output_dir=str(output_dir), num_train_epochs=DPO_EPOCHS, max_steps=max_steps,
         per_device_train_batch_size=batch_size, gradient_accumulation_steps=accumulation,
         learning_rate=DPO_LEARNING_RATE, beta=DPO_BETA,
-        lr_scheduler_type="cosine", warmup_ratio=0.1,
+        lr_scheduler_type="cosine", warmup_steps=DPO_WARMUP_STEPS,
         logging_steps=DPO_LOGGING_STEPS, logging_first_step=True,
         save_strategy="steps", save_steps=monitor_every, save_total_limit=4,
         eval_strategy="no", report_to="none", seed=DPO_SEED, data_seed=DPO_SEED,
@@ -112,11 +112,19 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
             "pairs_fingerprint": fingerprint(pairs), "epochs": DPO_EPOCHS, "max_steps": max_steps,
             "monitor_every_steps": DPO_MONITOR_EVERY_STEPS, "quality_mode": "structural_only",
             "max_length": DPO_MAX_LENGTH, "seed": DPO_SEED,
-            "beta": DPO_BETA, "learning_rate": DPO_LEARNING_RATE,
+            "beta": DPO_BETA, "learning_rate": DPO_LEARNING_RATE, "warmup_steps": DPO_WARMUP_STEPS,
             "batch_size": DPO_PER_DEVICE_BATCH_SIZE, "accumulation": DPO_GRADIENT_ACCUMULATION_STEPS,
             "lora_r": DPO_LORA_R, "lora_alpha": DPO_LORA_ALPHA}
     plan["convergence"] = {"criterion": "training_loss_plateau", "window_steps": 20,
                            "patience_windows": 3, "min_steps": 80, "min_delta": .001}
+    initial_adapter = os.getenv("DPO_INIT_ADAPTER", "").strip()
+    if initial_adapter:
+        import hashlib
+        initial_path = Path(initial_adapter).resolve()
+        with (initial_path / "adapter_model.safetensors").open("rb") as stream:
+            adapter_sha = hashlib.file_digest(stream, "sha256").hexdigest()
+        plan["initial_adapter"] = {"path": str(initial_path), "sha256": adapter_sha,
+                                   "optimizer": "fresh", "scheduler": "fresh"}
     print(json.dumps(plan, ensure_ascii=False, indent=2))
     if dry_run:
         return PAIRS_META_PATH
@@ -130,7 +138,7 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
             raise ValueError("DPO run/data/settings changed; resume requires the original run configuration")
     elif resume:
         raise ValueError("Cannot resume without the original DPO run_config.json")
-    from peft import LoraConfig, get_peft_model
+    from peft import LoraConfig, get_peft_model, PeftModel
     from transformers import set_seed
     from eval.evaluate_paraphraser import EgeEvaluator
     from scoring.frozen_solver import FrozenSolver
@@ -140,7 +148,10 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
 
     set_seed(DPO_SEED)
     model, tokenizer, _ = load_slm(SLM_MODEL_ID, device)
-    model = get_peft_model(model, LoraConfig(r=DPO_LORA_R, lora_alpha=DPO_LORA_ALPHA,
+    if initial_adapter:
+        model = PeftModel.from_pretrained(model, initial_adapter, is_trainable=True)
+    else:
+        model = get_peft_model(model, LoraConfig(r=DPO_LORA_R, lora_alpha=DPO_LORA_ALPHA,
                                             lora_dropout=0.0, target_modules="all-linear",
                                             task_type="CAUSAL_LM", bias="none"))
     if SOLVER_MODEL_ID == SLM_MODEL_ID:
