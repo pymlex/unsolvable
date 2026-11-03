@@ -122,6 +122,22 @@ def test_monitor_runs_start_interval_and_final_without_duplicate():
     assert steps == [0, 2, 4, 5]
 
 
+def test_epoch_monitor_runs_at_zero_and_each_point_two_after_loss_is_logged():
+    steps = []
+    evaluator = SimpleNamespace(run=lambda model, step, epoch: steps.append(step))
+    callback = EgeMonitorCallback(evaluator, every_steps=20, every_epochs=.2)
+    state = SimpleNamespace(global_step=0, epoch=0)
+    callback.on_train_begin(None, state, None, model=object())
+    for step, epoch in [(1,.016),(12,.192),(13,.208),(25,.4),(38,.608),(50,.8),(63,1.0)]:
+        state.global_step, state.epoch = step, epoch
+        before = len(steps)
+        callback.on_step_end(None, state, None, model=object())
+        assert len(steps) == before
+        callback.on_log(None, state, None, model=object(), logs={"loss": .69})
+    callback.on_train_end(None, state, None, model=object())
+    assert steps == [0,13,25,38,50,63]
+
+
 def test_generation_and_scoring_disable_thinking_through_kwargs():
     from eval.model_io import apply_chat_template_no_think
     from scoring.answer_logprob import render_exam_prompt

@@ -10,7 +10,7 @@ from pathlib import Path
 from constants import (DPO_BETA, DPO_EPOCHS, DPO_GRADIENT_ACCUMULATION_STEPS,
                        DPO_LEARNING_RATE, DPO_LOGGING_STEPS, DPO_LORA_ALPHA, DPO_LORA_R,
                        DPO_MAX_LENGTH, DPO_MONITOR_EVERY_STEPS, DPO_PER_DEVICE_BATCH_SIZE,
-                       DPO_MIN_PAIR_GAP, DPO_SEED, DPO_WARMUP_STEPS, SLM_MODEL_ID, SOLVER_MODEL_ID)
+                       DPO_MIN_PAIR_GAP, DPO_SEED, DPO_WARMUP_STEPS, DPO_MONITOR_EVERY_EPOCHS, SLM_MODEL_ID, SOLVER_MODEL_ID)
 from eval.ege_data import load_prepared
 from eval.model_io import apply_chat_template_no_think, load_slm
 from generation.prompts import build_item_paraphrase_prompt
@@ -81,6 +81,7 @@ def make_trainer(model, tokenizer, pairs, *, output_dir: Path, callbacks=None, m
     args = DPOConfig(
         output_dir=str(output_dir), num_train_epochs=DPO_EPOCHS, max_steps=max_steps,
         per_device_train_batch_size=batch_size, gradient_accumulation_steps=accumulation,
+        per_device_eval_batch_size=batch_size, prediction_loss_only=True,
         learning_rate=DPO_LEARNING_RATE, beta=DPO_BETA,
         lr_scheduler_type="cosine", warmup_steps=DPO_WARMUP_STEPS,
         logging_steps=DPO_LOGGING_STEPS, logging_first_step=True,
@@ -111,6 +112,7 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
             "train": manifest["train"], "eval": manifest["test"], "revision": manifest["revision"],
             "pairs_fingerprint": fingerprint(pairs), "epochs": DPO_EPOCHS, "max_steps": max_steps,
             "monitor_every_steps": DPO_MONITOR_EVERY_STEPS, "quality_mode": "structural_only",
+            "monitor_every_epochs": DPO_MONITOR_EVERY_EPOCHS,
             "max_length": DPO_MAX_LENGTH, "seed": DPO_SEED,
             "beta": DPO_BETA, "learning_rate": DPO_LEARNING_RATE, "warmup_steps": DPO_WARMUP_STEPS,
             "batch_size": DPO_PER_DEVICE_BATCH_SIZE, "accumulation": DPO_GRADIENT_ACCUMULATION_STEPS,
@@ -125,6 +127,7 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
             adapter_sha = hashlib.file_digest(stream, "sha256").hexdigest()
         plan["initial_adapter"] = {"path": str(initial_path), "sha256": adapter_sha,
                                    "optimizer": "fresh", "scheduler": "fresh"}
+    plan["live_run_id"] = fingerprint(plan)[:16]
     print(json.dumps(plan, ensure_ascii=False, indent=2))
     if dry_run:
         return PAIRS_META_PATH
@@ -145,6 +148,7 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
     from training.callbacks import EgeMonitorCallback
     from training.history import TrainingHistoryCallback
     from training.convergence import LossConvergenceCallback
+    from training.reporting import EpochReporter
 
     set_seed(DPO_SEED)
     model, tokenizer, _ = load_slm(SLM_MODEL_ID, device)
@@ -162,10 +166,14 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
         solver_model, solver_tokenizer, _ = load_slm(SOLVER_MODEL_ID, device)
         solver = FrozenSolver(solver_model, solver_tokenizer, model_id=SOLVER_MODEL_ID)
     evaluator = EgeEvaluator(tokenizer, solver, output_dir=MONITORING_DIR / "dpo", reset_history=not resume)
-    monitor = EgeMonitorCallback(evaluator, every_steps=DPO_MONITOR_EVERY_STEPS)
+    reporter = EpochReporter(MONITORING_DIR / "dpo", plan)
+    monitor = EgeMonitorCallback(evaluator, every_steps=DPO_MONITOR_EVERY_STEPS,
+                                every_epochs=DPO_MONITOR_EVERY_EPOCHS, reporter=reporter)
     history = TrainingHistoryCallback(MONITORING_DIR / "dpo", resume=bool(resume))
     convergence = LossConvergenceCallback(MONITORING_DIR / "dpo", resume=bool(resume))
-    trainer = make_trainer(model, tokenizer, pairs, output_dir=DPO_DIR, callbacks=[monitor, history, convergence], max_steps=max_steps)
+    trainer = make_trainer(model, tokenizer, pairs, output_dir=DPO_DIR, callbacks=[history, convergence, monitor], max_steps=max_steps)
+    monitor.loss_evaluator = lambda: trainer.evaluate(eval_dataset=trainer.train_dataset,
+                                                     metric_key_prefix="train_probe")["train_probe_loss"]
     write_json(run_path, plan)
     trainer.train(resume_from_checkpoint=resume or None)
     final_dir = DPO_DIR / "final"
@@ -173,9 +181,11 @@ def train_dpo(*, dry_run=False, resume: str | bool | None = None, max_steps=-1, 
     tokenizer.save_pretrained(str(final_dir))
     write_json(MONITORING_DIR / "dpo" / "trainer_state_log.json", trainer.state.log_history)
     plot_history(MONITORING_DIR / "dpo")
+    published_url = None
     if (MONITORING_DIR / "dpo" / "convergence.json").exists():
         from training.publish import publish_converged_adapter
-        publish_converged_adapter(final_dir, MONITORING_DIR / "dpo", plan)
+        published_url = publish_converged_adapter(final_dir, MONITORING_DIR / "dpo", plan)
+    reporter.finish(converged=convergence.converged, model_url=published_url)
     return final_dir
 
 

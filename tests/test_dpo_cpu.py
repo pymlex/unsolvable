@@ -27,7 +27,7 @@ def test_real_dpo_step_preserves_frozen_solver_and_saves_adapter(tmp_path):
     trainer = make_trainer(model, tokenizer, pairs, output_dir=tmp_path / "run", max_steps=2,
                            batch_size=1, accumulation=1, max_length=None, monitor_every=1)
     assert trainer.args.warmup_steps == 10
-    assert trainer.args.learning_rate == 3e-5
+    assert trainer.args.learning_rate == 1e-5
     solver = FrozenSolver(trainer.model, tokenizer, model_id="tiny", disable_adapter=True)
     row = {"id": "1", "passage": "original", "options": ["good"] * 5, "answer": "25", "explanation": ""}
     frozen_before = solver.score(row, "original")
@@ -38,10 +38,16 @@ def test_real_dpo_step_preserves_frozen_solver_and_saves_adapter(tmp_path):
         def run(self, policy, *, step, epoch):
             assert abs(solver.score(row, "original") - frozen_before) < 1e-6
             seen.append(step)
-    trainer.add_callback(EgeMonitorCallback(Evaluator(), every_steps=1))
+    evaluation_losses = []
+    def evaluate_loss():
+        value = trainer.evaluate(eval_dataset=trainer.train_dataset, metric_key_prefix="train_probe")["train_probe_loss"]
+        evaluation_losses.append(value)
+        return value
+    trainer.add_callback(EgeMonitorCallback(Evaluator(), every_steps=1, loss_evaluator=evaluate_loss))
     trainer.train()
     assert seen == [0, 1, 2]
     assert trainer.state.global_step == 2
+    assert len(evaluation_losses) == 3 and all(torch.isfinite(torch.tensor(v)) for v in evaluation_losses)
     assert all(torch.equal(p, base_before[n]) for n, p in trainer.model.named_parameters() if n in base_before)
     assert any(not torch.equal(p, adapter_before[n]) for n, p in trainer.model.named_parameters() if n in adapter_before)
     trainer.save_model(str(tmp_path / "final"))

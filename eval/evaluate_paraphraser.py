@@ -120,6 +120,17 @@ class EgeEvaluator:
               f"ASR={summary['conditional_asr']}", flush=True)
         return payload
 
+    def attach_train_loss(self, payload, loss):
+        payload["summary"]["dpo_train_loss"] = float(loss)
+        step = payload["summary"]["step"]
+        write_json(self.output_dir / f"monitor_step_{step:06d}.json", payload)
+        write_json(self.history_path, self.history)
+        fields = list(dict.fromkeys(k for row in self.history for k in row if k != "wilson_95_ci"))
+        with (self.output_dir / "validation_history.csv").open("w", encoding="utf-8", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(self.history)
+
 
 def run_evaluation(*, checkpoint: str | None = None, device=None) -> Path:
     from training.dpo_train import FINAL_DIR

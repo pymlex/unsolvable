@@ -169,11 +169,18 @@ best mean loss stop training. The observation period also extends at least three
 full windows past learning-rate warmup. This is training-loss convergence, not evidence
 of improved attack success; the full 116-item metrics must be inspected separately.
 Use `DPO_LOGGING_STEPS=1`. `DPO_EPOCHS` is the maximum training budget.
-The default peak learning rate is `DPO_LEARNING_RATE=3e-5`, with a fixed
+The default peak learning rate is `DPO_LEARNING_RATE=1e-5`, with a fixed
 `DPO_WARMUP_STEPS=10` independent of that epoch budget. Set `DPO_INIT_ADAPTER`
 to warm-start from saved LoRA weights with a fresh optimizer/scheduler. The
 initial adapter path and SHA-256 are recorded in the new run configuration;
 this is a separate run, while `--resume` restores the exact optimizer/RNG state.
+Full EGE evaluation and DPO-loss evaluation on all 500 training pairs run at
+epoch 0 and each 0.2 epoch (`DPO_MONITOR_EVERY_EPOCHS`). Step loss is saved before
+the periodic evaluation starts. Immutable reports contain a logarithmic loss
+plot and a 116-item eval plot, and are published asynchronously under the
+dataset's `artifacts/dpo-qwen3.5-2b/training/` path. The local reader
+`python scripts/fetch_live_training.py` downloads unreported snapshots;
+`--ack RUN_ID:STEP` marks only snapshots already shown in chat.
 After measured convergence, the final LoRA adapter, tokenizer, loss histories,
 per-item evaluations and convergence windows are published to `HF_MODEL_REPO`
 (default `pymlex/unsolvable-qwen3.5-2b-dpo`). If the epoch budget is exhausted
